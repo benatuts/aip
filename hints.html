@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP: Hints</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Hints</li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Hints</h1>
+            <p><i>Debugging Tips for NetBeans/Glassfish (that might be useful for the assignments)</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>It is unlikely that you will need to refer to the following information during the weekly practical activities.</p>
+<p>They might come in handy when you start working on your own (e.g., during the assignments).</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Bitbucket and NetBeans</h2></label>
+                <div class="content">
+                    <div class="download"><a href="notes/bitbucketnetbeans.pdf"><img src="resources/text.png" />bitbucketnetbeans.pdf</a></div>
+
+<p>Attached is the simplified workflow handed out during the Week 2 in-lab exercise.</p>
+<p>The first page contains instructions for setting up a new repository (and at the bottom of the page, how to look at older version).
+The second page shows a development workflow to use once your repository has been set up.</p>
+<p>The dark black circles and arrows indicate the steps you follow when you're working alone.
+When you're working in a team, you would follow both the dark black and light gray arrows.</p>
+<p>Remember: You need to use Bitbucket in the assignments.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Solving GlassFish Problems</h2></label>
+                <div class="content">
+                    <p>Sometimes the Application Server might not be deploying your code properly.</p>
+<p>This happens most often in four scenarios:</p>
+<ol>
+<li>If you are changing annotations on your code (e.g., making <code>@SessionScoped</code> into <code>@RequestScoped</code>) but letting NetBeans automatically redeploy whenever you save.</li>
+<li>You have an Enterprise Application consisting of an EJB project and a Web project, but there was a compile problem.</li>
+<li>You have an Enterprise Application but you've accidentally deployed the Web project separately to the Enterprise Application project.</li>
+<li>You've made lots of changes to your code, deploying often, but things suddenly stop working in ways that don't make sense.</li>
+</ol>
+<p>Here are some steps to follow that usually solve most problems.:</p>
+<ol>
+<li>
+<p><strong>Deploy the application again.</strong></p>
+<p>Right click on the project and click "Clean". Right click again and "Run" or "Deploy". Does it work now?</p>
+</li>
+<li>
+<p><strong>Undeploy all applications. Deploy again.</strong></p>
+<p>In the Services tab, locate <strong>Servers &gt; GlassFish Server &gt; Applications</strong>. Right click on Applications to refresh the list. Select all the Applications with your mouse (hold down the shift key). Then right click and select "Undeploy".</p>
+<p>Deploy your project again. Does it work now?</p>
+</li>
+<li>
+<p><strong>Clear your browser history.</strong></p>
+<p>You don't need to clear everything. You only need to clear the cookies associated with GlassFish. Another way to do this is to start a private/incognito browsing window.</p>
+</li>
+<li>
+<p><strong>Undeploy all applications. Restart GlassFish. Deploy again.</strong></p>
+<p>If you are seeing error messages about NetBeans being unable to delete JAR files, then you should undeploy all applications and restart GlassFish. To restart GlassFish, in the Services tab locate <strong>Servers &gt; GlassFish Server</strong>. Then, right click on GlassFish Server and select Restart (or Stop and then Start).</p>
+</li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Most Common JavaServer Faces Problems</h2></label>
+                <div class="content">
+                    <p>If JavaServer Faces isn't working for you, the most common problems are:</p>
+<ol>
+<li>
+<p>Your backing bean is annotated with @Named but you've forgotten to make the first letter lowercase in expression language. </p>
+<p>e.g., <code>MyBackingBean</code> should be referred to in expression language as <code>#{myBackingBean}</code> (the first letter is different).</p>
+</li>
+<li>
+<p>You have imported the wrong package for <code>@RequestScoped</code> or <code>@SessionScoped</code>. </p>
+<p>Use <code>javax.enterprise.context.*</code>. Do NOT use <code>javax.faces.bean.*</code>.</p>
+<p>Yes, this is counterintuitive. The reason is that you are using <code>@Named</code> which works with the more modern CDI annotations that are in <code>javax.enterprise.context</code>.</p>
+</li>
+<li>
+<p>Your code doesn't compile</p>
+<p>In NetBeans, check that your Java files don't have little red exclamation marks on their file icons in the Projects tab.</p>
+</li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Debugging the JAX-RS Client</h2></label>
+                <div class="content">
+                    <h3>Intercepting Connections</h3>
+<div class="download"><a href="notes/Forwarder.java"><img src="resources/app.png" />Forwarder.java</a></div>
+
+<p>Attached is a simple utility that can be helpful for debugging JAX-RS clients.
+When you see the actual data being sent via the network, you can figure out why things are going wrong.</p>
+<p>It accepts HTTP connections, forwards it to a HTTPS connection and does a search-and-replace in the stream to ensure any "Host" headers are correct.
+It outputs both sides of the connection to a window.</p>
+<p>To use it, change your target from https://test-api.pin.net.au/blahblahblah to http://localhost:8081/blahblahblah.</p>
+<p>Save it as a Java file in a project and then right click on the Java file and select "Run".</p>
+<h3>Using Basic Authentication</h3>
+<p>Adam Bien has an easy <a href="http://www.adam-bien.com/roller/abien/entry/client_side_http_basic_access">guide to using Basic Authentication</a> in a JAX-RS client.</p>
+<p>For example, the Pin Payments API documentation states that you should use HTTP basic authentication with your secret API key (find it when you log in) as the username and a blank string as the password.</p>
+<h3>Handling Error Responses</h3>
+<p>Some APIs can return different JSON structures based on the response code.</p>
+<p>Here are two possibilities for handling error messages in the JAX-RS client:</p>
+<ol>
+<li>
+<p>Use <code>javax.ws.rs.core.Response</code> as the response type, check for an error code than read the actual JSON data using <code>response.readEntity(...)</code>.</p>
+<p>There's an example in accepted answer for this StackOverflow question:
+<a href="https://stackoverflow.com/questions/22561527/handling-custom-error-response-in-jax-rs-2-0-client-library">https://stackoverflow.com/questions/22561527/handling-custom-error-response-in-jax-rs-2-0-client-library</a></p>
+</li>
+<li>
+<p>You could have a single bean that combines attributes for successful and unsuccessful responses. The error attributes would be ignored in success, and the success attributes would be ignored during an error.</p>
+<p>In the second approach, you would want to be careful about not using the combined Error/Success class as a business object. However, it might make reasonable design sense if you only treat it as a web service response "message".</p>
+</li>
+</ol>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

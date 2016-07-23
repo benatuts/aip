@@ -1,0 +1,610 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 3: JavaServer Pages (JSP)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 3</li>
+            </ul>
+            <ul>
+                <li><a href="03.html">Study</a></li>
+                <li class="title">Practice</li>
+                
+                <li><a href="03-challenge.html">Challenge</a></li>
+                <li><a href="03-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>JavaServer Pages (JSP)</h1>
+            <p><i>Practice for Week 3: 15 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>Today's tutorial is quite long and may be challenging if you are unfamiliar with Java.</p>
+<p>If you get stuck, feel free to ask your tutor or another student in the lab. If you are asked to help by one of your fellow students, please be supportive and helpful.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Hello, JavaServer Pages!</h2></label>
+                <div class="content">
+                    <p>JavaServer Pages (JSP) are very similar in purpose to Servlets. In fact, the application server will automatically compile a JSP into a Servlet.</p>
+<p>The difference lies in which language is "on top":</p>
+<ul>
+<li>In a Servlet, you write Java and embed HTML inside Strings.</li>
+<li>In a JSP, you write HTML and embed Java code inside special tags.</li>
+</ul>
+<p>We're not going to repeat all of the Week 2 lab exercises. However, everything we did during last week's lab session can be created again using JSP.</p>
+<h3>Create a JSP</h3>
+<p>If you are using the lab computers, your project from last week is still available. To access it, you just need to open it again (File... Open Project...).</p>
+<p>However, this week we will start a new project:</p>
+<ol>
+<li>Create a new Project<ol>
+<li>In the category "Java Web", select the "Web Application" project type</li>
+<li>Choose a name: Week3</li>
+<li>Ensure the Server is "GlassFish Server 4.1.1" and the Java EE Version is "Java EE 7 Web" (the context path is the address on the web-server that your application will be deployed to)</li>
+<li>Don't add any frameworks</li>
+</ol>
+</li>
+<li>Create a new File (File... New File...)<ol>
+<li>Select the "JSP" file type in the "Web" category</li>
+<li>Enter the filename "helloworld" (without quotes), on the same page check to make sure that the option "JSP File (Standard Syntax)" is selected</li>
+</ol>
+</li>
+</ol>
+<p>Replace the content of the generated JSP file with the following:</p>
+<pre><code>&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello, World!&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello, World!&lt;/h1&gt;
+        &lt;p&gt;
+            &lt;% out.println("Hello from Java inside a JSP"); %&gt;
+        &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Run the Servlet and View the Source</h3>
+<p>Now, run the project. To run the project click the green play button. If you have other projects open, you may need to ensure that the Week3 project is selected (under Linux just click on the name of the project) or that the project is set as the main project (under Windows right click on the name of the project and the select "Set as Main Project").</p>
+<p>When GlassFish has started, you should be able to open the JSP in your web browser.</p>
+<p><a href="http://localhost:8080/Week3/helloworld.jsp">http://localhost:8080/Week3/helloworld.jsp</a></p>
+<p>When you access the JSP from your web-browser, the application server will automatically compile the JSP into a Servlet. With GlassFish and NetBeans you can see the source of the Servlet. Inside NetBeans, right click on your helloworld.jsp file and select "View Servlet".</p>
+<p>The Java code for your Servlet will appear.</p>
+<p>This code is a bit more complex than the Servlets we wrote last week. The code is complex because it is automatically generated. Fortunately, you don't have to worry about what is going on behind the scenes: we are only examining it so that you can convince yourself that JSPs are actually just an "easy" way to create a Servlets.</p>
+<p>If you scroll down the Servlet code you will see something like:</p>
+<pre><code>     out.write("\n");
+     out.write("&lt;!DOCTYPE html&gt;\n");
+     out.write("&lt;html&gt;\n");
+     out.write("    &lt;head&gt;\n");
+     out.write("        &lt;title&gt;Hello, World!&lt;/title&gt;\n");
+     out.write("    &lt;/head&gt;\n");
+     out.write("    &lt;body&gt;\n");
+     out.write("        &lt;h1&gt;Hello, World!&lt;/h1&gt;\n");
+     out.write("        &lt;p&gt;\n");
+     out.write("            ");
+out.println("Hello from Java inside a JSP");
+     out.write("\n");
+     out.write("        &lt;/p&gt;\n");
+     out.write("    &lt;/body&gt;\n");
+     out.write("&lt;/html&gt;\n");
+</code></pre>
+<p>The HTML in our JSP has been converted into out.write statements. Our line of Java has been inserted into the Servlet at the correct place.</p>
+<h3>Using Expressions in JSP</h3>
+<p>Now modify your JSP page as follows:</p>
+<pre><code>&lt;%@page contentType="text/html" pageEncoding="UTF-8"%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello, World!&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello, World!&lt;/h1&gt;
+        &lt;p&gt;
+            Five times five is &lt;%= 5 * 5 %&gt;
+        &lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Run the Servlet and View the Source</h3>
+<p>Again, save the file (you do not need to click on the play button again) and refresh the JSP page in your web-browser:</p>
+<p><a href="http://localhost:8080/Week3/helloworld.jsp">http://localhost:8080/Week3/helloworld.jsp</a></p>
+<p>What do you see?</p>
+<p>Return to NetBeans and right click on the JSP to "View Servlet" again.</p>
+<p>If you scroll down, you will see code such as the following:</p>
+<pre><code>out.write("\n");
+out.write("&lt;!DOCTYPE html&gt;\n");
+out.write("&lt;html&gt;\n");
+out.write("    &lt;head&gt;\n");
+out.write("        &lt;title&gt;Hello, World!&lt;/title&gt;\n");
+out.write("    &lt;/head&gt;\n");
+out.write("    &lt;body&gt;\n");
+out.write("        &lt;h1&gt;Hello, World!&lt;/h1&gt;\n");
+out.write("        &lt;p&gt;\n");
+out.write("            Five times five is ");
+out.print( 5 * 5 );
+out.write("\n");
+out.write("        &lt;/p&gt;\n");
+out.write("    &lt;/body&gt;\n");
+out.write("&lt;/html&gt;\n");
+</code></pre>
+<p>This time, our code "5 * 5" has been automatically wrapped in an <code>out.print( .... )</code> statement.</p>
+<h3>Reflect</h3>
+<p>We have used two kinds of scripting elements:</p>
+<pre><code>&lt;%     %&gt;
+&lt;%=     %&gt;
+</code></pre>
+<p>What is the difference between these elements?</p>
+<p>Can you summarize the rules that Java uses to convert a JSP page into a Servlet?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>JSP To-do list: Set up</h2></label>
+                <div class="content">
+                    <p>In the next few exercises, we will construct an application using JSP. The application is a to-do list. It will store a list of tasks in the session.</p>
+<p>We will implement the same application in three ways:</p>
+<ol>
+<li>Using a simple Model 1 architecture</li>
+<li>Using a Model 1 architecture, Beans (jsp:useBean) and the JSTL</li>
+<li>Using a Model 2 architecture and the JSTL</li>
+</ol>
+<p>If you'd like to challenge yourself, you can work without the examples and hints given below. That is, you can stop reading here and implement the three separate techniques by yourself.</p>
+<p>Here are screen shots of the final application we will build:</p>
+<p>This is the first screen (list.jsp). The first time the user visits, there are no items in the to-do list:</p>
+<p><img alt="Empty" src="03/todo1.png"></p>
+<p>After clicking on "Create a new task", the user can add a new item:</p>
+<p><img alt="New" src="03/todo2.png"></p>
+<p>When the user submits the form, the system confirms the new task:</p>
+<p><img alt="Confirmed" src="03/todo3.png"></p>
+<p>Clicking on "View all tasks" takes us back to the list:</p>
+<p><img alt="List" src="03/todo4.png"></p>
+<p>Clicking on "Create a new task" again allows the user to add another new item:</p>
+<p><img alt="Add Another" src="03/todo5.png"></p>
+<p>When the user submits the form, the system confirms the new task:</p>
+<p><img alt="Confirm again" src="03/todo6.png"></p>
+<p>Again, after clicking on "View all tasks", the system shows us all the tasks in the list:</p>
+<p><img alt="Bigger list" src="03/todo7.png"></p>
+<p>Before we begin, we need to set up the project and helper classes.</p>
+<h3>HTML screen designs</h3>
+<p>First, create three JSP files:</p>
+<ul>
+<li>list</li>
+<li>create</li>
+<li>add</li>
+</ul>
+<p>Create the HTML for the files. At this stage you do not need to write any JSP/Java yet. Your objective is just to create placeholder HTML that looks something like the screens listed previously.</p>
+<p>For example, your list.jsp file might look something like this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;To-do List&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;To-do List&lt;/h1&gt;
+        &lt;p&gt;&lt;b&gt;Current To-do Items&lt;/b&gt;&lt;/p&gt;
+        &lt;ul&gt;
+                &lt;li&gt;Item 1: &lt;i&gt;Notes for Item 1&lt;/i&gt;&lt;/li&gt;
+                &lt;li&gt;Item 2: &lt;i&gt;Notes for Item 2&lt;/i&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;p&gt;&lt;a href="create.jsp"&gt;Create a new task&lt;/a&gt;&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>After creating the HTML files - you should be able to run your JSP program.
+Of course, the content of the pages will not be dynamic because because you haven't written any code yet!
+However, you will be able to check that the generated HTML looks correct and the layout is fine.</p>
+<h3>Helper Classes</h3>
+<p>Next, we need to create some "helper" classes in Java: TaskList and Task.</p>
+<p>Create a new file:</p>
+<ol>
+<li>Select type "Java Class" (in the "Java" category).</li>
+<li>Name the class "Task" and use package "au.edu.uts.aip.todo" (without quotes).</li>
+</ol>
+<p>Repeat the process to create a java class called TaskList (also in the au.edu.uts.aip.todo package).</p>
+<p>Copy the source code below into each of the files:</p>
+<p><strong>Task.java:</strong></p>
+<pre><code>package au.edu.uts.aip.todo;
+
+public class Task {
+
+    private String title;
+    private String notes;
+    private TaskList taskList;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList newTaskList) {
+        if (null != taskList) {
+            taskList.removeTask(this);
+        }
+        taskList = newTaskList;
+        taskList.addTask(this);
+    }
+
+}
+</code></pre>
+<p><strong>TaskList.java:</strong></p>
+<pre><code>package au.edu.uts.aip.todo;
+
+import java.util.*;
+
+public class TaskList {
+
+    private ArrayList&lt;Task&gt; tasks;
+
+    public TaskList() {
+        tasks = new ArrayList&lt;&gt;();
+    }
+
+    public List&lt;Task&gt; getTasks() {
+        return tasks;
+    }
+
+    void removeTask(Task task) {
+        tasks.remove(task);
+    }
+
+    void addTask(Task task) {
+        tasks.add(task);
+    }
+
+}
+</code></pre>
+<h3>Reflect</h3>
+<p>Do you understand the Java classes we have just created?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>JSP To-do list: Model 1 architecture</h2></label>
+                <div class="content">
+                    <p>First, we will implement the to-do list using standard JSP tags: <code>&lt;% %&gt;</code> and <code>&lt;%= %&gt;</code></p>
+<p>In this exercise, you need to modify your project in two places:</p>
+<ol>
+<li>Modify list.jsp so that it retrieves (or creates) a TaskList object from the session and lists its contents to the user.</li>
+<li>Modify add.jsp so that it retrieves the submitted form parameters ("title" and "notes"), creates a Task, and saves it to the TaskList object stored in the user's session.</li>
+</ol>
+<p>We will be using the helper classes. In JSP, you use the following code to "import" a package:</p>
+<pre><code>&lt;%@page import="au.edu.uts.aip.todo.*"%&gt;
+</code></pre>
+<p>You should add this directive to the top of both list.jsp and add.jsp. (Note: page import is one directive, but there are <a href="http://www.journaldev.com/2044/jsp-directives-page-include-and-taglib-example">lots of other directives</a> that you can use in JSP).</p>
+<p>Now, see if you can figure out the required changes to list.jsp and add.jsp. If you get stuck, ask the person sitting next to you, or your tutor for a hint. You should be able to complete the exercise using standard JSP <code>&lt;% %&gt;</code> and <code>&lt;%= %&gt;</code> tags.</p>
+<h3>Hints (list.jsp)</h3>
+<p>You should associate a task list with each session. This will retrieve an object from the session:</p>
+<pre><code>TaskList taskList = (TaskList)session.getAttribute("taskList");
+</code></pre>
+<p>Remember, that if this is the first time the user has used the application, there is no "taskList" in the session.
+The result of calling getAttribute could be null.
+You should check for that case and handle it:</p>
+<pre><code>if (null == taskList) {
+    // do something to handle no task list
+}
+</code></pre>
+<p>To iterate through the tasks in the task list, you can use code like this:</p>
+<pre><code>for (Task task : taskList.getTasks()) {
+    // handle task
+}
+</code></pre>
+<h3>Hints (add.jsp)</h3>
+<p>If your form had a field such as <code>&lt;input type="text" name="title"/&gt;</code>, then you can retrieve the value using:</p>
+<pre><code>request.getParameter("title");
+</code></pre>
+<p>This code will add a task to a task list:</p>
+<pre><code>Task task = new Task();
+task.setTitle("Title goes here");
+task.setNotes("Some notes");
+task.setTaskList(taskList);
+</code></pre>
+<h3>Reflect</h3>
+<p>What happens if you use HTML inside your form submission? Why?</p>
+<p>Create a task with the title "Test" and into the notes input box, enter the text "<code>&lt;script&gt;alert('Hi');&lt;/script&gt;</code>" (without quotes). What happens?</p>
+<p>Would a graphic designer be able to work with these JSP pages?</p>
+<p>How could we reduce the amount of Java mixed inside our HTML?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>JSP To-do list: Model 1 architecture with beans and JSTL</h2></label>
+                <div class="content">
+                    <p>In this exercise, we will simplify our JSP files using Java Beans and the JSP Standard Tag Library.</p>
+<p>There is a lot to learn in this exercise and this is quite challenging. However, the end result looks simple -- all the complexity gets hidden.</p>
+<h3>Java Beans</h3>
+<p>A <em>Java Bean</em> is a Java class that follows a number of conventions:</p>
+<ul>
+<li>There is a default no-argument constructor (you can declare the no argument constructor or, if you have no constructors, then a default no-argument constructor is automatically created for you).</li>
+<li>Any properties are implemented using get and set methods (e.g., a "title" property would be implemented as a pair of methods String getTitle() and void setTitle(String))</li>
+<li>The class implements Serializable</li>
+</ul>
+<p>You will notice that the Task and TaskList classes that we created follow these conventions:</p>
+<ul>
+<li>Task has properties named "title", "notes" and "taskList"</li>
+<li>TaskList has only one read-only property called "tasks" (it is read-only because it has a getTasks() method but no setTasks(...))</li>
+</ul>
+<h3>Using Beans in JSP</h3>
+<p>JSP can automatically create and manipulate Beans without needing to use Java code.</p>
+<p>Previously, you might have written code such as the following:</p>
+<pre><code>&lt;%
+  TaskList taskList = (TaskList)session.getAttribute("taskList");
+  if (null == taskList) {
+      taskList = new TaskList();
+      session.setAttribute("taskList", taskList);
+  }
+%&gt;
+</code></pre>
+<p>In JSP, such code can be replaced by the following:</p>
+<pre><code>&lt;jsp:useBean id="taskList" class="au.edu.uts.aip.todo.TaskList" scope="session"/&gt;
+</code></pre>
+<p>This tag tells JSP to retrieve taskList from the session. It will create a new instance of the bean if one does not already exist.</p>
+<p>There are several possible scopes you can use with jsp:useBean:</p>
+<ul>
+<li>page (a new bean will be created in each JSP page involved in a single request)</li>
+<li>request (a new bean will be created in each request)</li>
+<li>session (a new bean will be created for each new session but reused across pages)</li>
+<li>application (a new bean will only be created once across the entire application and reused across all sessions and pages)</li>
+</ul>
+<p>For more information about the jsp:useBean tag and meaning of each of these scopes, <a href="http://profesores.elo.utfsm.cl/~agv/elo330/2s03/projects/Tomcat/doc/1.2/syntaxref1217.html">click here</a>.</p>
+<p>After using the jsp:useBean tag, the bean can be accessed in two ways:</p>
+<ol>
+<li>In a scriptlet on the page (e.g., <code>&lt;%= taskList.getTasks().size() %&gt;</code>)</li>
+<li>As an attribute of the appropriate scope object (e.g., <code>session.getAttribute("taskList")</code>).</li>
+</ol>
+<p>JSP can also automatically set a property of a Bean using parameters passed in from a form:</p>
+<pre><code>&lt;jsp:useBean id="task" class="Task" scope="request"/&gt;
+&lt;jsp:setProperty name="task" property="title" param="title"/&gt;
+</code></pre>
+<p>The <code>&lt;jsp:setProperty name="task" property="title" param="title"/&gt;</code> tag is equivalent to the following Java code:</p>
+<pre><code>&lt;%
+  String param = request.getParameter("title");
+  task.setTitle(param);
+%&gt;
+</code></pre>
+<p>Note that <code>property="title"</code> in the form submission is automatically translated into a <code>setTitle(...)</code> method call for you.</p>
+<h3>Expression Language</h3>
+<p>Expression language (EL) is a convenient way to access attributes of a page. It can be used as a replacement for JSP expressions.</p>
+<p>Here are some simple JSP expressions and their EL equivalent:</p>
+<ul>
+<li><code>&lt;%= 3 + 2 %&gt;</code> becomes <code>${3 + 2}</code></li>
+<li><code>&lt;%= session.getAttribute("taskList") %&gt;</code> becomes <code>${sessionScope.taskList}</code> or just <code>${taskList}</code></li>
+<li><code>&lt;%= ((TaskList)session.getAttribute("taskList")).getTasks() %&gt;</code> becomes <code>${taskList.tasks}</code></li>
+<li><code>&lt;%= request.getParameter("title") %&gt;</code> becomes <code>${param.title}</code></li>
+</ul>
+<p>Note that we can also use Expression Language elsewhere in JSP. For example,</p>
+<pre><code>&lt;jsp:setProperty name="task" property="title" param="title"/&gt;
+</code></pre>
+<p>is equivalent to:</p>
+<pre><code>&lt;jsp:setProperty name="task" property="title" value="${param.title}"/&gt;
+</code></pre>
+<p>(The difference is that the first one uses the <strong>param</strong> named title, but the second one uses the <strong>value</strong> of <code>${param.title}</code>: they're just two different ways of saying the same thing)</p>
+<h3>Converting add.jsp to use Beans</h3>
+<p>You now have enough information to modify add.jsp:</p>
+<ol>
+<li>
+<p>Declare two beans with jsp:useBean:</p>
+<ol>
+<li>a TaskList in the session scope</li>
+<li>a Task in the request scope</li>
+</ol>
+</li>
+<li>
+<p>Set the title and notes attributes of the task, based on the form parameters (that come from create.jsp).</p>
+</li>
+<li>
+<p>Use jsp:setProperty to set the taskList attribute of the task (i.e., use jsp:setProperty to call task.setTaskList(...)).</p>
+</li>
+<li>
+<p>You can use Expression Language to pass in the TaskList from the session scope:</p>
+<p>e.g., <code>&lt;jsp:setProperty name="??????" property="taskList" value="${sessionScope.??????}"/&gt;</code> <br>
+(replace the question marks, as appropriate).</p>
+</li>
+<li>
+<p>Replace any JSP expressions (<code>&lt;%= %&gt;</code>) with the equivalent in Expression Language.</p>
+</li>
+</ol>
+<p>Test your modified add.jsp and make sure that it works.</p>
+<h3>JSP Standard Tag Library</h3>
+<p>The JSP Standard Tag Library is a collection of tags that perform common tasks in JSP: iteration, branching, formatting.</p>
+<p>For example, instead of JSP code such as the following...</p>
+<pre><code>&lt;%
+    for (Task task : taskList.getTasks()) {
+%&gt;
+       &lt;p&gt;html goes here&lt;/p&gt;
+&lt;%
+    }
+%&gt;
+</code></pre>
+<p>...we can use a JSTL tag such as the following...</p>
+<pre><code>&lt;c:forEach var="task" items="${taskList.tasks}"&gt;
+    &lt;p&gt;html goes here&lt;/p&gt;
+    &lt;p&gt;you can also use Expression Language here to refer to ${task}&lt;/p&gt;
+&lt;/c:forEach&gt;
+</code></pre>
+<p>To use the JSTL, you first need to import the tag library. You do this by adding the following directive to the top of a JSP page:</p>
+<pre><code>&lt;%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %&gt;
+</code></pre>
+<p>Some of the tags provided by the JSTL are as follows:</p>
+<ul>
+<li><code>&lt;c:forEach&gt;</code> works like a "for" statement in Java</li>
+<li><code>&lt;c:if&gt;</code> and <code>&lt;c:choose&gt;</code> work like an "if" statement in Java</li>
+<li><code>&lt;c:url&gt;</code> encodes a URL (i.e., <code>response.encodeURL(...)</code>)</li>
+<li><code>&lt;c:out&gt;</code> outputs a value, performing any escaping that may be required</li>
+</ul>
+<p>To see a more comprehensive list, <a href="http://www.tutorialspoint.com/jsp/jsp_standard_tag_library.htm">click here</a>.</p>
+<h3>Converting list.jsp to use Beans and the JSTL</h3>
+<p>You now have enough information to modify list.jsp:</p>
+<ul>
+<li>Declare a TaskList in the session scope with jsp:useBean</li>
+<li>Iterate through the TaskList using a tag from the JSTL</li>
+<li>Replace any JSP expressions (<code>&lt;%= .... %&gt;</code>) with the equivalent Expression Language expression</li>
+</ul>
+<h3>Conclusion</h3>
+<p>At this stage, you should check to make sure that you have no more Java code in any of your JSP files.</p>
+<h3>Reflect</h3>
+<p>Are your JSP files simpler?</p>
+<p>Do you think this code easier to manage and verify?</p>
+<p>What happens if you use HTML inside your form submission? Why? <br>
+e.g., Create a task with the title "Test" and notes "<code>&lt;script&gt;alert('Hi');&lt;/script&gt;</code>".</p>
+<p>Does your JSP code work with cookies disabled?</p>
+<h3>Escaping Text and Encoding URLs</h3>
+<p>Instead of using <code>${task.title}</code>, you can use the <code>&lt;c:out&gt;</code> JSTL tag to properly escape any special characters.</p>
+<p>Try replacing code such as <code>${task.title}</code> with <code>&lt;c:out value="${task.title}"/&gt;</code>.</p>
+<p>What happens now if you enter HTML inside your form submission?</p>
+<p>You can also use the <code>&lt;c:url&gt;</code> tag to create links within the same website that will work with cookies disabled (the created link gets saved for expression language):</p>
+<pre><code>&lt;c:url var="somepageEscaped" value="somepage.jsp"/&gt;
+&lt;a href="${somepageEscaped}"&gt;This is a hyperlink&lt;/a&gt;
+</code></pre>
+<p>Test your application with cookies disabled in the browser.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>JSP To-do list: Model 2 architecture</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will convert the to-do list application once more. This time, you will use a Model 2 / MVC architecture.</p>
+<p>In an MVC architecture, we need a Model, a View and a Controller:</p>
+<ul>
+<li>Our model has been created: the TaskList and Task classes</li>
+<li>Our views will be written using JavaServer Pages</li>
+<li>Our controller will be implemented as a Servlet</li>
+</ul>
+<p>In a MVC architecture, we should not have any domain logic in the views.</p>
+<p>We have already eliminated most of the domain logic except for the jsp:useBean and jsp:setProperty tags. Our objective is therefore to move the logic for jsp:useBean and jsp:setProperty into a Servlet.</p>
+<h3>Create a Controller Servlet</h3>
+<p>Create a new Servlet called TodoServlet in the au.edu.uts.aip.todo package. You may wish to set it to respond to a more user-friendly URL pattern such as "/todo" instead of "/TodoServlet".</p>
+<p>Modify the Servlet so that any request is forwarded to the list.jsp page:</p>
+<pre><code>request.getRequestDispatcher("/list.jsp").forward(request, response);
+</code></pre>
+<p>Now you can access your Servlet (i.e., save, and open <a href="http://localhost:8080/Week3/todo">http://localhost:8080/Week3/todo</a> or <a href="http://localhost:8080/Week3/TodoServlet">http://localhost:8080/Week3/TodoServlet</a> in your browser).</p>
+<p>What happens? You should see the output of list.jsp as though we had accessed the JSP file directly.</p>
+<h3>Move logic for list.jsp into the Servlet</h3>
+<p>Now return to the list.jsp file and delete the jsp:useBean tag.</p>
+<p>You can now implement the jsp:useBean functionality of list.jsp inside your Servlet.</p>
+<h3>Hints</h3>
+<p>You can pass information from your Servlet to your JSP view by using setAttribute(...).</p>
+<p>For example, you can call <code>session.setAttribute("taskList", taskList)</code>, then access the task list using Expression Language as <code>${taskList}</code> or <code>${sessionScope.taskList}</code>.</p>
+<p>You can also use <code>request.setAttribute("someNameGoesHere", object)</code> and this is accessible from Expression Language as <code>${someNameGoesHere}</code> or <code>${requestScope.someNameGoesHere}</code>.</p>
+<h3>Create a Front Controller (or multiple Controllers)</h3>
+<p>So far we have converted list.jsp into a Model 2 MVC style architecture. The next task is to convert add.jsp and create.jsp.</p>
+<p>There are at least two ways to do this:</p>
+<ol>
+<li>Create a separate Servlet for each JSP</li>
+<li>Use one Servlet to handle every request</li>
+</ol>
+<p>The second approach is more complex but leads to a slightly better design because it allows you to decouple views from page URLs. In other words, with the second approach you can have one request generate different views according to the application logic.</p>
+<p>One common approach used in the "Front Controller" pattern is to have a parameter to identify the action. That is, with every request, the URL includes a parameter called "action" or "command". The Servlet examines the value of the parameter and chooses the appropriate action to perform.</p>
+<p>For example, in the Servlet you may have code such as the following:</p>
+<pre><code>String command = request.getParameter("command");
+if (null == command) {
+    // handle no command
+} else if ("list".equals(command)) {
+    // handle the list command
+} else if ("create".equals(command)) {
+    // handle the create command
+} else if ("add".equals(command)) {
+    // handle the add command
+} else {
+    // handle an unrecognized command
+}
+</code></pre>
+<p>Then, instead the URLs used in the application would be modified as follows:</p>
+<ul>
+<li>
+<p><a href="http://localhost:8080/Week3/list.jsp">http://localhost:8080/Week3/list.jsp</a>  <br>
+  would become <br>
+<a href="http://localhost:8080/Week3/todo?command=list">http://localhost:8080/Week3/todo?command=list</a></p>
+</li>
+<li>
+<p><a href="http://localhost:8080/Week3/create.jsp">http://localhost:8080/Week3/create.jsp</a> <br>
+  would become <br>
+<a href="http://localhost:8080/Week3/todo?command=create">http://localhost:8080/Week3/todo?command=create</a></p>
+</li>
+<li>
+<p><a href="http://localhost:8080/Week3/add.jsp">http://localhost:8080/Week3/add.jsp</a><br>
+  would become <br>
+<a href="http://localhost:8080/Week3/todo?command=add">http://localhost:8080/Week3/todo?command=add</a></p>
+</li>
+</ul>
+<p>Your challenge is to convert the to-do list application to a Model 2 architecture.</p>
+<h3>Reflect</h3>
+<p>Is the Model 2 to-do list application now simpler or more complex?</p>
+<p>If it is more complex, is the additional complexity a benefit? In what situations would it be a benefit?</p>
+<p>What happens if the user bypasses the Servlet, and attempts to load the JSP directly?
+(i.e., the user opens <a href="http://localhost:8080/Week3/list.jsp">http://localhost:8080/Week3/list.jsp</a> instead of using the Servlet)</p>
+<h3>Securing Views</h3>
+<p>The application server automatically serves any files in the "Web Pages" (or "web") section of your NetBeans project. This can be a problem if the JSP views need the Controller Servlet to set up the page first.</p>
+<p>One way to make the views "private" is to move them to the WEB-INF folder. Any content inside WEB-INF is inaccessible to the user and can only be delivered to the user by forwarding their request through the request dispatcher:</p>
+<pre><code>request.getRequestDispatcher("/WEB-INF/list.jsp").forward(request, response);
+</code></pre>
+<p>You should move the views into the /WEB-INF folder, make any necessary changes to your Servlet(s) and check that your application still works.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Some Final Improvements</h2></label>
+                <div class="content">
+                    <p>This last exercise will not be covered in the tutorial but it can be done in your own time.</p>
+<h3>Removing Duplicated HTML</h3>
+<p>Your JSP views probably have several repeated elements.</p>
+<p>For example, perhaps the HTML of every page looks something like this:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;To-do List&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        Main content goes here
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Many sites have a common header (e.g., company logo, CSS stylesheets, menu bar) and a common footer (e.g., copyright notice, site map, contact address). It is inconvenient to change this information in every file.</p>
+<p>JSP allows you to reduce the amount of duplication. You can move the common HTML elements into separate files. These files can then be automatically included in your output.</p>
+<p>There are several approaches to including other files:</p>
+<ul>
+<li>Include the other files<ul>
+<li>A static include using <code>&lt;% include file=""%&gt;</code></li>
+<li>A dynamic include using <code>&lt;jsp:include page=""/&gt;</code></li>
+</ul>
+</li>
+<li>Import another URL using JSTL<ul>
+<li><code>&lt;c:import url=""/&gt;</code></li>
+</ul>
+</li>
+<li>Configure a common header and footer in web.xml<ul>
+<li><code>&lt;include-prelude&gt;</code> and <code>&lt;include-coda&gt;</code></li>
+</ul>
+</li>
+<li>Create a custom tag file</li>
+</ul>
+<p>For more information and examples, look at the first answer to this question on Stack Overflow:
+<a href="https://stackoverflow.com/questions/14580120/whats-the-difference-between-including-files-with-jsp-include-directive-jsp-in">https://stackoverflow.com/questions/14580120/whats-the-difference-between-including-files-with-jsp-include-directive-jsp-in</a></p>
+<p>You can now improve your to-do list app by moving common code from each of your JSPs into separate "template" files.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

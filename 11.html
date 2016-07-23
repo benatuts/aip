@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 11: Transactions, security and thanks</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 11</li>
+            </ul>
+            <ul>
+                <li class="title">Study</li>
+                <li><a href="11-practice.html">Practice</a></li>
+                
+                <li><a href="11-challenge.html">Challenge</a></li>
+                <li><a href="11-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Transactions, security and thanks</h1>
+            <p><i>Study for Week 11: 17 October</i></p>
+            <p>Congratulations on making it so far!</p>
+<p>In this final week, we will look at transactions and security.</p>
+<p>Transactions let you write single-threaded code without worrying about concurrency.
+Using transactions, the application server will coordinate multiple simultaneous requests in a way that avoid data corruption.</p>
+<p>I'd like to thank you for your enthusiasm, patience and curiosity.
+You've learnt a lot and you should be proud of your achievements.
+Think about how far you've come in just 11 weeks!</p>
+            <div class="section">
+                <a name="outcomes"></a>
+                <input id="outcomes" type="checkbox" autocomplete="off" />
+                <label for="outcomes"><h2>Outcomes</h2></label>
+                <div class="content">
+                    <p>At the end of this session, you should be able to:</p>
+<ul>
+<li>Explain the purpose of a transaction</li>
+<li>Define each of the characteristics of a transaction (ACID)</li>
+<li>Understand the difference between commit and rollback.</li>
+<li>Use programmatic (bean managed) transactions</li>
+<li>Understand and apply container managed transaction annotations</li>
+</ul>
+                </div>
+            </div>
+            <div class="section">
+                <a name="warmup"></a>
+                <input id="warmup" type="checkbox" autocomplete="off" />
+                <label for="warmup"><h2>Warm up study and videos</h2></label>
+                <div class="content">
+                    <div class="download"><a href="11/slides.pdf"><img src="resources/slides.png" />Full slides and detailed notes</a></div>
+                    <h3>Transactions</h3>
+<p>Introduction to transactions and the ACID characteristics:</p>
+<div class="videocontainer"><iframe width="640" height="360" src="https://www.youtube.com/embed/hdgDDdJq004?rel=0" frameborder="0" allowfullscreen></iframe></div>
+
+<h3>Java Transaction API (JTA)</h3>
+<p>The Java Transaction API and using transactions in EJBs:</p>
+<div class="videocontainer"><iframe width="640" height="360" src="https://www.youtube.com/embed/kbk0MQSwU6o?rel=0" frameborder="0" allowfullscreen></iframe></div>
+
+<h3>Weaker isolation</h3>
+<p>How reduced transaction isolation levels can improve performance:</p>
+<div class="videocontainer"><iframe width="640" height="360" src="https://www.youtube.com/embed/m8GWUg5Ux2g?rel=0" frameborder="0" allowfullscreen></iframe></div>
+
+<h3>Security</h3>
+<p>Some general comments about creating secure web applications:</p>
+<div class="videocontainer"><iframe width="640" height="360" src="https://www.youtube.com/embed/40ZuqWdIXZY?rel=0" frameborder="0" allowfullscreen></iframe></div>
+
+<h3>Thank you</h3>
+<p>A short word of thanks for being involved in the subject:</p>
+<div class="videocontainer"><iframe width="640" height="360" src="https://www.youtube.com/embed/ThIUjSN-DgY?rel=0" frameborder="0" allowfullscreen></iframe></div>
+
+<p>Please feel free to send any suggestions or feedback. Feel free to stay in touch.</p>
+                </div>
+            </div>
+            <div class="section">
+                <a name="deeper"></a>
+                <input id="deeper" type="checkbox" autocomplete="off" />
+                <label for="deeper"><h2>Deeper study</h2></label>
+                <div class="content">
+                    <p>I recommend reading the following.</p>
+<p><em>Transactions:</em></p>
+<p>Chapter 9 of Beginning Java EE 7: <br>
+<a href="http://find.lib.uts.edu.au/?R=OPAC_b2874770">http://find.lib.uts.edu.au/?R=OPAC_b2874770</a></p>
+<p><em>Security:</em></p>
+<p>The OWASP top-ten: <br>
+<a href="http://owasptop10.googlecode.com/files/OWASP Top 10 - 2013.pdf">http://owasptop10.googlecode.com/files/OWASP Top 10 - 2013.pdf</a></p>
+<p>At this point, you should have a good grasp of Java EE. Where you go next is up to you!</p>
+<p>Here's a few ideas:</p>
+<h3>Oracle's Java EE Tutorial</h3>
+<p>The Java EE Tutorial is quite challenging and much more comprehensive than this subject (the PDF is almost 1000 pages - too much for just one semester).
+However, now that you've got a good understanding of most of the platform, you may find the tutorial useful for learning about more obscure aspects of Java EE:
+https://docs.oracle.com/javaee/7/tutorial/index.html</p>
+<h3>Spring Framework</h3>
+<p>Spring Web MVC is a popular alternative to JavaServer Faces.
+At the moment, it has more widespread use.
+However, Spring and Java EE are becoming increasingly similar to each other.</p>
+<p>There are many new features coming into Java EE 8, including a new MVC framework.
+This will bring Spring and Java EE even closer together.</p>
+<p><a href="https://spring.io/">https://spring.io/</a></p>
+<p>Spring support is built into NetBeans, so you can easily experiment with it.
+Just create a new "Web Application" (in the "Java Web" category) and at the last step, select Spring Web MVC instead of JavaServer Faces.</p>
+<h3>Just Start Coding...</h3>
+<p>To become even more expert at Java EE, my best suggestion is to just start coding.
+Dream up an application and start programming.</p>
+<p>If you're not sure about something, then refer to the tutorials.
+Also remember that the specifications are often quite readable.
+If you want the definitive answer, you can always search the specifications: <br>
+<a href="http://www.oracle.com/technetwork/java/javaee/tech/index.html">http://www.oracle.com/technetwork/java/javaee/tech/index.html</a></p>
+                </div>
+            </div>
+            <div class="section">
+                <a name="quiz"></a>
+                <input id="quiz" type="checkbox" autocomplete="off" />
+                <label for="quiz"><h2>Preparation Activities</h2></label>
+                <div class="content">
+                    <p>The preparation activity for this week will be announced later.</p>
+                </div>
+            </div>
+            <div class="section">
+                <a name="handson"></a>
+                <input id="handson" type="checkbox" autocomplete="off" />
+                <label for="handson"><h2>Practical exercises</h2></label>
+                <div class="content">
+                    <ul>
+                        <li><a href="11-practice.html">Hands-on practical exercises</a></li>
+                        
+                        <li><a href="11-challenge.html">Challenge problems</a></li>
+                        <li><a href="11-solutions.html">Sample solutions</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

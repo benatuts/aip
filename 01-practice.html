@@ -1,0 +1,429 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 1: Introduction and challenges</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 1</li>
+            </ul>
+            <ul>
+                <li><a href="01.html">Study</a></li>
+                <li class="title">Practice</li>
+                
+                <li><a href="01-challenge.html">Challenge</a></li>
+                <li><a href="01-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Introduction and challenges</h1>
+            <p><i>Practice for Week 1: 1 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>I encourage you to do the hands-on activities during the allocated lab sessions.</p>
+<p>This will allow the teaching staff to help you if (or when) you get stuck.</p>
+<p>That way you can use your time outside of class more productively.</p>
+<p>More technical labs begin next week. This lab is a warm-up exercise.</p>
+<p>This is an ideal time to get familiar with the subject:</p>
+<ul>
+<li>Read the Assessment requirements in UTS Online</li>
+<li>Decide on an idea for Assignment 1</li>
+<li>Discuss your ideas for Assignment 1 with your lab mates</li>
+<li>Do some Java revision</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Programming</h2></label>
+                <div class="content">
+                    <p>Are you comfortable with Java?</p>
+<p>Here are some quick questions to help you judge your knowledge:</p>
+<ul>
+<li>Can you declare variables, use for-loops, while-loops and if-statements?</li>
+<li>Do you know the difference between an array and an ArrayList?</li>
+<li>Can you use "extends" or "implements" to implement a subclass or interface?</li>
+<li>Do you know what HashMap<String, String> means, and could you iterate through the keys of the hash map?</li>
+</ul>
+<p>If you're not confident with Java, then you might consider watching some of the introductory courses on Lynda.com.</p>
+<p>Log in via the UTS Library:
+<a href="https://shib.lynda.com/Shibboleth.sso/InCommon?providerId=https://aaf-login.uts.edu.au/idp/shibboleth">https://shib.lynda.com/Shibboleth.sso/InCommon?providerId=https://aaf-login.uts.edu.au/idp/shibboleth</a></p>
+<p>The course "Java Essential Training" (7hrs) by David Gassner starts from the basics and explains most of the features of Java.</p>
+<p>The course "Up and Running with Java" (3hrs) is a bit more advanced. It is more of a refresher if you have forgotten Java.</p>
+<p>If you'd prefer to learn through challenges and puzzles, you might try CodingBat. If you get stuck you can ask the tutor or one of your fellow students.</p>
+<p><a href="http://codingbat.com/java">http://codingbat.com/java</a></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Getting Started with Java and NetBeans</h2></label>
+                <div class="content">
+                    <p>If have your own laptop or computer, then you may use this week to set up your environment.</p>
+<p>You can use any IDE in this subject: NetBeans, Eclipse, IntelliJ or even a simple text editor. However, all of the weekly activities are based around NetBeans and your tutor may not be able to assist you if you get stuck with another IDE.</p>
+<p>We will be using the Java Development Kit (JDK) version 8:</p>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html</a></p>
+<p>We will be using the Java EE edition of <a href="https://netbeans.org/downloads/">NetBeans 8.1</a>. When you install the Java EE edition, it will give you the option of installing the GlassFish 4.1.1 application server. Please make sure you select it, as GlassFish is the basis of much of this subject.</p>
+<p>If you are using a lab computer, these have already been installed for you. Just log in to Red Hat Linux. You will find NetBeans in the "Programming" menu.</p>
+<h3>Create a Simple Java Program</h3>
+<p>For this exercise, you'll experience the basic steps in writing a Java program.</p>
+<p>When you first start NetBeans, it should look something like this:</p>
+<p><img alt="NetBeans home" src="01/netbeans01.png"></p>
+<p>You can create a new project by clicking on the File menu, and selecting New Project...</p>
+<p><img alt="New Project" src="01/netbeans02.png"></p>
+<p>Select Java application from the Java category and then click Next:</p>
+<p><img alt="Select Java Application" src="01/netbeans03.png"></p>
+<p>Enter the project name "Week1" (without the quotes) and the main class "au.edu.uts.aip.week1.Main" (again, without quotes):</p>
+<p><img alt="Name the main class" src="01/netbeans04.png"></p>
+<p>You should have a window like this:</p>
+<p><img alt="Created" src="01/netbeans05.png"></p>
+<p>Delete the text in the window and replace it with this program:</p>
+<pre><code>package au.edu.uts.aip.week1;
+
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("Hello, World");
+    }
+
+}
+</code></pre>
+<p>Click on the Run button:</p>
+<p><img alt="Run" src="01/netbeans06.png"></p>
+<p>In an ordinary Java program, the main method is run when Java starts. 
+So, this program will output to the console the text "Hello, World".</p>
+<p>So, when you click on the run button, output of the program will be shown in an output window.
+You can see that our Java program has output the text "Hello, World" (without the quotes) as we would expect.</p>
+<p><img alt="Hello World" src="01/netbeans07.png"></p>
+<h3>Generating HTML</h3>
+<p>Outputting text to a console is not very interesting. Instead, let's try to generate some HTML.</p>
+<p>First, we need a HTML viewer. 
+There's a Webkit-based web browser built into Java. 
+To use it, we need some code that will show a window.</p>
+<p>Right click on the "au.edu.uts.aip.week1" package in the Project browser, and select New... Other...:</p>
+<p><img alt="New Other" src="01/netbeans08.png"></p>
+<p>In the "Java" category, select the "Java Class" file type and then click Next:</p>
+<p><img alt="New Java class" src="01/netbeans09.png"></p>
+<p>Name the class MiniBrowser and click Finish:</p>
+<p><img alt="Create MiniBrowser" src="01/netbeans10.png"></p>
+<p>You should have a new class in your package named MiniBrowser.java:</p>
+<p><img alt="Created MiniBrowser" src="01/netbeans11.png"></p>
+<p>Delete the the code that is automatically created in MiniBrowser and copy-and-paste the following replacement code in its place (the code is very complex, but you don't have to worry about what it does):</p>
+<pre><code>package au.edu.uts.aip.week1;
+
+import java.util.concurrent.*;
+import javafx.application.*;
+import javafx.beans.binding.*;
+import javafx.scene.*;
+import javafx.scene.web.*;
+import javafx.stage.*;
+
+/**
+ * A helper class that shows a JavaFX WebView in a window.
+ * HTML can be shown directly by the show method.
+ * A URL can be opened with the open method.
+ * &lt;p&gt;
+ * This class should only be called from the main thread.
+ */
+public class MiniBrowser extends Application {
+
+    private static final Semaphore semaphore = new Semaphore(0);
+    private volatile static Stage stage;
+    private static WebView browser;
+
+    /**
+     * Show HTML in a window.
+     * This method blocks until the user closes the window.
+     * @param html the HTML source of the web page to render
+     */
+    public static void show(String html) {
+        System.out.println("Showing HTML: " + html);
+        startPlatform();
+        Platform.runLater(() -&gt; {
+            browser.getEngine().loadContent(html);
+            stage.show();
+        });
+        semaphore.acquireUninterruptibly();
+    }
+
+    /**
+     * Open a URL in a window.
+     * This method blocks until the user closes the window.
+     * @param url the address of the web page to open
+     */
+    public static void open(String url) {
+        System.out.println("Opening: " + url);
+        startPlatform();
+        Platform.runLater(() -&gt; {
+            browser.getEngine().load(url);
+            stage.show();
+        });
+        semaphore.acquireUninterruptibly();
+    }
+
+    /**
+     * Starts the JavaFX platform.
+     * The current thread is blocked until JavaFX has started.
+     * When the current thread ends, this will be detected and JavaFX will be shut down.
+     */
+    private static void startPlatform() {
+        if (stage == null) {
+            // Start JavaFX and wait for the HTMLViewer to start
+            new Thread(() -&gt; Application.launch(MiniBrowser.class)).start();
+            semaphore.acquireUninterruptibly();
+
+            // Start a thread to monitor the Main thread, shutting down when main exits
+            final Thread main = Thread.currentThread();
+            new Thread(() -&gt; {
+                try {
+                    main.join();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                Platform.exit();
+            }).start();
+        }
+    }
+
+    /**
+     * The JavaFX start method.
+     * Once called, the semaphore is released to notify the waiting thread that JavaFX is ready.
+     * @param stage
+     * @throws Exception 
+     */
+    @Override
+    public void start(Stage stage) throws Exception {
+        Platform.setImplicitExit(false);
+        MiniBrowser.stage = stage;
+        MiniBrowser.browser = new WebView();
+
+        // Bind the Window title to the web view's title (if present)
+        // or just "HTML Viewer" otherwise
+        StringExpression title = browser.getEngine().titleProperty();
+        StringExpression windowTitle = new When(title.isNull()).then("HTML Viewer").otherwise(title);
+        stage.titleProperty().bind(windowTitle);
+        stage.setScene(new Scene(browser));
+
+        // Notify the blocking thread when the window is closed
+        stage.setOnCloseRequest(e -&gt; semaphore.release());
+
+        // Immediately notify listeners waiting for JavaFX to start
+        semaphore.release();
+    }
+
+}
+</code></pre>
+<p>Again, the code is a bit complex.
+However, you don't need to worry about how it works.
+We will <em>use</em> it in a moment.</p>
+<p>Now double-click on Main.java:</p>
+<p><img alt="Create MiniBrowser" src="01/netbeans12.png"></p>
+<p>At this point we can use the MiniBrowser class that we created.</p>
+<p>Replace the body of the main method with <code>MiniBrowser.show("&lt;h1&gt;Hello, World&lt;/h1&gt;");</code>:</p>
+<p><img alt="Used MiniBrowser" src="01/netbeans13.png"></p>
+<p>Finally, click run and you should have the following window appear:</p>
+<p><img alt="Hello World in MiniBrowser" src="01/netbeans14.png"></p>
+<p>Excellent! You're now able to run and write code in NetBeans.</p>
+<p>If you are using the lab computers and you get an error in red text that says "Xlib: extension GLX missing on display :0.0", you can ignore it.</p>
+<p>Now that you can get Java to show HTML, for the remainder of the activities, we will attempt to generate HTML code with Java.</p>
+<h3>Modifying the generated HTML:</h3>
+<p>Now, we'll make some changes to the body of the main method.
+This means that you will be deleting the code that says <code>MiniBrowser.show("&lt;h1&gt;Hello, World&lt;/h1&gt;")</code>, and replacing it with new code.</p>
+<p>First, let's see that in Java, you can join two strings together by adding them. Enter this code into the main-method and click run to see what happens:</p>
+<pre><code>String part1 = "&lt;html&gt;";
+String part2 = "&lt;head&gt;&lt;title&gt;Greeting&lt;/title&gt;&lt;/head&gt;";
+String part3 = "&lt;body&gt;&lt;h1&gt;Hello, World&lt;/h1&gt;&lt;p&gt;Pleased to meet you&lt;/p&gt;&lt;/body&gt;";
+String part4 = "&lt;/html&gt;";
+
+String everything = part1 + part2 + part3 + part4;
+MiniBrowser.show(everything);
+</code></pre>
+<p>Ok! So the plus sign adds two (or more) strings together into one big string.</p>
+<p>Next, try this code:</p>
+<pre><code>int count = 1;
+
+String part1 = "&lt;html&gt;&lt;body&gt;&lt;p&gt;The current count is ";
+String part2 = "&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;";
+
+String everything = part1 + count + part2;
+MiniBrowser.show(everything);
+</code></pre>
+<p>What happened?</p>
+<p>Adding a number to a string causes the number to be converted into a String, and then the two strings are joined together.</p>
+<p>Next try this code:</p>
+<pre><code>int count = 1;
+
+String part1 = "&lt;html&gt;&lt;body&gt;&lt;p&gt;The current count is ";
+String part2 = "&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;";
+
+while (count &lt; 5) {
+    String everything = part1 + count + part2;
+    MiniBrowser.show(everything);
+
+    count = count + 1;
+}
+</code></pre>
+<p>What happened? Why?</p>
+<p>Why did it only count from 1 to 4 (rather than counting to 5)?</p>
+<p>What would happen if you were to move the <code>String everything = part1 + count + part2;</code> outside the while-loop:</p>
+<pre><code>int count = 1;
+
+String part1 = "&lt;html&gt;&lt;body&gt;&lt;p&gt;The current count is ";
+String part2 = "&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;";
+
+String everything = part1 + count + part2;
+
+while (count &lt; 5) {
+    MiniBrowser.show(everything);
+
+    count = count + 1;
+}
+</code></pre>
+<p>What happened? Why?</p>
+<h3>Generating larger pages</h3>
+<p>Read the following code and see if you can guess what it will output:</p>
+<pre><code>String result = "";
+
+int[] squares = new int[10];
+
+for (int i=0; i&lt;10; i++) {
+    squares[i] = i * i;
+}
+
+for (int i=0; i&lt;10; i++) {
+    String message = i + " squared is " + squares[i];
+    result = result + "&lt;p&gt;" + message + "&lt;/p&gt;";
+}
+MiniBrowser.show(result);
+</code></pre>
+<p>Copy-and-paste it into NetBeans and see if you guessed correctly.</p>
+<h3>Problem 1</h3>
+<p>Can you write code with a for-loop that tests the 6 heading levels in HTML (i.e., <code>&lt;h1&gt;</code>,<code>&lt;h2&gt;</code>,<code>&lt;h3&gt;</code>,<code>&lt;h4&gt;</code>,<code>&lt;h5&gt;</code>,<code>&lt;h6&gt;</code>)?</p>
+<p>Your output should look like this:</p>
+<p><img alt="Heading output" src="01/challenge01.png"></p>
+<h3>Problem 2</h3>
+<p>In HTML/CSS, colors can be expressed as a hash followed by 6 hexadecimal numbers (e.g., <code>#88ff22</code>).</p>
+<p>Here is some code that generates a random hexadecimal number:</p>
+<pre><code>String color = "#";
+for (int i=0; i&lt;6; i++) {
+    int random = (int)(Math.random() * 16);
+    color = color + Integer.toHexString(random);
+}
+
+String before = "&lt;div style=\"background-color:";
+String after = "\"&gt;This has a random color&lt;/div&gt;";
+MiniBrowser.show(before+color+after);
+</code></pre>
+<p>Run it to see what it does.</p>
+<p>Your challenge is to modify the code so that it outputs something that looks like this:</p>
+<p><img alt="Random colors" src="01/challenge02.png"></p>
+<p>Hints: There are ten different colors. You should use another for-loop.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Using Classes</h2></label>
+                <div class="content">
+                    <p>In this activity, you will make use of classes to improve the design of your code.</p>
+<p>First, add another Java class named ColorView.java to the au.edu.uts.aip.week1 package:</p>
+<ul>
+<li>Right click on the package au.edu.uts.aip.week1 in the current NetBeans project.</li>
+<li>Click New... Other...</li>
+<li>In the Java category, select the "Java class" file type and click next</li>
+<li>Type the class name "ColorView" (without the quotes)</li>
+<li>Click finish</li>
+</ul>
+<p>Replace the automatically generated code with this Java code:</p>
+<pre><code>package au.edu.uts.aip.week1;
+
+public class ColorView {
+
+    private String color;
+
+    public ColorView(String color) {
+        this.color = color;
+    }
+
+    public String toHTML() {
+        String before = "&lt;div style=\"background-color:";
+        String after = "\"&gt;This has a random color&lt;/div&gt;";
+        return before + color + after;
+    }
+
+}
+</code></pre>
+<p>Next, repeat the process to create a Java class named RandomColorGenerator.java in the au.edu.uts.aip.week1 package:</p>
+<ul>
+<li>Right click on the package au.edu.uts.aip.week1 in the current NetBeans project.</li>
+<li>Click New... Other...</li>
+<li>In the Java category, select the "Java class" file type and click next</li>
+<li>Type the class name "RandomColorGenerator" (without the quotes)</li>
+<li>Click finish</li>
+</ul>
+<p>Replace the automatically generated code with this Java code:</p>
+<pre><code>package au.edu.uts.aip.week1;
+
+public class RandomColorGenerator {
+
+    public String generate() {
+        String color = "#";
+        for (int i=0; i&lt;6; i++) {
+            int random = (int)(Math.random() * 16);
+            color = color + Integer.toHexString(random);
+        }
+        return color;
+    }
+
+}
+</code></pre>
+<p>Finally, go back to Main.java and replace the contents of the main method with this code:</p>
+<pre><code>RandomColorGenerator generator = new RandomColorGenerator();
+ColorView color = new ColorView(generator.generate());
+MiniBrowser.show(color.toHTML());
+</code></pre>
+<p>Can you guess what will happen? Can you explain what this code does?</p>
+<h3>Problem 3</h3>
+<p>Can you use the RandomColorGenerator class and the ColorView class to output ten different colors?</p>
+<p>In other words, can you use these new classes to produce the same output as last time?</p>
+<p><img alt="Random colors" src="01/challenge02.png"></p>
+<h3>Problem 4</h3>
+<p>Replace the body of the main method in Main.java with the following code:</p>
+<pre><code>Person[] contacts = new Person[4];
+contacts[0] = new Person("Carol", "Brady", "762-0799");
+contacts[1] = new Person("Mike", "Brady", "762-0799");
+contacts[2] = new Person("Alice", "Nelson", "762-3141");
+contacts[3] = new Person("Sam", "Franklin", "762-2718");
+
+String result = "&lt;table&gt;";
+result = result + "&lt;tr&gt;&lt;th&gt;First Name&lt;/th&gt;&lt;th&gt;Last Name&lt;/th&gt;&lt;th&gt;Phone Number&lt;/th&gt;&lt;/tr&gt;";
+for (Person p : contacts) {
+    result = result + p.toHTML();
+}
+result = result + "&lt;/table&gt;";
+MiniBrowser.show(result);
+</code></pre>
+<p>Can you create a Person class that will produce the following output?</p>
+<p><img alt="Address book table" src="01/challenge04.png"></p>
+<h3>Problem 5</h3>
+<p>Finally, replace the body of the main method in Main.java with the following code:</p>
+<pre><code>AddressBook contacts = new AddressBook();
+contacts.add(new Person("Carol", "Brady", "762-0799"));
+contacts.add(new Person("Mike", "Brady", "762-0799"));
+contacts.add(new Person("Alice", "Nelson", "762-3141"));
+contacts.add(new Person("Sam", "Franklin", "762-2718"));
+
+MiniBrowser.show(contacts.toHtml());
+</code></pre>
+<p>Can you write a class called AddressBook that will get this code to compile correctly and work?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

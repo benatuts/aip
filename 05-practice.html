@@ -1,0 +1,544 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 5: Databases and JDBC</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 5</li>
+            </ul>
+            <ul>
+                <li><a href="05.html">Study</a></li>
+                <li class="title">Practice</li>
+                <li><a href="05-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Databases and JDBC</h1>
+            <p><i>Practice for Week 5: 29 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Create a Project</h2></label>
+                <div class="content">
+                    <p>Create a new project called Week5:</p>
+<ol>
+<li>In the "Java Web" category choose project of type "Web Application"</li>
+<li>Named Week5</li>
+<li>Using GlassFish Server</li>
+<li>Using the JavaServer Faces framework</li>
+</ol>
+<p>After the project is created, don't forget to right click on Libraries and add the Java EE 7 API Library to ensure that JavaServer Faces works properly.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Create Database</h2></label>
+                <div class="content">
+                    <p>For this lab exercise, we will use Java DB.</p>
+<p>We first configure the database for use.</p>
+<p>Go to the services tab, right click on Java DB and create a database.</p>
+<p><img alt="New database" src="05/1c.png"></p>
+<p>Name the database aip and set the username and password both to aip.</p>
+<p>(Note: for any assignments in this subject, it will be helpful for marking if you also configure your database like this)</p>
+<p><img alt="New database details" src="05/2c.png"></p>
+<h3>Test the Connection</h3>
+<p>Add an SQL file to your project:</p>
+<ol>
+<li>Return to your project (e.g., by selecting the Projects tab)</li>
+<li>Create a new file using File... New File...</li>
+<li>In the "Other" category, add a new file of type "SQL file"</li>
+<li>Name the file create_db (i.e., this creates a file named create_db.sql).</li>
+</ol>
+<p>The SQL file will not show up in the "Projects" tab. However, you can see it if you switch to the "Files" tab.</p>
+<p>To test your connection, enter this simple SQL query that gets all the database tables in the system:</p>
+<pre><code>select tablename from sys.systables;
+</code></pre>
+<p>Click on the "Run SQL" button to execute the file.
+It may ask which database to use.
+Select the database you just created: "jdbc:derby://locahost:1527/aip [aip on AIP]"</p>
+<p>The result of the query should be a list of tables/views in the database.
+Even though you have not created any tables yourself, the database automatically creates metadata views.
+By querying these views, you can discover the structure of the database.</p>
+<h3>Experiment with SQL</h3>
+<p>If you would like to practice your SQL, you may use this file to experiment.</p>
+<p>Can you create a table? Query a table? Insert data? Drop a table? Update a row?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Create a Database</h2></label>
+                <div class="content">
+                    <p>Modify create_db.sql so that it contains SQL statements to create a new table.
+Name the table "account" (without the quotes).
+Ensure that it has (at least) the following attributes:</p>
+<ul>
+<li>Username</li>
+<li>Password</li>
+<li>Full Name</li>
+<li>Email</li>
+<li>Date of Birth</li>
+</ul>
+<p>Using the same SQL window, insert some sample data into your SQL file.</p>
+<p>Use an SQL "select" query to check that the data has been added to the table.</p>
+<h3>Hints</h3>
+<p>You may like to also create a drop_db.sql file so that you can delete the database when you want to make changes to the schema.</p>
+<p>Your create table statement might look something like this:</p>
+<pre><code>-- User details
+create table account (
+    username varchar(255) not null primary key,
+    password varchar(255),
+    fullname varchar(255) not null,
+    email varchar(255) not null,
+    dob date not null
+);
+</code></pre>
+<p>You can include "select" statements in your SQL file (or in another SQL file). The results will be shown in NetBeans.</p>
+<p>Strictly speaking, it isn't necessary to use SQL to create a database schema.
+It is possible to create tables and insert rows using the NetBeans user interface (in the "Services" tab like when you first created the database).
+However, SQL files are easier to manage, check, and share with other users.
+For this tutorial, you should create and populate your tables using SQL. For the Assignment, you should use SQL and submit an SQL file with your source files.</p>
+<p>One way to enter dates in your sample data is using the JDBC escape syntax: <code>{d '1999-12-31'}</code></p>
+<p>Here's how to insert one record:</p>
+<pre><code>insert into account (username, password, fullname, email, dob) values
+    ('cbrady', 'password', 'Carol Brady', 'cbrady@example.com', {d '1934-02-14'});
+</code></pre>
+<p>The full Java DB / Derby SQL manual can be found here:
+https://db.apache.org/derby/docs/10.10/ref/index.html</p>
+<p>Java DB supports these types:</p>
+<ul>
+<li>BIGINT</li>
+<li>BLOB</li>
+<li>BOOLEAN</li>
+<li>CHAR</li>
+<li>CHAR FOR BIT DATA</li>
+<li>CLOB</li>
+<li>DATE</li>
+<li>DECIMAL</li>
+<li>DOUBLE</li>
+<li>DOUBLE PRECISION</li>
+<li>FLOAT</li>
+<li>INTEGER</li>
+<li>LONG VARCHAR</li>
+<li>LONG VARCHAR FOR BIT DATA</li>
+<li>NUMERIC</li>
+<li>REAL</li>
+<li>SMALLINT</li>
+<li>TIME</li>
+<li>TIMESTAMP</li>
+<li>VARCHAR</li>
+<li>VARCHAR FOR BIT DATA</li>
+<li>XML</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Query the Database using JDBC</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will query the database table that you just created.</p>
+<p>Create a JavaServer Faces file named "accounts" (i.e., accounts.xhtml).</p>
+<p>Create an empty backing bean called AccountController in a package named au.edu.uts.aip.accounts:</p>
+<pre><code>@Named
+@RequestScoped
+public class AccountController {
+
+}
+</code></pre>
+<h3>Hint</h3>
+<p>Java has two annotations named RequestScoped:</p>
+<ul>
+<li>javax.enterprise.context.RequestScoped</li>
+<li>javax.faces.bean.RequestScoped</li>
+</ul>
+<p>You'll need an <code>import</code> statement to be able to use Named and RequestScoped.</p>
+<p>It may seem counter-intuitive, but you should always use the one in the <strong>javax.enterprise.context</strong> package (not the one in javax.faces).
+There is a technical reason for this. There are actually two ways to create backing beans: an older approach built into Faces and a more modern approach based on Java's "CDI". 
+The javax.enterprise package is used by the more modern approach. 
+The other package is used by the older method.</p>
+<h3>Create an Action</h3>
+<p>Create a method in the AccountController named listUsers (it should take no parameters and return void).
+Add a h:commandButton to the JavaServer Faces page (accounts.xhtml) - you'll also need to put it inside a h:form.
+Configure the action of the commandButton so that when it is clicked, it will call the listUsers method.</p>
+<p>You're not doing anything special with JavaServer Faces.
+The command button is only being used to call the listUsers method.
+The listUsers method will output information to the server logs (nothing interesting will happen in the web-based user interface).
+Later on in this lab session, you will show the results directly in JavaServer Faces.</p>
+<h3>Perform an SQL Query</h3>
+<p>Now, using the lecture notes and other references, modify the listUsers method so that it will output your database to the server log.</p>
+<p>The Server log is the text that appears in the "GlassFish 4.1.1 Server" tab below:</p>
+<p><img alt="Server log" src="05/serverlog.png"></p>
+<p>After modifying the listUsers method and then clicking on the command button, your server log might contain output such as:</p>
+<pre><code>Info:   Loading application [Week5] at [/Week5]
+Info:   Week5 was successfully deployed in 827 milliseconds.
+Info:   The accounts table contains:
+Info:   username = cbrady, password = password, fullname = Carol Brady, email = cbrady@example.com, dob = 1934-02-14
+Info:   username = mbrady, password = qwerty, fullname = Mike Brady, email = mbrady@example.com, dob = 1932-10-19
+Info:   username = anelson, password = 123456, fullname = Alice Nelson, email = anelson@example.com, dob = 1926-05-05
+Info:   username = sfranklin, password = iloveyou, fullname = Sam Franklin, email = sfranklin@example.com, dob = 1923-02-18
+Info:   End of accounts table.
+</code></pre>
+<p>(The first two lines are generated by GlassFish. The rest of the lines are what you will output yourself.)</p>
+<h3>Hints</h3>
+<p>There are two ways to output to the server log:</p>
+<p>The easy way:</p>
+<pre><code>System.out.println("This will be written to the log");
+</code></pre>
+<p>The more advanced way:</p>
+<pre><code>Logger log = Logger.getLogger(this.getClass().getName());
+log.info("This will be written to the log");
+</code></pre>
+<p>In this exercise, create the connection using JDBC and the database connection string directly:</p>
+<pre><code>Connection conn = DriverManager.getConnection(....);
+</code></pre>
+<h3>Reflect</h3>
+<p>How could the code be improved?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Container Managed Connnections</h2></label>
+                <div class="content">
+                    <p>In this exercise, we will configure and use container-managed connection pooling.</p>
+<h3>Configure GlassFish</h3>
+<p>The GlassFish application server can be configured using XML files or the web-based Domain Administration Console.</p>
+<p>You'll find an option to launch the GlassFish Server Administration Console in the Services tab of NetBeans. If a username/password is required the default username is admin and the password is blank.</p>
+<p><img alt="Start admin console" src="05/viewconsole.png"></p>
+<p>In the menu, locate "Resources/JDBC/JDBC Connection Pools" and create a new connection pool.</p>
+<p><img alt="New pool" src="05/pool1.png"></p>
+<p>Call it "AIPPool" and use the image below as a guide to configuring the pool.</p>
+<p><img alt="New pool Step 1" src="05/pool2.png"></p>
+<p>Select the datasource classname "org.apache.derby.jdbc.ClientDataSource40".
+Before clicking Finish, scroll down the page.</p>
+<p><img alt="New pool Step 2" src="05/pool3.png"></p>
+<p>At the bottom of the same page, remove all the "Additional Properties" except for: User, DatabaseName, Password, ServerName and PortNumber.</p>
+<p><img alt="Additional properties" src="05/pool4.png"></p>
+<p>Configure the properties as depicted in the image below.</p>
+<p><img alt="Property settings" src="05/pool5.png"></p>
+<p>Click "Finish" to create the pool.</p>
+<p>You can then test the confguration by first reopening the Connection Pool...</p>
+<p><img alt="Property settings" src="05/pool6.png"></p>
+<p>Then click on "Ping". This will do a quick test to make sure that the connection works. Your connection pool is set up correctly if "Ping Succeeded" appears.</p>
+<p><img alt="Property settings" src="05/pool7.png"> </p>
+<p>Now that you have created a connection pool, you need to create a resource so that you can use it from within your code.</p>
+<p>In the menu, locate "Resources/JDBC/JDBC Resources".
+Create a new JDBC resource.</p>
+<p><img alt="New JDBC resource" src="05/resource1.png"></p>
+<p>Use "jdbc/aip" (without the quotes) as the JNDI Name.
+Select AIPPool as the Pool Name.</p>
+<p><img alt="JDBC resource name" src="05/resource2.png"></p>
+<h3>Use the JDBC Connection Pool Resource</h3>
+<p>Now, modify your Java code so that it uses the JNDI resource.</p>
+<h3>Hints</h3>
+<p>Use the following code to get a datasource:</p>
+<pre><code>DataSource ds = (DataSource)InitialContext.doLookup("jdbc/aip");
+</code></pre>
+<p>The DataSource can be used to create new connections:</p>
+<pre><code>Connection conn = ds.getConnection();
+</code></pre>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>Create a Data Access Object</h2></label>
+                <div class="content">
+                    <p>In this activity, you will create a Data Access Object.</p>
+<p>Create a two Java classes in the package au.edu.uts.aip.accounts:</p>
+<ul>
+<li>AccountDAO</li>
+<li>AccountDTO</li>
+</ul>
+<p><em>Data Transfer Object</em></p>
+<p>Implement the DTO as a simple Java Bean which has properties (i.e., get and set methods) corresponding to each attribute in your account table.</p>
+<p><em>Data Access Object</em></p>
+<p>Implement a DAO to create and store and retrieve data from the database.</p>
+<p>For the time being, you do not need to implement a full DAO. Just implement the following two methods:</p>
+<pre><code>public AccountDTO find(String username) {
+    // your code goes here
+}
+
+public ArrayList&lt;AccountDTO&gt; findAll() {
+    // your code goes here
+}
+</code></pre>
+<h3>Hints</h3>
+<p>All of your SQL code should be inside the DAO.</p>
+<p>An ArrayList is an array that automatically grows in size. 
+You can create and fill an ArrayList with data using the following code:</p>
+<pre><code>ArrayList&lt;AccountDTO&gt; result = new ArrayList&lt;&gt;();
+AccountDTO account1 = new AccountDTO();
+AccountDTO account2 = new AccountDTO();
+result.add(account1);
+result.add(account2);
+</code></pre>
+<p>You might use the ArrayList in the findAll() method of your DAO.</p>
+<h3>Test your Data Access Object</h3>
+<p>Update the command in your AccountController to use the DAO instead of JDBC.</p>
+<h3>Hints</h3>
+<p>You can iterate over an ArrayList<AccountDTO> using code such as the following:</p>
+<pre><code>AccountDAO accountDAO = new AccountDAO();
+ArrayList&lt;AccountDTO&gt; accounts = accountDAO.findAll();
+for (AccountDTO account : accounts) {
+  // do something with the DTO
+}
+</code></pre>
+<h3>Show the Accounts using JavaServer Faces</h3>
+<p>Finally, you can now show the accounts on the JavaServer Faces page, rather than in the server log.</p>
+<h3>Hints</h3>
+<p>You can look at your solution from Week 4. The class WaitingListDatabase is similar to a DAO (except that WaitingListDatabase used static methods and you should use instance methods on a DAO).</p>
+<p>To access the list of accounts from your JSF page, you will need to create a property on your controller.
+To do this, create a get method in the AccountController class. For example:</p>
+<pre><code>public ArrayList&lt;AccountDTO&gt; getAllAccounts() {
+  // your code goes here
+}
+</code></pre>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Create a Login Form</h2></label>
+                <div class="content">
+                    <p>At the end of the previous exercise, you created a simple tabular view of accounts in the system.
+That might be used by an administrator to see the accounts in the system.</p>
+<p>In this exercise, we will now create a login form that uses the database.</p>
+<p>First create a JSF page named <em>login</em> (i.e., login.xhtml), and a page named <em>welcome</em> (i.e., welcome.xhtml).</p>
+<p>We will continue using the AccountController class as our backing bean.</p>
+<p>To the controller, add a method called login (we'll modify it later):</p>
+<pre><code>public String login() {
+  return null;
+}
+</code></pre>
+<p>To the controller, add properties for the username and password form:</p>
+<pre><code>private String username;
+private String password;
+
+public String getUsername() {
+  return username;
+}
+
+public void setUsername(String username) {
+  this.username = username;
+}
+
+public String getPassword() {
+  return password;
+}
+
+public void setPassword(String password) {
+  this.password = password;
+}
+</code></pre>
+<p>If you wish, you could instead do the same thing by using the AccountDTO as a model for JavaServer Faces (i.e., <code>public AccountDTO getAccount()</code>);</p>
+<p>Now, create a login form using JSF and implement the login method so that if a correct username/password is entered, the user is directed to the welcome page.</p>
+<h3>Hints</h3>
+<p>In your JSF page you could use h:inputText (for the username), h:inputSecret (for the password) and h:commandButton (for the action).</p>
+<p>One way to implement login would be:</p>
+<ol>
+<li>Create a new instance of the DAO</li>
+<li>Use the DAO to retrieve an instance of the DTO that corresponds to the user (search by username).</li>
+<li>Check the password is correct.</li>
+<li>Redirect to "welcome" if the login is successful.</li>
+</ol>
+<p>To compare two strings in Java, use the equals method:</p>
+<pre><code>String a = "First string";
+String b = "Second string";
+if (a.equals(b)) { 
+   // This runs if a is the same as b
+}
+</code></pre>
+<p>Comparing Strings using <code>==</code> does not always work (<a href="http://stackoverflow.com/questions/513832/how-do-i-compare-strings-in-java">more information</a>).</p>
+<p>You do not need to show an error message.
+However, an advanced technique is to use the JSF error messages feature:</p>
+<pre><code>FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Bad username or password"));
+</code></pre>
+<p>Use a <code>&lt;h:messages/&gt;</code> tag on your login.xhtml file to tell JSF where in the HTML the error message should be displayed.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec8" type="checkbox" autocomplete="off" />
+                <label for="sec8"><h2>Using Container Managed Security</h2></label>
+                <div class="content">
+                    <p>You have implemented your own login system.</p>
+<p>Unfortunately, it isn't particularly secure. A user could simply guess "welcome.xhtml" to bypass the password.</p>
+<p>You could improve the security by adding additional checks on each JSF page (e.g., using a <code>&lt;f:viewAction&gt;</code> to authenticate the user on each request).</p>
+<p>A better approach is to use container-managed security.
+Container-managed security is a feature of the application server.
+It looks after logins and ensures that secure pages can only be accessed by authenticated users.</p>
+<p>A <em>JDBCRealm</em> can be used to do user authentication via a database.
+Configuration is a tedious process but not difficult.</p>
+<h3>Set Up Views</h3>
+<p>First, the JDBCRealm needs to use two database tables:</p>
+<ol>
+<li>A user table, with a username column and a password column. The table is used to look up the user's password by username.</li>
+<li>A group table, with a username column and a group name column. The table is used to find all the groups for a given username.</li>
+</ol>
+<p>If you already have two tables that contain this information, you can use them directly.
+For greater flexibility, you can also define database views for the JDBCRealm.</p>
+<p>To create views, edit your create_db.sql file and create two new views:</p>
+<pre><code>create view jdbcrealm_user (username, password) as
+select username, password
+from account;
+
+create view jdbcrealm_group (username, groupname) as
+select username, 'Users'
+from account;
+</code></pre>
+<p>A database view acts like a table but the rows of the table are retrieved according to the underlying tables.
+You can test a views by running an SQL queries against it:</p>
+<pre><code>select * from jdbcrealm_user
+</code></pre>
+<p>The jdbcrealm_group is a simple view that associates every username with a group called "Users".</p>
+<h3>Configure JDBC Realm</h3>
+<p>The JDBC Realm is configured in the GlassFish Server Administration Console.</p>
+<p>Navigate to the "Configurations/server-config/Security/Realms" section of the menu.
+Create a new realm.</p>
+<p><img alt="New realm" src="05/realm1.png"></p>
+<p>Name the realm "aipRealm" (without the quotes) and use the class name com.sun.enterprise.security.auth.realm.jdbc.JDBCRealm. Then scroll down.</p>
+<p><img alt="Realm name" src="05/realm2.png"></p>
+<p>Configure the security using the settings as depicted in the two images below:</p>
+<p><img alt="New realm" src="05/realm3.png"></p>
+<p><img alt="New realm" src="05/realm4.png"></p>
+<h3>Use the JDBC Realm</h3>
+<p>Next, you need to configure your Week5 project to use the JDBC Realm.</p>
+<p>First, add a new file of type "GlassFish Descriptor" from the category "GlassFish".
+Use the default name and file location.
+If an error occurs while creating the file, you can ignore it.</p>
+<p>Double click on the file to edit it.
+At the top of the editor panel, there is the option to switch to different views.
+Click on XML to switch to the XML view.
+Add the following tag to the XML document:</p>
+<pre><code>&lt;security-role-mapping&gt;
+  &lt;role-name&gt;Users&lt;/role-name&gt;
+  &lt;group-name&gt;Users&lt;/group-name&gt;
+&lt;/security-role-mapping&gt;
+</code></pre>
+<p>This tag tells GlassFish to map the group of users named "Users" into a role named "Users".</p>
+<p>Your complete sun-web.xml file should now look something like this:</p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE sun-web-app PUBLIC "-//Sun Microsystems, Inc.//DTD GlassFish Application Server 3.0 Servlet 3.0//EN" "http://www.sun.com/software/appserver/dtds/sun-web-app_3_0-0.dtd"&gt;
+&lt;sun-web-app error-url=""&gt;
+  &lt;security-role-mapping&gt;
+    &lt;role-name&gt;Users&lt;/role-name&gt;
+    &lt;group-name&gt;Users&lt;/group-name&gt;
+  &lt;/security-role-mapping&gt;
+  &lt;class-loader delegate="true"/&gt;
+  &lt;jsp-config&gt;
+    &lt;property name="keepgenerated" value="true"&gt;
+      &lt;description&gt;Keep a copy of the generated servlet class' java code.&lt;/description&gt;
+    &lt;/property&gt;
+  &lt;/jsp-config&gt;
+&lt;/sun-web-app&gt;
+</code></pre>
+<p>Now, edit the source of your web.xml file. Add the following configuration elements to the file:</p>
+<pre><code>&lt;login-config&gt;
+    &lt;auth-method&gt;FORM&lt;/auth-method&gt;
+    &lt;realm-name&gt;aipRealm&lt;/realm-name&gt;
+    &lt;form-login-config&gt;
+        &lt;form-login-page&gt;/faces/login.xhtml&lt;/form-login-page&gt;
+        &lt;form-error-page&gt;/faces/login.xhtml&lt;/form-error-page&gt;
+    &lt;/form-login-config&gt;
+&lt;/login-config&gt;
+
+&lt;security-constraint&gt;
+    &lt;display-name&gt;Logged in pages&lt;/display-name&gt;
+    &lt;web-resource-collection&gt;
+        &lt;web-resource-name&gt;secure&lt;/web-resource-name&gt;
+        &lt;url-pattern&gt;/faces/welcome.xhtml&lt;/url-pattern&gt;
+        &lt;url-pattern&gt;/faces/secret/*&lt;/url-pattern&gt;
+    &lt;/web-resource-collection&gt;
+    &lt;auth-constraint&gt;
+        &lt;role-name&gt;Users&lt;/role-name&gt;
+    &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;
+
+&lt;security-role&gt;
+    &lt;description&gt;Logged in Users&lt;/description&gt;
+    &lt;role-name&gt;Users&lt;/role-name&gt;
+&lt;/security-role&gt;
+</code></pre>
+<p>The first tag, <code>&lt;login-config&gt;</code>, tells GlassFish that login should use a HTML form (rather than browser-based authentication).
+It also configures the page that users are redirected to if they need to log in.</p>
+<p>The <code>&lt;security-constraint&gt;</code> tag is used to tell GlassFish which resources can be used by which users (roles).
+We have secured welcome.xhtml and everything in the /secret/ directory.</p>
+<p>The <code>&lt;security-role&gt;</code> tag declares the names of the roles that will be used by the application.</p>
+<p>After modifying the source of the XML file, save the file.
+Then you can switch to the Security tab on the XML editor.
+The Security tab provides a visual way of configuring the same settings (but be careful, sometimes it can be buggy so it always pays to double check the generated XML).</p>
+<p>Now, run your application once again.
+Attempt to access the welcome.xhtml page directly.
+You should be redirected back to the login.xhtml page.</p>
+<h3>Integrating with Container Managed</h3>
+<p>You can now use the container-based authentication to replace your hand-created login code.</p>
+<p>You can get the container to do authentication by calling login on the HttpServletRequest.</p>
+<p>To log in:</p>
+<pre><code>FacesContext context = FacesContext.getCurrentInstance();
+HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
+try {
+    request.login(username, password);
+} catch (ServletException e) {
+    // (you could also log the exception to the server log)
+    context.addMessage(null, new FacesMessage(e.getMessage()));
+    return null;
+}
+return "welcome";
+</code></pre>
+<p>}</p>
+<p>To log out:</p>
+<pre><code>FacesContext context = FacesContext.getCurrentInstance();
+HttpServletRequest request = (HttpServletRequest)context.getExternalContext().getRequest();
+try {
+    request.logout();
+} catch (ServletException e) {
+    // (you could also log the exception to the server log)
+    context.addMessage(null, new FacesMessage(e.getMessage()));
+}
+</code></pre>
+<p>}</p>
+<p>Modify your login code to use container-based authentication.
+<strong>When you first test your code, it will find that it does not accept any passwords</strong>.</p>
+<p>This is a security feature of GlassFish.
+GlassFish does not allow you to store passwords in plain text in the database.
+In fact, it is generally considered bad practice to store passwords in plain text in any application.
+Instead, passwords should be encrypted.</p>
+<p>We have configured GlassFish to use SHA-256 encryption.
+You can use this website to manually encrypt a password:
+<a href="http://www.movable-type.co.uk/scripts/sha256.html">http://www.movable-type.co.uk/scripts/sha256.html</a></p>
+<p>To get container-managed encryption to work, you should update your database tables.
+You should manually encrypt each password and save it in the account database table.
+For example, the password "qwerty" is encrypted to "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5".</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec9" type="checkbox" autocomplete="off" />
+                <label for="sec9"><h2>Encrypting Passwords on Account Creation</h2></label>
+                <div class="content">
+                    <p>The next stage in working with authentication is to write a form to create an account.
+When you save the new account, it should encrypts the password that it stores in the database.</p>
+<p>You can use this Java code to convert a password to an encrypted password (the code comes from <a href="https://gist.github.com/avilches/750151">https://gist.github.com/avilches/750151</a>):</p>
+<pre><code>import java.security.*;
+public class Sha {
+  public static String hash256(String data) throws NoSuchAlgorithmException {
+    MessageDigest md = MessageDigest.getInstance("SHA-256");
+    md.update(data.getBytes());
+    return bytesToHex(md.digest());
+  }
+  public static String bytesToHex(byte[] bytes) {
+    StringBuffer result = new StringBuffer();
+    for (byte byt : bytes) {
+      result.append(Integer.toString((byt &amp; 0xff) + 0x100, 16).substring(1));
+    }
+    return result.toString();
+  }
+}
+</code></pre>
+<p>You can now:</p>
+<ol>
+<li>Add methods to your DAO to create an account.</li>
+<li>Create a JSF form for creating an account.</li>
+<li>Use the JSF form to create a DTO, encrypt the password and save it in the database.</li>
+</ol>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

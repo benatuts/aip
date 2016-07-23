@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 7: Naming (JNDI) and dependency injection (CDI)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 7</li>
+            </ul>
+            <ul>
+                <li><a href="07.html">Study</a></li>
+                <li class="title">Practice</li>
+                
+                <li><a href="07-challenge.html">Challenge</a></li>
+                <li><a href="07-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Naming (JNDI) and dependency injection (CDI)</h1>
+            <p><i>Practice for Week 7: 12 September</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>CDI Scopes</h2></label>
+                <div class="content">
+                    <p>The purpose of the exercise is to experiment with CDI and understand how it works.</p>
+<h3>Set Up</h3>
+<p>Create a new "Web Application" project named "Week7" that uses the "JavaServer Faces" framework. After creating the project, don't forget to add a reference to the Java EE 7 API Library (by right clicking on Libraries in the created project)!</p>
+<p>In the project, create a Java class named "UniqueIdGenerator" in the package "au.edu.uts.aip.cdi".</p>
+<p>Enter the following source code:</p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+public class UniqueIdGenerator {
+
+    private static int counter = 0;
+
+    public static synchronized int generate() {
+        counter++;
+        return counter;
+    }
+
+}
+</code></pre>
+<p>Next, create three Java classes, named "MyApplicationBean", "MyRequestBean" and "MyDependentBean", also in the same package:</p>
+<p><strong>MyApplicationBean:</strong></p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@ApplicationScoped
+public class MyApplicationBean {
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+}
+</code></pre>
+<p><strong>MyRequestBean:</strong></p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class MyRequestBean {
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+}
+</code></pre>
+<p><strong>MyDependentBean:</strong></p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@Dependent
+public class MyDependentBean {
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+}
+</code></pre>
+<p>Finally, create a JSF Page named "cdi" (i.e., cdi.xhtml) with the following contents:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;CDI Testing&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;myApplicationBean has id: #{myApplicationBean.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;myApplicationBean has id: #{myApplicationBean.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;myRequestBean has id:     #{myRequestBean.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;myRequestBean has id:     #{myRequestBean.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;myDependentBean has id:   #{myDependentBean.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;myDependentBean has id:   #{myDependentBean.uniqueId}.&lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Run cdi.xhtml and look at the output.</p>
+<h3>Reflect</h3>
+<p>What does UniqueIdGenerator do?</p>
+<p>What can we infer from the output of cdi.xhtml? What happens if you refresh the page? What does this tell us?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Session Scope</h2></label>
+                <div class="content">
+                    <p>Create a new class called MySessionBean that is similar to the other beans but uses a @SessionScoped annotation.</p>
+<p>Modify cdi.xhtml to show the id of the session bean.</p>
+<h3>Hint</h3>
+<p>SessionScoped beans should be made Serializable:</p>
+<p>In other words, the class declaration should look like this:</p>
+<pre><code>import java.io.*;
+...
+public class MySessionBean implements Serializable {
+...
+}
+</code></pre>
+<p>If a class implements Serializable, it tells Java that the contents of the object can be saved to a file or a database.
+SessionScoped objects may be saved to a database or the filesystem so that if GlassFish crashes, it can still remember the details of the session.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>CDI vs new</h2></label>
+                <div class="content">
+                    <p>The purpose of this exercise is to understand the important difference between using CDI injection and directly creating objects with "new".</p>
+<h3>Create Beans</h3>
+<p>Add two new Java classes to your project, MySimpleBean and MyComplexBean:</p>
+<p><strong>MySimpleBean.java:</strong></p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+import java.io.*;
+import javax.enterprise.context.*;
+
+@Dependent
+public class MySimpleBean implements Serializable {
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+}
+</code></pre>
+<p><strong>MyComplexBean.java:</strong></p>
+<pre><code>package au.edu.uts.aip.cdi;
+
+import java.io.*;
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Dependent
+public class MyComplexBean implements Serializable {
+
+    @Inject
+    private MySimpleBean simple;
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public MySimpleBean getSimple() {
+        return simple;
+    }
+}
+</code></pre>
+<h3>Create a View</h3>
+<p>Create a JavaServer Faces page called cdinew (i.e., cdinew.xhtml).</p>
+<p>Enter the following code:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;CDI Testing&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;simple has id:                   #{mySessionBean.simple.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;complexByInject has id:          #{mySessionBean.complexByInject.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;complexByNew has id:             #{mySessionBean.complexByNew.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;complexByInject.simple is null?: #{mySessionBean.complexByInject.simple == null}.&lt;/p&gt;
+        &lt;p&gt;complexByInject.simple has id:   #{mySessionBean.complexByInject.simple.uniqueId}.&lt;/p&gt;
+        &lt;p&gt;complexByNew.simple is null?:    #{mySessionBean.complexByNew.simple == null}.&lt;/p&gt;
+        &lt;p&gt;complexByNew.simple has id:      #{mySessionBean.complexByNew.simple.uniqueId}.&lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Inject into MySessionBean</h3>
+<p>The JSF page we just created (cdinew.xhtml) makes use of two properties (i.e., get-methods) on MySessionBean.
+We need to implement them.</p>
+<p>Add the following code to your session scoped bean, MySessionBean:</p>
+<pre><code>@Inject
+MySimpleBean simple;
+
+@Inject
+MyComplexBean complexByInject;
+
+MyComplexBean complexByNew = new MyComplexBean();
+
+public MySimpleBean getSimple() {
+    return simple;
+}
+
+public MyComplexBean getComplexByInject() {
+    return complexByInject;
+}
+
+public MyComplexBean getComplexByNew() {
+    return complexByNew;
+}
+</code></pre>
+<p>Now run cdinew.xhtml and examine the output.</p>
+<h3>Reflect</h3>
+<p>Do you understand what this code does?</p>
+<p>What does the output tell us?</p>
+<p>What happens if you change the scopes of MyComplexBean and/or MySimpleBean?</p>
+<p>Note: when you change the scopes, GlassFish does not always automatically detect the change in the scopes. 
+Even clicking the green Play/Run button again may not work. 
+The easiest way to solve this is to right click on the project, click on "Clean" and then run cdinew.xhtml again.</p>
+<h3>Challenge</h3>
+<p>This has been a short tutorial. I encourage you to attempt the challenge problem for the week.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

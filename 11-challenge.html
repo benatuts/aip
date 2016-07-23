@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 11: Transactions, security and thanks</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 11</li>
+            </ul>
+            <ul>
+                <li><a href="11.html">Study</a></li>
+                <li><a href="11-practice.html">Practice</a></li>
+                <li class="title">Challenge</li>
+                <li><a href="11-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Transactions, security and thanks</h1>
+            <p><i>Practice for Week 11: 17 October</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Optimistic Concurrency</h2></label>
+                <div class="content">
+                    <p>In the practical activities for this week, you used JDBC with pessimistic concurrency control.</p>
+<p>When you are using JPA, you <em>can</em> use <em>pessimistic</em> concurrency control.
+However, with JPA it is more common to make use of <em>optimistic</em> concurrency control using <code>@Version</code>.</p>
+<p>For this challenge, you should create a simple application that lets users edit a notes field.
+If two users modify the notes at the same time, then this should be detected when they attempt to save the changes.</p>
+<p>For example, the user might see something like this when they visit the application:</p>
+<p><img alt="Initial view" src="11/concurrent1.png"></p>
+<p>Then, suppose they make some changes (but haven't yet clicked "Save Changes"):</p>
+<p><img alt="Edit" src="11/concurrent2.png"></p>
+<p>Suppose that, at the same time, another user working in another window has changed and saved the notes (to "I've made a change in another window").
+Then, when the current user clicks "Save Changes", they should see a warning:</p>
+<p><img alt="Concurrent modification warning" src="11/concurrent3.png"></p>
+<p>If there aren't any concurrent modifications, then the changes should just be saved directly when the user clicks "Save Changes".</p>
+<p><em>Challenge:</em> Can you build an application that does this?</p>
+<h3>Hints</h3>
+<p>Create an <code>@Entity</code> for storing your notes and ensure there is an <code>@Version</code> field/property.</p>
+<p>In this challenge problem, we have just one notes field so a primary key doesn't make sense. 
+However, JPA requires a primary key.
+You could create a primary key field/property but only show/edit the Entity with id = 1 (i.e., your table has just one row).
+Alternatively, you could have multiple notes in your application, and allow users to choose which note they are editing.</p>
+<p>If there is a concurrent modification, then the version field/property in the database and the application will be mismatched.
+This mismatch will be detected if you <code>merge</code> and then <code>flush</code> an updated record with an incorrect version.</p>
+<p>If your backing bean is request scoped, then you may need to store your version information in a hidden field.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Reflection</h2></label>
+                <div class="content">
+                    <p>Think back over the year so far:</p>
+<ul>
+<li>What have you learnt?</li>
+<li>What was the hardest part of the semester?</li>
+<li>What did you find the easiest?</li>
+<li>What did you think would be hard but turned out to be easy?</li>
+<li>What did you think would be easy but turned out to be hard?</li>
+<li>How do all of the technologies that we've covered relate to each other?</li>
+<li>What's missing from this subject? What's missing from the Java EE platform?</li>
+</ul>
+<p>Next, think about what you'll do next:</p>
+<ul>
+<li>How will you use what you've learnt?</li>
+<li>How will you improve your skills?</li>
+<li>What weaknesses do you think you need to improve?</li>
+<li>What strengths have you gained that you think you can exploit?</li>
+</ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

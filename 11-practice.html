@@ -1,0 +1,355 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 11: Transactions, security and thanks</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 11</li>
+            </ul>
+            <ul>
+                <li><a href="11.html">Study</a></li>
+                <li class="title">Practice</li>
+                
+                <li><a href="11-challenge.html">Challenge</a></li>
+                <li><a href="11-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Transactions, security and thanks</h1>
+            <p><i>Practice for Week 11: 17 October</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Container Managed Transactions</h2></label>
+                <div class="content">
+                    <p>By default, transactions in EJBs are automatically managed by the container.</p>
+<p>This means that you normally don't need to do anything if you want your application to be "transactional".</p>
+<p>Every EJB that you have created so far has used transactions. When you used JPA, the EntityManager would automatically save all of its changes on transaction commit (i.e., when your method returns).</p>
+<p>Java EE allows you to override the default transaction behavior.</p>
+<p>For this activity, you will explore what happens when methods with different "TransactionAttributeType"s interact with each other.</p>
+<h3>Challenge</h3>
+<p>What happens when a method with TransactionAttributeType.REQUIRED calls a method with TransactionAttributeType.NEVER?</p>
+<p>(Hint: an exception is thrown but what is the exception and why is it thrown?)</p>
+<p>What happens when a method with TransactionAttributetype.NOT_SUPPORTED calls a method with TransactionAttributeType.MANDATORY?</p>
+<p>(Hint: an exception is thrown but what is the exception and why is it thrown?)</p>
+<p>Your challenge is to write some Java code to help you answer these questions.</p>
+<h3>Hints</h3>
+<p>You should create a new project. Name the project Week11. You can use a Web Application or an Enterprise Application. Ensure that you use the JavaServer Faces library if you are using a Web Application, or add JavaServer Faces to the Week11-war project. Remember to add the Java EE 7 API Library to your war project or web application.</p>
+<p>Once you have created your project, you might create the following pages and classes:</p>
+<ol>
+<li>A JavaServer Faces page, containing a <code>&lt;h:commandButton ...&gt;</code></li>
+<li>A backing bean with a method that you will configure so that it can be called by the JSF <code>&lt;h:commandButton&gt;</code></li>
+<li>A <code>@Stateless</code> EJB (named TransactionBean) that is injected into the backing bean (e.g., <code>@EJB private TransactionBean transactionBean;</code>)</li>
+<li>Another <code>@Stateless</code> EJB (named SecondaryBean) that is injected into the first EJB (e.g., <code>@EJB private SecondaryBean secondaryBean;</code>).</li>
+</ol>
+<p>You would then write a method in your first EJB (TransactionBean) that calls a method in the second EJB (SecondaryBean) that has been annotated with a different transaction type.</p>
+<p>Be careful: transaction attributes <strong>only work when you call an injected EJB</strong>. 
+If you just call another method in the same class directly, the container does not create a new transaction scope.</p>
+<p>i.e., In the following class, if you call <code>a()</code>, the MANDATORY transaction type is used even when <code>b()</code> is called.
+To get the container to use the other transaction type, you would need to move the method <code>b()</code> into a separate EJB.</p>
+<pre><code>@Stateless
+public class MyBean {
+  @TransactionAttribute(TransactionAttributeType.MANDATORY)
+  public void a() {
+    b(); // this is a direct invocation
+  }
+  @TransactionAttribute(TransactionAttributeType.NEVER)
+  public void b() {
+    // this uses MANDATORY if called from a directly, 
+    // but uses NEVER if called from outside the EJB
+  }
+}
+</code></pre>
+<h3>Reflect</h3>
+<p>In what situations would you use MANDATORY?
+In what situations would you use SUPPORTS?
+In what situations would you use NOT_SUPPORTED?</p>
+<p>Why is the transaction attribute ignored when you do a direct method invocation?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Transaction Isolation</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will explore transaction isolation.
+You will perform different actions on separate threads.
+That is, you will have multiple transactions running at the same time, and you will see how they interact.</p>
+<p>Under different transaction isolation levels, you should observe different behaviors and different performance characteristics.</p>
+<h3>Database Setup</h3>
+<p>This activity requires that you have set up "jdbc/aip" in JNDI as a JDBC resource that connects to a JavaDB (Derby) database.</p>
+<p>Refer to the Week 5 lab exercises for instructions on creating a Java DB database, setting up the AIPPool JDBC Connection Pool and the jdbc/aip JDBC Resource.</p>
+<p>Once you have created your database, you should create and populate the integer_store table using the following SQL query:</p>
+<pre><code>create table integer_store (
+    id integer primary key,
+    val integer
+);
+insert into integer_store(id,val) values (1,0);
+</code></pre>
+<h3>Using the Database</h3>
+<p>Create a new @Stateless session bean (EJB) named TransactionIsolationBean in the appropriate package of your project.</p>
+<p>Use the following source code (you may need to change the package name):</p>
+<pre><code>package au.edu.uts.aip.transactions.domain;
+
+import java.sql.*;
+import javax.annotation.*;
+import javax.ejb.*;
+import javax.sql.*;
+
+@Stateless
+public class TransactionIsolationBean {
+
+    @Resource(lookup="jdbc/aip")
+    private DataSource ds;
+
+    /**
+     * Uses JDBC to read the current value from the integer_store table.
+     * @return the current value of the integer_store
+     * @throws SQLException
+     */
+    private int read() throws SQLException {
+        try (Connection conn = ds.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                "select val from integer_store where id = 1")) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            } else {
+                throw new RuntimeException("No data in table named integer_store");
+            }
+        }
+    }
+
+    /**
+     * Uses JDBC to update the current value in the integer_store table.
+     * @param value the value to store in the database
+     * @throws SQLException
+     */
+    private void write(int value) throws SQLException {
+        try (Connection conn = ds.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                    "update integer_store set val = ? where id = 1")) {
+
+            stmt.setInt(1, value);
+
+            int changes = stmt.executeUpdate();
+
+            if (changes != 1) {
+                throw new RuntimeException("Incorrect number of rows changed when updating");
+            }
+        }
+    }
+
+    /**
+     * Set the initial value of the integer_store to be 0.
+     */
+    public void init() {
+        try {
+            int value = 0;
+            System.out.println("Setting initial value " + value);
+            write(value);
+        } catch (SQLException sqle) {
+            System.out.println("Initialization exception: " + sqle.getMessage());
+        }
+    }
+
+    /**
+     * Asynchronously (i.e., concurrently) attempt to perform read/write operations each
+     * 500 milliseconds. Reports the progress to the system log.
+     * &lt;p&gt;
+     * A call such as run("A", "rr w", 1) has the following effect:
+     * &lt;ul&gt;
+     * &lt;li&gt;
+     *   The first parameter is a prefix used in log files.
+     * &lt;li&gt;
+     *   The "rr w" is the list of operations. Each character represents an operation.
+     *   "r" represents a read, "w" represents a write and any other letter does nothing.
+     *   The sequence of operations is performed one after the other, pausing 500 milliseconds
+     *   between each.
+     * &lt;li&gt;
+     *   The third parameter means that any write operation will write the number 1.
+     * &lt;/ul&gt;
+     * So, this call would have the following effect:
+     * &lt;ul&gt;
+     * &lt;li&gt;Wait 500ms, then read the current value in the database
+     * &lt;li&gt;Wait 500ms, then read the current value in the database
+     * &lt;li&gt;Wait 500ms
+     * &lt;li&gt;Wait 500ms, then write the number 1 to the database
+     * &lt;/ul&gt;
+     * If any read/write operation blocks, then the method will block. The method will
+     * not try to "catch" up with lost time by avoiding the waiting.
+     * @param prefix the prefix to use in the system log
+     * @param operations a sequence of read/write commands to use
+     * @param writeValue the value to use in any write operation
+     */
+    @Asynchronous
+    public void run(String prefix, String operations, int writeValue) {
+        try {
+            long start = System.currentTimeMillis();
+            int counter = 0;
+            for (char c : operations.toCharArray()) {
+                counter++;
+                Thread.sleep(500); // pause half a second between actions
+                switch (c) {
+                    case 'r':
+                    case 'R':
+                        // Read --------------------------------
+                        int readValue = read();
+                        System.out.println(prefix + "(" + counter + "): read value " + readValue);
+                        break;
+                    case 'w':
+                    case 'W':
+                        // Write -------------------------------
+                        write(writeValue);
+                        System.out.println(prefix + "(" + counter + "): written value " + writeValue);
+                        break;
+                }
+            }
+            // Calculate the total time used to do the transaction
+            long duration = System.currentTimeMillis() - start;
+            System.out.println(prefix + "(" + counter + "): committing, total clock time is " + duration + "ms");
+
+        } catch (SQLException | InterruptedException e) {
+            System.out.println(prefix + ": exception " + e.getMessage());
+        }
+    }
+
+}
+</code></pre>
+<p>If you look at this code, you may notice that the <code>run(...)</code> method has an <code>@Asynchronous</code> annotation.
+This tells Java EE that when the method is called, it should be executed in a new thread.
+In addition, Java EE will start a new transaction for that separate thread.</p>
+<p>That is, each time you call <code>run(...)</code>, GlassFish will launch a separate transaction that runs separately and concurrently.</p>
+<p>You will learn more about <code>@Asynchronous</code> in next weeks' lectures.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Using TransactionIsolationBean</h2></label>
+                <div class="content">
+                    <p>TransactionIsolationBean could be used directly. However, for this exercise you can call it from a separate EJB.</p>
+<p>Inside the EJB you created earlier (i.e., TransactionBean), add the following code:</p>
+<pre><code>@EJB
+private TransactionIsolationBean transactionIsolationBean;
+
+public void isolationTest() {
+  transactionIsolationBean.init();
+  transactionIsolationBean.run("A", " wr r",      1);
+  transactionIsolationBean.run("B", "    rw",     2);
+  transactionIsolationBean.run("C", "    r r w",  3);
+  transactionIsolationBean.run("D", "   wr rw",   4);
+  transactionIsolationBean.run("E", "r r r r  r", 5);
+}
+</code></pre>
+<p>Now, add a <code>h:commandButton</code> to your JSF view and an action (i.e., a method) to your JSF backing bean.
+The action in your backing bean should simply call <code>isolationTest</code> on your <code>TransactionIsolationBean</code>.</p>
+<h3>Reflect</h3>
+<p>Do you understand what the <code>run(...)</code> method does?</p>
+<h3>Run the Project</h3>
+<p>Run the application.
+If you look at the GlassFish log, you will see the output of the 5 separate transactions.
+It may take a while to complete because each operation has a 500ms pause.
+In addition, is is possible that the transactions encounter a deadlock situation which takes up to 20 seconds for JavaDB to detect.</p>
+<p>Your output might look something like the following:</p>
+<pre><code>Info:   Setting initial value 0
+Info:   E(1): read value 0
+Info:   A(2): written value 1
+Info:   A(3): read value 1
+Info:   A(5): read value 1
+Info:   A(5): committing, total clock time is 2506ms
+Info:   D(4): written value 4
+Info:   E(3): read value 1
+Info:   D(5): read value 4
+Info:   D(7): read value 4
+Info:   D(8): written value 4
+Info:   D(8): committing, total clock time is 4511ms
+Info:   C(5): read value 4
+Info:   B(5): read value 4
+Info:   E(5): read value 4
+Info:   B(6): written value 2
+Info:   B(6): committing, total clock time is 5017ms
+Info:   C(7): read value 2
+Info:   E(7): read value 2
+Info:   C(9): written value 3
+Info:   C(9): committing, total clock time is 6516ms
+Info:   E(10): read value 3
+Info:   E(10): committing, total clock time is 7017ms
+</code></pre>
+<h3>Change Transaction Isolation Levels</h3>
+<p>Launch the GlassFish Administration Console, and locate the settings for your JDBC Connection Pool.</p>
+<p>Scroll down to the bottom of the settings and change the Transaction Isolation level to "serializable" and click Save.</p>
+<p><img alt="Changing the isolation level" src="11/isolation.png"></p>
+<p>Now, scroll back up to the top of the page and click Flush. This will ensure that any pooled connections with different transaction isolation levels are "flushed out".</p>
+<p><img alt="Flushing connections" src="11/flush.png"> </p>
+<p>Use your JavaServer Faces application to run the isolationTest code again (note that you do NOT need to redeploy, you can simply continue with the same running application).</p>
+<h3>Comparing Isolation Levels</h3>
+<p>Now that you are able to change the transaction isolation levels, run your isolationTest method under each of the four isolation levels provided. (Remember that each time you change the isolation level, you need to Save and then Flush).</p>
+<p>You can copy-and-paste the output to a separate text file to make it easier to compare the isolation level.</p>
+<h3>Reflect</h3>
+<p>Which isolation level was fastest? Which was slowest?</p>
+<p>Was the output the same for any isolation levels? Why?</p>
+<p>Can you identify any "dirty reads" or "unrepeatable reads" in the GlassFish output logs?</p>
+<p>Why might you want to change the transaction isolation level? What are the advantages and disadvantages of doing so?</p>
+<p>Does the timing information provide you with any clues about how Java DB enforces transaction isolation?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>OWASP Top 10</h2></label>
+                <div class="content">
+                    <div class="download"><a href="11/BunchOfFriends.war"><img src="resources/app.png" />Click here to download a WAR file that contains a social network application.</a></div>
+
+<p>The application requires a JDBC resource named "jdbc/aip" (without the quotes).
+If you do not already have it set up, refer to the Week 5 lab exercises.</p>
+<p>It will automatically connect to jdbc/aip and create a database when it is deployed.</p>
+<h3>Deploy the Application</h3>
+<p>You can deploy it by launching the GlassFish Administration Console.</p>
+<p>IMPORTANT: First, check that you have a JDBC Resource named jdbc/aip.</p>
+<p>If you do not have the resource, deployment will fail. If deployment fails, you will need to set up jdbc/aip properly, undeploy the existing application, restart GlassFish and deploy it again.</p>
+<p>Click on applications, and select deploy.</p>
+<p><img alt="Deploying a WAR" src="11/newdeploy.png"></p>
+<p>Then browse for the WAR file as depicted in the image below, and select OK.</p>
+<p><img alt="Choosing a WAR" src="11/dodeploy.png"></p>
+<p>Once deployed, you should be able to visit the application in your browser: <br>
+<a href="http://localhost:8080/BunchOfFriends/">http://localhost:8080/BunchOfFriends/</a></p>
+<h3>Check for Vulnerabilities</h3>
+<p>This application suffers from many of the OWASP Top 10 vulnerabilities. Your task is to test the application for the vulnerabilities.</p>
+<p>It is important to understand these vulnerabilities to protect your own applications. However, you should not exploit vulnerabilities in other systems without permission. Unauthorized access to a system is unethical, illegal and unprofessional.</p>
+<p>You can view the OWASP Top 10 here: <br>
+<a href="http://owasptop10.googlecode.com/files/OWASP Top 10 - 2013.pdf">http://owasptop10.googlecode.com/files/OWASP Top 10 - 2013.pdf</a></p>
+<p>As part of the challenge, you might also consider unzipping the WAR file or manually browsing the jdbc/aip database to get clues.</p>
+<p>How many of the following vulnerabilities can you demonstrate exist in the application?</p>
+<p><em>A1. Injection</em></p>
+<p>The application is vulnerable to SQL injection. You can use SQL injection to log in without a valid password.</p>
+<p><em>A2. Broken Authentication and Session Management</em></p>
+<p>The application is vulnerable. You can experience this directly by disabling cookies in your browser. Java will use URL rewriting to track your session in the URL. Can you think of a way to "hijack" a session of another user (hint: you might use XSS).</p>
+<p><em>A3. Cross-Site Scripting (XSS)</em></p>
+<p>The application is vulnerable. Many inputs/outputs in the application are not sanitized or escaped.</p>
+<p><em>A4. Insecure Direct Object References</em></p>
+<p>The application is vulnerable. See if you can view the posts of somebody who is not a friend, without "friending" them.</p>
+<p><em>A5. Security Misconfiguration</em></p>
+<p>The application is vulnerable. Pages aren't properly secured. See if you can view the posts of a user, without logging in.</p>
+<p><em>A6. Sensitive Data Exposure</em></p>
+<p>The application is vulnerable. The database stores passwords in plain-text. See if you can identify the username/passwords by using a direct SQL connection to the database from within the NetBeans services tab.</p>
+<p><em>A7. Missing Function Level Access Control</em></p>
+<p>The application does not have privileged users so this is not applicable.</p>
+<p><em>A8. Cross Site Request Forgery</em></p>
+<p>The application is vulnerable. See if you can create a website (using another project) that will automatically cause logged in users to add a friend.</p>
+<p><em>A9. Using Components with Known Vulnerabilities</em></p>
+<p>To my knowledge, the application is not vulnerable to this problem.</p>
+<p><em>A10. Unvalidated Redirects and Forwards</em></p>
+<p>The application does use a redirect. However, I don't think the redirect can be exploited.</p>
+<h3>Reflect</h3>
+<p>Can you identify any broad principles that might help prevent many of these problems?</p>
+<p>Is it ethical to test public websites for vulnerabilities?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Text Exchange</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+                font-family: sans-serif;
+            }
+            h1 {
+                text-align: center;
+                font-size: 2em;
+                margin: 0;
+                padding: 0.25em;
+                background-color: #eed;
+            }
+            textarea {
+                font-family: sans-serif;
+                width: 100%;
+                max-width: 400px;
+            }
+            button {
+                padding: 0.25em;
+                width: 100%;
+                max-width: 400px;
+                left: 10%;
+            }
+            p {
+                margin: 0;
+                padding: 0.5em;
+                text-align: center;
+            }
+            .hidden {
+                display: none;
+            }
+            .visible {
+                display: block;
+            }
+            #result {
+                white-space: pre-wrap;
+                font-weight: bold;
+            }
+            #gmap {
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 100%;
+                display: block;
+            }
+            #mapdiv {
+                width: 100%;
+                padding: 0.5em;
+            }
+        </style>
+        <script>
+            /*
+             * A module to perform AJAX calls to the Week11-server REST api.
+             * This would probably have been a lot simpler in jQuery.
+             * However, jQuery would not have fit nicely in one file like this.
+             */
+            var tx = (function () {
+                var self = {};
+                var server = "api/swap";
+                
+                /*
+                 * Encodes latitude and longitude into a Google Maps static image URL
+                 */
+                var makeGoogleUrl = function (lat, long) {
+                    return "https://maps.googleapis.com/maps/api/staticmap?center=" +
+                        lat + "," + long +
+                        "&markers=red|" + 
+                        lat + "," + long +
+                        "&zoom=14&size=400x400";
+                };
+                
+                /*
+                 * Helper - gets an element by its id
+                 */
+                var get = function (id) {
+                    return document.getElementById(id);
+                };
+                
+                /*
+                 * Helper - sets the text of an element by its id
+                 */
+                var set = function(id, text) {
+                    var e = get(id);
+                    while (e.firstChild)
+                        e.removeChild(e.firstChild);
+                    e.appendChild(document.createTextNode(text));
+                };
+                
+                /*
+                 * Shows one of the four tabs in the application
+                 */
+                var showTab = function (tabId) {
+                    var alts = ["input", "loading", "output", "error-network"];
+                    for (var i=0; i<alts.length; i++) {
+                        if (tabId === alts[i])
+                            get(alts[i]).className = "visible";
+                        else
+                            get(alts[i]).className = "hidden";
+                    }
+                };
+                
+                /*
+                 * Performs an AJAX query to the Text Exchange server
+                 */
+                var swap = function (message, success, failure) {
+                    var r = new XMLHttpRequest();
+                    r.open("POST", server, true);
+                    r.setRequestHeader("Content-Type", "application/json");
+                    r.setRequestHeader("Accept", "application/json");
+                    r.onreadystatechange = function () { 
+                        if (r.readyState !== 4 || r.status !== 200)
+                            failure();
+                        else {
+                            console.log(r.reponseText);
+                            success(JSON.parse(r.responseText));
+                        }
+                    };
+                    r.send(JSON.stringify(message));
+                };
+            
+                /*
+                 * Renders the message returned from the server for the user
+                 */
+                var render = function(response) {
+                    set("result", response.message);
+                    set("sent", response.time);
+                    get("gmap").src = makeGoogleUrl(response.lat, response.long);
+                };
+            
+                /*
+                 * Public method - Submits the current text to the text-exchange server.
+                 */
+                self.submit = function() {
+                    showTab('loading');
+                    
+                    var upload = function (position) {
+                        var submission = get("submission").value;
+
+                        var lat = -33.856952; // Default to the opera house, if no position
+                        var long = 151.2153016;
+                        if (position && position.coords) {
+                            lat = position.coords.latitude;
+                            long = position.coords.longitude;
+                        }
+
+                        swap(
+                            { message: submission, lat: lat, long: long, time: new Date() },
+                            function (response) {
+                                render(response);
+                                showTab('output');
+                            },
+                            function () {
+                                showTab('error-network');
+                            }
+                        );
+                    };
+
+                    navigator.geolocation.getCurrentPosition(upload, upload, {timeout:5000});
+                };
+            
+                /*
+                 * Public method - Returns control back to the main screen
+                 */
+                self.another = function() {
+                    get("submission").value = "";
+                    showTab('input');
+                };
+                
+                return self;
+            })();
+            
+        </script>
+    </head>
+    <body>
+        <h1>Text Exchange</h1>
+        
+        <!-- Input Tab -->
+        <div id="input" class="visible">
+            <p>Enter a poetic message:</p>
+            <p><textarea id="submission"></textarea></p>
+            <p><button onclick="tx.submit()">Share with a Stranger</button></p>
+        </div>
+        
+        <!-- Loading Tab -->
+        <div id="loading" class="hidden">
+            <p>Checking location and uploading to server.</p>
+            <p>Please wait.</p>
+            <p><button onclick="tx.another()">Try Again</button></p>
+        </div>
+        
+        <!-- Output/Result Tab -->
+        <div id="output" class="hidden">
+            <p>Message from a Stranger:</p>
+            <p id="result"></p>
+            <p>(Sent: <span id="sent"></span>)</p>
+            <!-- default image is a one-pixel placeholder -->
+            <p><img alt="Sender Location" id="gmap" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D"/></p>
+            <p><button onclick="tx.another()">Compose Another</button></p>
+        </div>
+        
+        <!-- Error Tabs -->
+        <div id="error-network" class="hidden">
+            <p>A network error occurred.</p>
+            <p><button onclick="tx.another()">Try Again</button></p>
+        </div>
+    </body>
+</html>

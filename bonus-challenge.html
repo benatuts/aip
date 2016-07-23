@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week None: Message driven beans and asynchrony</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Bonus Materials</li>
+            </ul>
+            <ul>
+                <li><a href="bonus.html">Study</a></li>
+                <li><a href="bonus-practice.html">Practice</a></li>
+                <li class="title">Challenge</li>
+                <li><a href="bonus-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Message driven beans and asynchrony</h1>
+            <p><i>Practice for Bonus Materials</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>By now, you will have gained a great deal of confidence and skill in this subject.</p>
+<p>Each week, you have built a simple application that demonstrates the essential ideas of a technology in the Java EE specifications.</p>
+<p>Your challenge for the bonus materials is to come up with your own activity.</p>
+<p>Create a simple project that demonstrates either message driven beans and/or asynchronous methods.</p>
+<h3>Hints</h3>
+<p>You can send messages to a message driven bean, even before you've written the bean.
+Can you write and run code that sends a message, then after you've sent the message, write some code that will recieve the message?</p>
+<p>For asynchronous, can you create an EJB method that is slow (e.g., <code>Thread.sleep(10000);</code>) but eventually outputs data to the log file.
+What happens when you annotate that method with <code>@Asynchronous</code>?</p>
+<p>If your asynchronous method returns a future, how long does it take to call and wait for several asynchronous methods to return?</p>
+<p>You can measure time in Java as follows:</p>
+<pre><code>long start = System.currentTimeMillis();
+// ... do some slow processing, then ...
+long durationInMilliseconds = System.currentTimeMillis() - start;
+</code></pre>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

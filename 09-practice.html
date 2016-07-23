@@ -1,0 +1,467 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 9: Object-relational mapping and the Java Persistence API (JPA)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 9</li>
+            </ul>
+            <ul>
+                <li><a href="09.html">Study</a></li>
+                <li class="title">Practice</li>
+                <li><a href="09-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Object-relational mapping and the Java Persistence API (JPA)</h1>
+            <p><i>Practice for Week 9: 26 September</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Address Book</h2></label>
+                <div class="content">
+                    <p>In this exercise you will create an address book application using JPA.</p>
+<h3>Create an Enterprise Application</h3>
+<p>During the last tutorial, you created an Enterprise Application called Week8.</p>
+<p>Having EJBs in a separate project is "best" practice. It helps enforce separation between presentation and domain logic. 
+In previous Java EE versions, this separation was mandatory.
+However, Java EE 6 introduced the ability to include EJBs in WAR files.
+For simple projects, placing all files in a single WAR may be more practical.
+However, for the sake of this exercise we will use two separate projects within an Enterprise Application (a total of three projects).</p>
+<p>This week, you should create a new Enterprise Application called Week9. <strong>Be careful! Last week's tutorial may have changed the default location. Make sure the project location is your NetBeansProjects folder and NOT NetBeansProjects/Week8</strong>.</p>
+<ol>
+<li>Create a new project of type "Enterprise Application" in the "Java EE" category.</li>
+<li>Name the project Week9 and ensure that the "Project Location" is correct.</li>
+<li>Use GlassFish as your server and leave the option to create Week9-ejb and Week9-war checked.</li>
+</ol>
+<p>Before continuing, you should start your database and GlassFish. The easy way to do this is to right click on your Week9 Enterprise Application and click on "Run".</p>
+<h3>Important Tip</h3>
+<p>During the Week 8 tutorial, I provided some suggestions for building and running your project. I repeat those suggestions here:</p>
+<p>Java EE 7 allows you to deploy EJBs using a WAR or an EAR file. In NetBeans, this means that even though your Week9-war is only part of your Enterprise Application, you are still able to run Week9-war directly.</p>
+<p>This can result in problems when/if the same EJB is deployed twice. I recommend only deploying or running your application via the Week9 enterprise application.</p>
+<p>This means that if you want to run your project, you should NOT run individual JSF (xhtml) files.
+Instead, you should right click on, and run, the Week9 Enterprise Application.
+Avoid using the large green "play" button in NetBeans as it may not run the project that you are intending to run.</p>
+<p>If you are experiencing problems with NetBeans and/or GlassFish, here are some steps you might try to resolve the problem:</p>
+<ul>
+<li>Deploy the Enterprise Application again. Right click on the Enterprise Application (e.g., Week9) and then click "Deploy".</li>
+<li>Undeploy all applications. In the Services tab, locate Servers &gt; GlassFish Server &gt; Applications. Right click on Applications to refresh the list. Select all the Applications with your mouse (hold down the shift key). Then right click and select "Undeploy".</li>
+<li>Restart GlassFish. If you are seeing error messages about NetBeans being unable to delete JAR files, then you should undeploy all applications and restart GlassFish. To restart GlassFish, in the Services tab locate Servers &gt; GlassFish Server. Then, right click on GlassFish Server and select Restart (or Stop and then Start).</li>
+</ul>
+<h3>Ensure your Database is Configured</h3>
+<p>In the Week 5 labs, you created a database called "aip". 
+You used the GlassFish admin console to configured it as a JNDI resource named jdbc/aip.</p>
+<p>Please check that you still have this database and JNDI name configured. 
+If you do not have these configured, you should refer to the exercises from the Week 5 labs. 
+Follow the note titled "Create Database" to set up the aip database. 
+Follow the note "Container Managed Connections" to configure a Connection pool and JNDI resource named "jdbc/aip".</p>
+<p>In NetBeans, check the tables in the AIP database.
+There may be one or more tables already in the database.
+This is fine.
+However, if you have created a table named "Person" or "ContactMethod", then please delete (i.e., drop) those tables because we will be creating new tables with those names.</p>
+<p>You do not need to delete Account or any other tables.
+Just make sure that there is no table named "Person" or "ContactMethod".</p>
+<p>The two images below illustrate the process of connecting to the database and deleting an unwanted table.</p>
+<p><img alt="Connect to the database" src="09/connectdb.png"></p>
+<p><img alt="Drop table" src="09/deletetable.png"></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Create a JPA Entity</h2></label>
+                <div class="content">
+                    <p>In this step you will create a Persistence Unit and a JPA Entity.</p>
+<p>JPA will automatically map the entity into database table(s).</p>
+<h3>Create a Persistence Unit</h3>
+<p>Create a new file in the Week9-ejb project. You can do this by right clicking on Week9-ejb, clicking on "New" and then clicking on "Other...".</p>
+<ol>
+<li>The file should be of type "Persistence Unit" in the "Persistence" category.</li>
+<li>Leave the default persistence unit name ("Week9-ejbPU"), in "Data Source" enter "jdbc/aip" (without the quotes), ensure "Use Java Transaction APIs" is checked and that the "Create" table generation strategy is selected.</li>
+</ol>
+<p>To assist with debugging, we will increase the level of logging detail.</p>
+<ol>
+<li>Double click on persistence.xml in your Week9-ejb project.</li>
+<li>Switch to the Source view and add the following XML element inside the <code>&lt;properties&gt;</code> element:  <br>
+<code>&lt;property name="eclipselink.logging.level" value="FINE"/&gt;</code></li>
+</ol>
+<h3>Create a Stateless Bean</h3>
+<p>Because we selected the "Create" table generation strategy, JPA will automatically create all the necessary tables.</p>
+<p>To get JPA to create the tables, we need to use the persistence unit.</p>
+<p>In the Week9-ejb project, create a Java class called AddressBookBean in the au.edu.uts.aip.addressbook.domain package.</p>
+<p>Enter the following Java code:</p>
+<pre><code>package au.edu.uts.aip.addressbook.domain;
+
+import javax.ejb.*;
+import javax.persistence.*;
+
+@Stateless
+public class AddressBookBean {
+
+    @PersistenceContext
+    private EntityManager em;
+
+}
+</code></pre>
+<p>This code is a stateless session bean. It doesn't do anything (yet). However, by referencing the persistence unit, it will cause JPA to create tables for any entities it finds.</p>
+<h3>Create a JPA Entity</h3>
+<p>Create a new class named Person in the au.edu.uts.aip.addressbook.domain package.</p>
+<p>Enter the following code:</p>
+<pre><code>package au.edu.uts.aip.addressbook.domain;
+
+import java.io.*;
+import javax.persistence.*;
+
+@Entity
+public class Person implements Serializable {
+
+    private int id;
+
+    @Id
+    @GeneratedValue
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+}
+</code></pre>
+<p>Remember that there are two ways to annotate entities: fields or properties.
+A field is a variable of a class, whereas a property is a getter/setter.
+In the above code we have annotated the getter for the "id" property with <code>@Id</code> and <code>@GeneratedValue</code>.
+This means that "id" is the primary key and that it will be automatically generated if none is provided.</p>
+<p>Now you can redeploy your project. Right click on Week9 and select "Deploy". 
+If you look at the GlassFish server log, you should see logging information from JPA.
+You will see create SQL statements such as the following:</p>
+<pre><code>Fine:   CREATE TABLE PERSON (ID INTEGER NOT NULL, PRIMARY KEY (ID))
+Fine:   CREATE TABLE SEQUENCE (SEQ_NAME VARCHAR(50) NOT NULL, SEQ_COUNT DECIMAL(15), PRIMARY KEY (SEQ_NAME))
+Fine:   SELECT * FROM SEQUENCE WHERE SEQ_NAME = SEQ_GEN
+Fine:   INSERT INTO SEQUENCE(SEQ_NAME, SEQ_COUNT) values (SEQ_GEN, 0)
+</code></pre>
+<p>A table called SEQUENCE has also been created. On JavaDB, EclipseLink JPA uses a special table called SEQUENCE to keep track of unique ids used in entities.</p>
+<p>You can also confirm that the table is created by viewing the database in the "Services" tab as depicted below.</p>
+<p>Note: You will probably need to refresh your view. Do this by right clicking on the database or "Tables" and clicking "Refresh".</p>
+<p><img alt="Created tables" src="09/newtables.png"></p>
+<h3>Reflect</h3>
+<p>Can you think of any advantages or disadvantages in choosing between field or property annotations?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Create JPA Entities</h2></label>
+                <div class="content">
+                    <p>Now that you have confirmed that JPA is creating database tables, you can create a schema for the entire database.</p>
+<p>First, delete (or drop) the Person table. You can do this manually from the Services tab by right clicking on the table and selecting delete.</p>
+<p>Note also that whenever you save changes your Java files, NetBeans may redeploy your project.
+Whenever your project is redeployed, JPA will generate any tables it needs.
+So if you save changes to a half-finished JPA entity file you might need to delete the underlying table from the database again.
+(Advanced tip: you can change this behaviour by setting the table generation strategy in persistence.xml)</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Phone Type Enum</h2></label>
+                <div class="content">
+                    <p>Create a class named PhoneType in the au.edu.uts.aip.addressbook.domain package of the Week9-ejb project.</p>
+<p>Enter the following code:</p>
+<pre><code>package au.edu.uts.aip.addressbook.domain;
+
+public enum PhoneType {
+
+    HOME,
+    WORK,
+    MOBILE,
+    OTHER
+
+}
+</code></pre>
+<p>You have just created a Java enum type. If you do not understand enums, you can learn more about them in the <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html">Java Tutorial</a>.</p>
+<h3>ContactMethod Entity</h3>
+<p>Create a class named ContactMethod in the au.edu.uts.aip.addressbook.domain package of the Week9-ejb project.</p>
+<p>You should now modify the code in Person.java and ContactMethod.java so that JPA generates database tables corresponding to the E-R diagram below.</p>
+<p><img alt="E-R diagram" src="09/erdiagram.png"></p>
+<p>The result should be equivalent to the following SQL. In fact, you should see the following SQL in your GlassFish server logs (except that it will not be formatted into lines and it will all be in capital letters).</p>
+<pre><code>create table ContactMethod (
+  id integer not null,
+  phoneNumber varchar(255),
+  phoneType varchar(255),
+  person_id integer,
+  primary key (id)
+);
+
+create table Person (
+  id integer not null,
+  dateOfBirth date,
+  firstName varchar(255),
+  lastName varchar(255),
+  primary key (id)
+);
+
+alter table ContactMethod add constraint cntCtMethodPrsonId foreign key (person_id) references Person (id);
+</code></pre>
+<h3>Hints</h3>
+<p>Whenever you change the entities, you should delete the underlying tables (you can do this manually) and deploy the enterprise application (right click on Week9 and select deploy) again to get the tables to be regenerated.</p>
+<p>Remember to add <code>@Entity</code> and <code>implements Serializable</code> on the ContactMethod class.</p>
+<p>You should approach the problem in stages.
+First try to create the two tables, without the one-to-many/many-to-one relationships.
+Then extend your entities with the relationship.</p>
+<p>You might use annotations such as <code>@Id</code>, <code>@GeneratedValue</code>, <code>@Temporal</code> and <code>@Enumerated</code>.</p>
+<p>Once you have the basic attributes of the tables working, try adding the relationship between the two entities. You might use <code>@OneToMany</code> and/or <code>@ManyToOne</code>.</p>
+<h3>Reflect</h3>
+<p>How would your approach to using JPA be different if you were interfacing with an existing database that could not be changed versus creating a new database?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Add Data</h2></label>
+                <div class="content">
+                    <p>Now that you have created the entities of your domain model (and generated a database), you can write code to update the database.</p>
+<h3>Sample Data</h3>
+<p>We will begin with a simple update function that adds sample data to the database.</p>
+<p>In your stateless session bean (AddressBookBean.java), add a method named <code>addSampleData</code>.</p>
+<p>Create instances of your entities and save it to the database using <code>em.persist(object)</code>;</p>
+<p>For example, your method might look something like this:</p>
+<pre><code>public void addSampleData() {
+    Person mike = new Person();
+    mike.setFirstName("Mike");
+    mike.setLastName("Brady");
+    mike.setDateOfBirth(new GregorianCalendar(1932, 9, 19).getTime());
+
+    ContactMethod mike1 = new ContactMethod();
+    mike1.setPhoneNumber("762-0799");
+    mike1.setPhoneType(PhoneType.HOME);
+
+    ContactMethod mike2 = new ContactMethod();
+    mike2.setPhoneNumber("555-6161");
+    mike2.setPhoneType(PhoneType.WORK);
+
+    mike.getContacts().add(mike1);
+    mike.getContacts().add(mike2);
+    mike1.setPerson(mike);
+    mike2.setPerson(mike);
+
+    Person marcia = new Person();
+    marcia.setFirstName("Marcia");
+    marcia.setLastName("Brady");
+    marcia.setDateOfBirth(new GregorianCalendar(1956, 7, 5).getTime());
+
+    ContactMethod marcia1 = new ContactMethod();
+    marcia1.setPhoneNumber("762-0799");
+    marcia1.setPhoneType(PhoneType.HOME);
+
+    marcia.getContacts().add(marcia1);
+    marcia1.setPerson(marcia);
+
+    Person alice = new Person();
+    alice.setFirstName("Alice");
+    alice.setLastName("Nelson");
+    alice.setDateOfBirth(new GregorianCalendar(1926, 4, 5).getTime());
+
+    ContactMethod alice1 = new ContactMethod();
+    alice1.setPhoneNumber("72485899");
+    alice1.setPhoneType(PhoneType.MOBILE);
+
+    alice.getContacts().add(alice1);
+    alice1.setPerson(alice);
+
+    em.persist(mike);
+    em.persist(mike1);
+    em.persist(mike2);
+    em.persist(marcia);
+    em.persist(marcia1);
+    em.persist(alice);
+    em.persist(alice1);
+}
+</code></pre>
+<h3>Invoke Add Sample Data</h3>
+<p>Now, we can call the <code>addSampleData</code> function from a JSF page.</p>
+<p>Add JavaServer Faces as a framework to your Week9-war project:</p>
+<ol>
+<li>Right click on Week9-war and select "Properties"</li>
+<li>Change to the "Frameworks" category</li>
+<li>Click on "Add..." and add "JavaServer Faces"</li>
+<li>Click "OK"</li>
+</ol>
+<p>Also, remember to add the Java EE 7 API Library to your Week9-war project (you can do that within the project properties, or by right clicking on the "Libraries" folder in your project).</p>
+<p>Add a JSF page named "addressbook" (i.e., addressbook.xhtml) to the Week9-war project.</p>
+<p>Inside your Week9-war project, create a backing bean (i.e., a Java class). Name the backing bean "AddressBookController" and create it in the au.edu.uts.aip.addressbook.web package.</p>
+<p>You can use this sample code for your controller:</p>
+<pre><code>package au.edu.uts.aip.addressbook.web;
+
+import au.edu.uts.aip.addressbook.domain.*;
+import javax.ejb.*;
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class AddressBookController {
+
+    @EJB
+    private AddressBookBean addressBookBean;
+
+    public void addSampleData() {
+        addressBookBean.addSampleData();
+    }
+
+}
+</code></pre>
+<p>Now, add a command button to addressbook.xhtml that will call the <code>addSampleData</code> method of the backing bean.</p>
+<p>Run your application (remember to do this by running the Week9 project, NOT Week9-war).</p>
+<p>After clicking on the command button, you can check the database in NetBeans to ensure that the entities have been saved (i.e., "persisted") to the database.</p>
+<h3>Reflect</h3>
+<p>Can you explain the full sequence of steps that happens when you click on the command button?</p>
+<p>How could <code>addSampleData</code> be modified/simplified if you were to use <code>cascade = CascadeType.ALL</code> inside the <code>@OneToMany</code> and/or <code>@ManyToOne</code> annotations?</p>
+<p>In <code>addSampleData</code>, why have we populated both sides of the one-to-many relationship (i.e., <code>setPerson</code> and <code>getContacts().add</code>)? What would happen if you do not set both sides?</p>
+<h3>Query Data</h3>
+<p>In this exercise, you will write a JPA query.</p>
+<p>Add the following method to your EJB:</p>
+<pre><code>public List&lt;Person&gt; findByLastName(String lastName) {
+    // This method will be replaced later with a JPA query
+    return new ArrayList&lt;&gt;();
+}
+</code></pre>
+<p>Add the following method to your JSF Backing Bean:</p>
+<pre><code>public void dumpBradys() {
+    Logger log = Logger.getLogger(this.getClass().getName());
+    for (Person p : addressBookBean.findByLastName("Brady")) {
+        log.log(
+            Level.INFO,
+            "firstName = {0}, lastName = {1}, dateOfBirth = {2}",
+            new Object[] {p.getFirstName(), p.getLastName(), p.getDateOfBirth()}
+        );
+    }
+}
+</code></pre>
+<p>You may need to change the name ("Brady") used in the search if you have different sample data.</p>
+<p>Add the following button to addressbook.xhtml:</p>
+<pre><code>&lt;h:commandButton value="Dump Bradys to Log" action="#{addressBookController.dumpBradys}"/&gt;
+</code></pre>
+<p>Clicking on the button will cause <code>dumpBradys</code> to be invoked.
+This function will use <code>findByLastName</code> to retrieve all JPA entities with the last name of "Brady".
+The result of the query will be output to the server log.</p>
+<p>You can now modify the findByLastName method in your EJB to query the database. The method should result in the following output in your server log:</p>
+<pre><code>Info:   firstName = Mike, lastName = Brady, dateOfBirth = 19/10/32 12:00 AM
+Info:   firstName = Marcia, lastName = Brady, dateOfBirth = 5/09/56 12:00 AM
+</code></pre>
+<h3>Hints</h3>
+<p>You could use a simple JPQL query, a named query or a criteria query. You will replace the body of the <code>findByLastName</code> function.</p>
+<p>For example, you might have code that looks something like this (you will need to replace the red text with something else):</p>
+<pre><code>TypedQuery&lt;Person&gt; query = em.createSomething(something, Person.class);
+em.doMoreConfiguration(....);
+return query.getResultList();
+</code></pre>
+<p>You can see example JPQL queries in the <a href="09/slides.pdf">lecture notes</a> or at the following web sites:</p>
+<ol>
+<li>JPQL / named queries: <br>
+<a href="http://docs.oracle.com/javaee/6/tutorial/doc/bnbtl.html">http://docs.oracle.com/javaee/6/tutorial/doc/bnbtl.html</a></li>
+<li>Criteria queries: <br>
+<a href="http://www.objectdb.com/java/jpa/query/criteria">http://www.objectdb.com/java/jpa/query/criteria</a> <br>
+<a href="http://docs.oracle.com/javaee/6/tutorial/doc/gjivm.html">http://docs.oracle.com/javaee/6/tutorial/doc/gjivm.html</a></li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>CRUD Interface</h2></label>
+                <div class="content">
+                    <p>Now you can create a CRUD-style interface to view, update and delete people from your address book.</p>
+<p>At this stage, you do not need to create a full application. The objective is to experiment with JPA, rather than focus on JavaServer Faces.</p>
+<h3>Creating a View</h3>
+<p>A simple way to show all contacts would be to use a h:dataTable to view people, and then use a nested h:dataTable inside a column to show all the contacts for that person.</p>
+<p>Here is one way you might view the data in the address book:</p>
+<pre><code>&lt;h:dataTable var="person" value="#{addressBookController.people}"&gt;
+    &lt;h:column&gt;
+        &lt;f:facet name="header"&gt;First Name&lt;/f:facet&gt;
+        #{person.firstName}
+    &lt;/h:column&gt;
+    &lt;h:column&gt;
+        &lt;f:facet name="header"&gt;Last Name&lt;/f:facet&gt;
+        #{person.lastName}
+    &lt;/h:column&gt;
+    &lt;h:column&gt;
+        &lt;f:facet name="header"&gt;Date of Birth&lt;/f:facet&gt;
+        #{person.dateOfBirth}
+    &lt;/h:column&gt;
+    &lt;h:column&gt;
+        &lt;f:facet name="header"&gt;Contacts&lt;/f:facet&gt;
+        &lt;h:dataTable var="contact" value="#{person.contacts}"&gt;
+            &lt;h:column&gt;
+                #{contact.phoneNumber}
+            &lt;/h:column&gt;
+            &lt;h:column&gt;
+                #{contact.phoneType}
+            &lt;/h:column&gt;
+        &lt;/h:dataTable&gt;
+    &lt;/h:column&gt;
+&lt;/h:dataTable&gt;
+</code></pre>
+<p>You can edit addressbook.xhtml to show a list of all people, and their contact details, in the database.</p>
+<p>Note that you will also need to add a method to the backing bean.
+In the example above, I have used the following method signature:</p>
+<pre><code>public List&lt;Person&gt; getPeople() { ... }
+</code></pre>
+<p>You will also need to add a method to the stateless session bean (AddressBookBean.java) to retrieve the list of people (e.g., a function called <code>findAll()</code>).
+Your <code>getPeople()</code> function should call that new method.</p>
+<h3>Hints</h3>
+<p>Your <code>findAll</code> method in the EJB (AddressBookBean.java) will need to use a JPA query.</p>
+<p>As with the search function, you could use a simple JPQL query in a string, a named query or a criteria query.</p>
+<h3>Edit and Delete</h3>
+<p>You can now add functionality to edit and delete people.</p>
+<p>To do this you should:</p>
+<ol>
+<li>Add two JSF views (e.g., person_delete.xhtml and person_edit.xhtml) (person_edit.xhtml should only edit the first name, last name and date of birth, not the list of contacts).</li>
+<li>Add buttons to the address book list to edit the individual views</li>
+<li>Add appropriate methods to your JSF backing bean</li>
+<li>Add appropriate methods to your EJB (e.g., update and delete)</li>
+<li>Have the backing bean call your EJB</li>
+<li>Have the EJB use the EntityManager to modify the database</li>
+</ol>
+<h3>Hints</h3>
+<p>The EntityManager should be used in the EJB and not in the JSF backing bean.</p>
+<p>You will probably use the <code>delete</code> and <code>merge</code> functions of the EntityManager.</p>
+<h3>Reflect</h3>
+<p>In what ways is the stateless EJB that you have created (AddressBookBean) similar to a Data Access Object?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Session EJB Fa&ccedil;ades</h2></label>
+                <div class="content">
+                    <p>You have created a stateless session bean named AddressBookBean. This AddressBookBean is similar to a DAO and also replicates many of the functions of the EntityManager.</p>
+<p>It would probably not be a good idea to directly use the EntityManager inside the presentation logic. While the EntityManager is very similar to a DAO, it is slightly too "low level" to be appropriate for use in the presentation logic. Using the EntityManager directly in the presentation logic would be poor design. This is because it creates dependencies between the presentation logic and the underlying persistence technology, and it would result in transactions and complex data queries occuring inside the persistence logic.</p>
+<p>The AddressBookBean class that you created provides a higher-level, business-focused interface. It provides a more "coarse-grained" service to clients. Rather than using the complex and powerful EntityManager, it offers simpler methods that provide business-focused operations that are used by the presentation logic.</p>
+<p>In fact, the AddressBookBean class that you created is an example of a common enterprise design pattern known as a Session Fa&ccedil;ade.</p>
+<p>High level details of the design pattern may be found at the following address: <br>
+<a href="http://www.corej2eepatterns.com/SessionFacade.htm">http://www.corej2eepatterns.com/SessionFacade.htm</a></p>
+<p>NetBeans has an ability to automatically generate such classes for you.</p>
+<h3>Create Session Fa&ccedil;ades for Entities</h3>
+<p>We will use a NetBeans "wizard" to automatically generate Session Fa&ccedil;ades for all of the JPA Entities in the application.</p>
+<ol>
+<li>Right click on your Week9-ejb project and select "New"... "Other...".</li>
+<li>Choose the "Session Beans for Entity Classes" file type in the "Persistence" category</li>
+<li>Click on "Add All &gt;&gt;"</li>
+<li>Ensure that the package is au.edu.uts.aip.addressbook.domain.</li>
+<li>Click on Finish.</li>
+</ol>
+<p>Three classes will be automatically generated:</p>
+<ol>
+<li>AbstractFacade</li>
+<li>PersonFacade</li>
+<li>ContactMethodFacade</li>
+</ol>
+<p>You will note that PersonFacade and ContactMethodFacade both extend AbstractFacade.
+This means that all the methods in AbstractFacade also apply to both PersonFacade and ContactMethodFacade.</p>
+<h3>Use Session Fa&ccedil;ades</h3>
+<p>You can now modify your application to use the Fa&ccedil;ade(s) instead of the AddressBookBean class that you originally created.</p>
+<p>Note that you can add additional methods to the session fa&ccedil;ades, as appropriate.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

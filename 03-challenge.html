@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 3: JavaServer Pages (JSP)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 3</li>
+            </ul>
+            <ul>
+                <li><a href="03.html">Study</a></li>
+                <li><a href="03-practice.html">Practice</a></li>
+                <li class="title">Challenge</li>
+                <li><a href="03-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>JavaServer Pages (JSP)</h1>
+            <p><i>Practice for Week 3: 15 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>This exercise is very advanced. This exercise is optional.</p>
+<h3>MVC Framework</h3>
+<p>At the end of the hands-on exercises, you created a web application using an MVC architecture and a front controller.</p>
+<p>You can read about the Front Controller pattern here:</p>
+<p><a href="http://www.oracle.com/technetwork/java/frontcontroller-135648.html">http://www.oracle.com/technetwork/java/frontcontroller-135648.html</a></p>
+<p>There are many MVC frameworks. JavaServer Faces, as we will see next week, uses a Servlet called <code>javax.faces.webapp.FacesServlet</code>. Spring uses a front controller Servlet called <code>org.springframework.web.servlet.DispatcherServlet</code>.</p>
+<p>Your challenge is to create your own simple MVC framework.</p>
+<p>Your framework might help solve some (or all!) of the following common problems:</p>
+<ul>
+<li>Mapping a 'command' parameter to an appropriate class and/or method.</li>
+<li>Automatically selecting a view and forwarding control to the view after executing the command.</li>
+<li>Automatically setting the values of form parameters onto Java Beans in model classes</li>
+</ul>
+<h3>Hints</h3>
+<p>You can dynamically load and instantiate classes using <code>Class.forName("...").newInstance()</code> and you can inspect/call methods of a class using the package <code>java.lang.reflect</code> (or Apache Commons BeanUtils).</p>
+<p>You might decide on a naming convention to automatically map from commands to view names.</p>
+<h3>Reflect</h3>
+<p>Now that you've implemented your own framework, what are the reasons that you shouldn't do this in production code?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

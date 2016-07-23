@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 7: Naming (JNDI) and dependency injection (CDI)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 7</li>
+            </ul>
+            <ul>
+                <li><a href="07.html">Study</a></li>
+                <li><a href="07-practice.html">Practice</a></li>
+                <li class="title">Challenge</li>
+                <li><a href="07-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Naming (JNDI) and dependency injection (CDI)</h1>
+            <p><i>Practice for Week 7: 12 September</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Proxies Exposed</h2></label>
+                <div class="content">
+                    <p>Java does not allow you direct access to the memory location or "pointers" of an object.
+This makes it difficult to detect whether CDI is exposing real objects or proxies.</p>
+<p>However, you can get the name of the class of an object using <code>object.getClass().getName()</code>.
+In addition, you can use <code>System.identityHashCode(object)</code> as an approximation of a pointer.
+This function returns an integer that uniquely identifies each object (technically, the specification does not guarantee it, but Java Virtual Machines provide this on a "best effort" basis).</p>
+<h3>Challenge</h3>
+<p>Can you use <code>object.getClass()</code> and <code>System.identityHashCode(object)</code> to prove that CDI uses special classes (i.e., proxies) in dependency injection, and that these proxies redirect calls to an underlying bean?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

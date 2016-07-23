@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 8: Enterprise Java Beans (EJB)</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 8</li>
+            </ul>
+            <ul>
+                <li><a href="08.html">Study</a></li>
+                <li class="title">Practice</li>
+                <li><a href="08-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Enterprise Java Beans (EJB)</h1>
+            <p><i>Practice for Week 8: 19 September</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Enterprise Application</h2></label>
+                <div class="content">
+                    <p>In this exercise, we will create a very simple EJB that returns a greeting.</p>
+<p>In previous lab exercises, we began by creating a "Web Application" project. This exercise is different. You will be creating an "Enterprise Application".</p>
+<h3>Create an Enterprise Application</h3>
+<p>In NetBeans, create a new project:</p>
+<ol>
+<li>In the "Java EE" category, select the type "<strong>Enterprise Application</strong>".</li>
+<li>Click "Next &gt;".</li>
+<li>Enter the project name, "Week8" (without the quotes).</li>
+<li>Click "Next &gt;".</li>
+<li>Use GlassFish as the Server and allow NetBeans to create EJB and web application modules (i.e., leave the checkboxes checked).</li>
+<li>Click "Finish".</li>
+</ol>
+<p>You should have three projects appear in NetBeans:</p>
+<ol>
+<li>Week8. This project is your complete Enterprise Application. This project is used to create an EAR file that is deployed to your application server. An EAR file combines a WAR file (i.e., you web application) with a JAR file (i.e., your EJB application) into a single file.</li>
+<li>Week8-ejb. This project contains your Enterprise JavaBeans.</li>
+<li>Week8-war. This project contains your web application (i.e., Servlets, JSP, JSF and backing beans). This project depends on Week8-ejb.</li>
+</ol>
+<p>In this exercise, you will be using JavaServer Faces, so you should add that framework to the Week8-war project:</p>
+<ol>
+<li>Right click on the "Week8-war" project and select "Properties".</li>
+<li>Click on the "Frameworks" category.</li>
+<li>Add JavaServer Faces to the project.</li>
+</ol>
+<p>Also, remember to add the Java EE 7 API Library to the Week8-war project:</p>
+<ol>
+<li>While still in properties, select the "Libraries" category.</li>
+<li>Click on "Add Library..." (to add a compile-time library)</li>
+<li>Choose the "Java EE 7 API Library" and click "Add Library"</li>
+<li>Click OK to close the project properties</li>
+</ol>
+<h3>Important Tip</h3>
+<p>Java EE 7 allows you to deploy EJBs using a WAR or an EAR file. In NetBeans, this means that even though your Week8-war is only part of your Enterprise Application, you are still able to run Week8-war directly.</p>
+<p>This can result in problems when/if the same EJB is deployed twice. I recommend only deploying or running your application via the Week8 enterprise application.</p>
+<p>This means that if you want to run your project, you should NOT run individual JSF (xhtml) files.
+Instead, you should right click on, and run, the Week8 Enterprise Application.
+Avoid using the large green "play" button in NetBeans as it may not run the project that you are intending to run.</p>
+<p>If you are experiencing problems with NetBeans and/or GlassFish, here are some steps you might try to resolve the problem:</p>
+<ul>
+<li>Deploy the Enterprise Application again. Right click on the Enterprise Application (e.g., Week8) and then click "Deploy".</li>
+<li>Undeploy all applications. In the Services tab, locate Servers &gt; GlassFish Server &gt; Applications. Right click on Applications to refresh the list. Select all the Applications with your mouse (hold down the shift key). Then right click and select "Undeploy".</li>
+<li>Restart GlassFish. If you are seeing error messages about NetBeans being unable to delete JAR files, then you should undeploy all applications and restart GlassFish. To restart GlassFish, in the Services tab locate Servers &gt; GlassFish Server. Then, right click on GlassFish Server and select Restart (or Stop and then Start).</li>
+</ul>
+<h3>Create a UniqueIdGenerator Helper Class</h3>
+<p>As with the Week 7 lab exercises, you can use a UniqueIdGenerator class to understand when new objects are created.</p>
+<p>Right click on the "Week8-ejb" project and select "New..." and "Other...".</p>
+<p>Select the "Java Class" file type in the "Java" category.
+Name the class UniqueIdGenerator and use the package "au.edu.uts.aip.greeting.domain"</p>
+<p>Enter the following Java code:</p>
+<pre><code>package au.edu.uts.aip.greeting.domain;
+
+public class UniqueIdGenerator {
+
+    private static int counter = 0;
+
+    public static synchronized int generate() {
+        counter++;
+        return counter;
+    }
+
+}
+</code></pre>
+<h3>Create an Enterprise JavaBean</h3>
+<p>Now you can create your first Enterprise JavaBean.</p>
+<p>Right click on the "Week8-ejb" project and select "New..." and "Other...".</p>
+<p>An EJB is an ordinary Java class with appropriate annotations or deployment descriptors.
+We will create an EJB manually.</p>
+<p>Select the "Java Class" file type in the "Java" category.
+Name the class GreetingBean and use the package "au.edu.uts.aip.greeting.domain"</p>
+<p>You could have automatically created a bean using the "Session Bean" type in the "Enterprise JavaBeans" category.
+However, for the purposes of this exercise we will create it manually.</p>
+<p>Enter the following Java code:</p>
+<pre><code>package au.edu.uts.aip.greeting.domain;
+
+import javax.ejb.*;
+
+@Stateless
+public class GreetingBean {
+
+    private int uniqueId = UniqueIdGenerator.generate();
+
+    public int getUniqueId() {
+        return uniqueId;
+    }
+
+    public String getGreeting() {
+        return "Hello, World!";
+    }
+
+}
+</code></pre>
+<p>Now, you can create a client for that EJB.</p>
+<p>To the Week8-war project, add a new JavaServer Faces file named greeting (i.e., greeting.xhtml):</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Greeting&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;
+            The greeting is: &lt;h:outputText value="#{greetingController.greeting}"/&gt;.
+        &lt;/p&gt;
+        &lt;p&gt;
+            The unique id is: &lt;h:outputText value="#{greetingController.uniqueId}"/&gt;.
+        &lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>In the Week8-war project, also add a new Java class named GreetingController in the package au.edu.uts.aip.greeting.web:</p>
+<pre><code>package au.edu.uts.aip.greeting.web;
+
+import au.edu.uts.aip.greeting.domain.*;
+import javax.ejb.*;
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class GreetingController {
+
+    @EJB
+    private GreetingBean greeting;
+
+    public String getGreeting() {
+        return greeting.getGreeting();
+    }
+
+    public int getUniqueId() {
+        return greeting.getUniqueId();
+    }
+
+}
+</code></pre>
+<p>Now, run the Enterprise Application. Do this by right clicking on the Week8 project (NOT Week8-war) and clicking Run.</p>
+<p>Change the URL of your browser to <a href="http://localhost:8080/Week8-war/faces/greeting.xhtml">http://localhost:8080/Week8-war/faces/greeting.xhtml</a> and check the output.</p>
+<h3>Reflect</h3>
+<p>Obviously, we could have achieved the same effect without the complexity of EJBs. 
+What might be some advantages to this complexity? 
+Why might it be useful to have our EJBs and web application in separate projects?</p>
+<p>Recalling the the Week 8 lecture, are we accessing the EJB via a "Local" or "Remote" invocation?</p>
+<p>Have we created a Session Bean or a Message Driven Bean?</p>
+<p>Is the bean Stateful or Stateless? What does this mean?</p>
+<p>Why does the Unique Id stay the same when you refresh? What happens if you use a second browser, clear your cookies or launch "incognito mode" to start a new browser session? Why does the Unique Id still stay the same?</p>
+<p>How could you "force" GlassFish to create new instances of the Session bean? (i.e., how can you get the UniqueId to change?).</p>
+<p>How do things change if you use Singleton beans?</p>
+<h3>Hint</h3>
+<p>GlassFish will create additional session beans if the existing beans are "busy".</p>
+<p>You can make the beans busy by slowing them down. Slow down the request handling by adding the following code to getGreeting of your GreetingBean:</p>
+<pre><code>try {
+    Thread.sleep(5000); // wait for 5000 milliseconds (i.e., 5 seconds)
+} catch (InterruptedException ie) {
+    // do nothing
+}
+</code></pre>
+<p>You should make this change and save the file.
+If you just refresh your browser window, you may receive an exception: "Exception attempting to inject ...".
+You will need to redeploy the Enterprise Application.
+Do this by right clicking on Week8 and selecting "Deploy".</p>
+<p>Now that your Stateless Session bean runs slower, you can open two tabs at once and refresh both quickly.
+What does this tell us?</p>
+<p>To change the session bean from stateless to singleton, modify your GreetingBean class as follows...</p>
+<p>Change this:</p>
+<pre><code>@Stateful
+public class GreetingBean {
+</code></pre>
+<p>into this:</p>
+<pre><code>@Singleton
+public class GreetingBean {
+</code></pre>
+<p>(i.e., <code>@Stateful</code> becomes <code>@Singleton</code>)</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>EAR Files</h2></label>
+                <div class="content">
+                    <p>NetBeans is able to automatically deploy your Enterprise Application to your local GlassFish server.</p>
+<p>However, if you want to deploy your application on another server, you would need to use an EAR file.</p>
+<p>EAR stands for "Enterprise ARchive".</p>
+<p>An EAR file has been built for you by NetBeans.</p>
+<p>Open the local filesystem browser (e.g., Windows Explorer, Mac Finder or browse your home directory in the Labs).
+Find your NetBeansProjects folder and open the Week8 project folder.
+Inside, you will find another folder called "dist".</p>
+<p>There will be a number of files, including an EAR file.</p>
+<p>An EAR file is simply a ZIP file that has been renamed. Inside an EAR file is a special file structure.</p>
+<p>You should unzip the EAR file (depending on your operating system, you may need to first rename it to a ZIP file) and examine the contents.
+If there are any JAR (Java ARchive) or WAR (Web ARchive) files, you can also unzip those files (again, JAR and WAR files are simply ZIP files that have been renamed).</p>
+<p>Even though NetBeans has automatically created the EAR file, it is possible to create an EAR file manually. 
+You simply need to ensure you have the right files in the correct directory structure. 
+You compress the directories using zip and then rename the archive into EAR.</p>
+<h3>Reflect</h3>
+<p>What is the structure of an EAR file? Can you describe the structure in words?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Remote Clients</h2></label>
+                <div class="content">
+                    <p>In this exercise, we will create remote interface for the GreetingBean EJB.</p>
+<p>If you have added code to slow down your EJB (i.e., Thread.sleep), you should comment that code out.
+(If you don't comment it out, it might become confusing trying to decide if your code has crashed or if it is just running slow.)</p>
+<p>If you made your session bean @Singleton, you should change it back to be @Stateless.</p>
+<h3>Create a Remote Interface</h3>
+<p>To your Week8-ejb project, add a new file of type "Java Interface" in the category "Java".
+Name the file GreetingRemote and use the package au.edu.uts.aip.greeting.domain.</p>
+<p>Enter the following code:</p>
+<pre><code>package au.edu.uts.aip.greeting.domain;
+
+import javax.ejb.*;
+
+@Remote
+public interface GreetingRemote {
+
+    public String getGreeting();
+    public int getUniqueId();
+
+}
+</code></pre>
+<p>Now you can modify GreetingBean so that it implements this interface.
+In other words, change these lines in GreetingBean.java:</p>
+<pre><code>@Stateless
+public class GreetingBean {
+</code></pre>
+<p>into these lines:</p>
+<pre><code>@Stateless
+public class GreetingBean implements GreetingRemote {
+</code></pre>
+<p>Before deploying and/or testing the application, there is one more thing we need to do.</p>
+<p>By default, a Session bean with no interfaces only has a local, no-interface view.</p>
+<p>However, once you have implemented interfaces for the bean, the local no-interface is no longer assumed.</p>
+<p>The rules work something like this:</p>
+<ol>
+<li>(Default rule) If a bean has no interfaces: the bean exposes a no-interface view only</li>
+<li>(Default rule) If a bean has interfaces: the bean exposes local interface views only</li>
+<li>If a bean has interfaces and @Remote or @Local is annotated on the bean only: all interfaces are remote or local accordingly</li>
+<li>If a bean and its interfaces are explicitly annotated: no default rules apply, only those views that are annotated are exposed</li>
+</ol>
+<p>(The exact rules can be found in Section 4.9.7 of the <a href="https://jcp.org/en/jsr/detail?id=345">JSR 345 Enterprise JavaBeans 3.2 specification</a>)</p>
+<p>In other words, we previously relied on the default no-interface view.
+However, now we have used a @Remote interface, the default rule does not apply.</p>
+<p>If we wish to continue using the EJB in our JavaServer Faces backing bean (i.e., in GreetingController we had: @EJB private GreetingBean greeting), we need to either:</p>
+<ul>
+<li>Annotate the EJB with @LocalBean, or</li>
+<li>Create a local business interface and annotate that with @Local, or</li>
+<li>Modify the Faces backing bean to use GreetingRemote (i.e., @EJB private GreetingRemote greeting).</li>
+</ul>
+<p>For now, you can use the first strategy.
+Annotate your EJB with @LocalBean.</p>
+<p>i.e., Change this:</p>
+<pre><code>@Stateless
+public class GreetingBean implements GreetingRemote {
+</code></pre>
+<p>into this:</p>
+<pre><code>@Stateless
+@LocalBean
+public class GreetingBean implements GreetingRemote {
+</code></pre>
+<p>Save all your files, and redeploy the Week8 project (i.e., Right click on the Week8 project, and click on "Deploy").
+Check that your web application still works (it should still work - we aren't using the Remote interface yet).</p>
+<h3>Creating a Remote Client</h3>
+<p>Now that you have a remote interface for your EJB, you can use access this bean remotely (i.e., using a network connection to send/receive data).</p>
+<p>Create a new project of type "Enterprise Application Client" in the "Java EE" category:</p>
+<ol>
+<li>Name the project Week8-app-client. For the project location, I suggest creating it inside the project folder for your Week8 Enterprise Application. i.e., create it in NetBeansProjects/Week8 instead of just NetBeansProjects.</li>
+<li>Set the main class to be au.edu.uts.aip.greeting.client.Main and make sure that "Week8" is selected in the "Add to Enterprise Application" drop down list.</li>
+</ol>
+<p>Make Week8-ejb a library for Week8-app-client:</p>
+<ol>
+<li>Inside the Week8-app-client project, right click on the "Libraries" subfolder and click on "Add Project...".</li>
+<li>Expand Week8 and select Week8-ejb.</li>
+<li>Click on "Add Project JAR Files" to add the project's jar files to the client application.</li>
+</ol>
+<p>Open the main class and enter the following code:</p>
+<pre><code>package au.edu.uts.aip.greeting.client;
+
+import au.edu.uts.aip.greeting.domain.*;
+import javax.naming.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        System.out.println("Starting Week8 Client");
+        GreetingRemote remote = InitialContext.doLookup("java:app/Week8-ejb/GreetingBean!au.edu.uts.aip.greeting.domain.GreetingRemote");
+        System.out.println(remote.getGreeting());
+    }
+
+}
+</code></pre>
+<p>In the above, we have used JNDI to look up an EJB in the same application.</p>
+<p>The JNDI name can be understood as follows:</p>
+<pre><code>java:app/Week8-ejb/GreetingBean!au.edu.uts.aip.greeting.domain.GreetingRemote
+</code></pre>
+<ul>
+<li><code>java:app/</code> Lookup within the application namespace</li>
+<li><code>/Week8-ejb</code> The module name</li>
+<li><code>/GreetingBean</code> The name of the EJB</li>
+<li><code>!au.edu.uts.aip.greeting.domain.GreetingRemote</code> The business interface to use (if there were only one interface, this would not be needed)</li>
+</ul>
+<p>We could have also used the global name:</p>
+<pre><code>java:global/Week8/Week8-ejb/GreetingBean!au.edu.uts.aip.greeting.domain.GreetingRemote
+</code></pre>
+<p>Note that this is slightly different in that the global name uses <code>java:global</code> and also includes the name of the application (<code>/Week8/</code>).</p>
+<p>You may have noticed that when you deploy your application, the GlassFish server output shows the global name of every bean you deploy.</p>
+<p>See if you can find these global names in the GlassFish server logs (i.e., the output from GlassFish that you see inside NetBeans).</p>
+<h3>Run the Application Client</h3>
+<p>Once again, I recommend running this application via the Enterprise Application, rather than attempting to run an individual project.</p>
+<p>To do this, right click on your Week8 project (i.e., your Enterprise Application project) and select "Properties".
+In the "Run" category, change the client module to "Week8-app-client" and then click OK.</p>
+<p>Now, to run the application client, you can right click on the Week8 project and click run.</p>
+<p>The application will be redeployed and you can see the output of the console application.</p>
+<p>You should see the greeting, "Hello, World!" appear in the output of the console application (after the compiler/build information).</p>
+<h3>Reflect</h3>
+<p>What happens if you change the JNDI reference to use the name of the local interface? (You can find the name of the local interface by examining the GlassFish server output when your EJB is deployed. It should be shown alongside the name of the remote interface). <br>
+It should cause an exception. Why?</p>
+<p>You added the entire EJB project as a library for the application client. This could cause problems when deploying the application. This is because the classes for the entire application are included in the project (i.e., all of the domain logic, not just the remote interfaces). Can you think of any way to address this problem? (Note, you don't need to do it - this is just a discussion point).</p>
+<h3>Using Dependency Injection</h3>
+<p>Finally, you can replace the JNDI lookup with dependency injection.</p>
+<p>When using the application client container, you can use the @EJB annotation on static methods:</p>
+<pre><code>@EJB
+private static GreetingRemote greeting;
+</code></pre>
+<p>Now, you can change your application client to use this injected bean instead of a JNDI lookup.</p>
+<p>(Additional note: the GlassFish 4 application client container does not yet support injection of EJBs using @Inject.)</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Stateful Session Beans</h2></label>
+                <div class="content">
+                    <p>The GreetingBean EJB that you created was a Stateless Session Bean (SLSB). In this exercise, you will modify the bean to be a Stateful Session Bean (SFSB).</p>
+<p>The bean will greet people by name.</p>
+<p>You will create a method to set the current name, and then modify getGreeting to use the name that has been set.</p>
+<ol>
+<li>Replace the @Stateless annotation of your GreetingBean with @Stateful.</li>
+<li>Add a private field: <br>
+<code>private String name;</code></li>
+<li>Add a setter to the Remote interface and to the bean implementation: <br>
+<code>public void setName(String name)</code></li>
+<li>Finally, modify your <code>getGreeting()</code> method so that it will use the name that has been set.</li>
+</ol>
+<p>i.e., You should be able to use your Stateful Session Bean, as follows:</p>
+<pre><code>remote.setName("Carol");
+String greeting = remote.getGreeting();
+System.out.println(greeting); // This should display Hello, Carol!
+</code></pre>
+<p>Now, modify your JavaServer Faces code and your application client code to use the Stateful Session Bean.</p>
+<h3>Reflect</h3>
+<p>Would the code still work if it was @Stateless? Why? What would happen? When could it cause problems?</p>
+<p>Instead of using a stateful bean, we could have eliminated the state by creating following method on our stateless bean:</p>
+<pre><code>public String getGreeting(String name) {
+  return "Hello, " + name + "!";
+}
+</code></pre>
+<p>Would this be "better" or "worse"? What would be some advantages or disadvantages of this approach?</p>
+<h3>Removing a Stateful Bean</h3>
+<p>A Stateful bean will automatically be closed by the application server after a timeout.
+However, we should release a Stateful bean as soon as we are finished with it.
+To do this, you simply invoke a method that has been annotated with @Remove.</p>
+<p>Add the following method to your GreetingBean:</p>
+<pre><code>@Remove
+public void close() {
+  // do nothing - our application doesn't need to do anything when it closes
+}
+</code></pre>
+<p>The stateful session bean does not make use of any resources that need to be closed.
+As such, our close() method does not need to do anything.
+However, because the method is annotated with @Remove, when we call the method the application server will know that it can discard the bean.</p>
+<p>To use this close method from the application client, you will also need to also expose it in the remote interface, GreetingRemote.</p>
+<p>Now, modify your client code so that it creates several stateful session beans but does not close all of them.</p>
+<h3>Hints</h3>
+<p>NetBeans will redeploy your console application each time you run it.
+When your application is redeployed, stateful session beans may be lost.
+So, if you want to experiment with creating and closing stateful session beans, you will need to write one console program that does it all in one go.</p>
+<p>It is possible to get around this, but it's not really relevant right now. (If you wanted to be able to run code multiple times, you could instead use your JavaServer Faces project.)</p>
+<p>To monitor the creation and removal of session beans, enable EJB monitoring in GlassFish.</p>
+<p>First log into the GlassFish Server Administration console.
+In the "server (Admin Server)" section, you'll find several tabs. 
+Select "Monitor", and in the "Applications" section you can see the monitoring information if it is enabled.
+However, if it isn't enabled, then click on "Configure Monitoring".</p>
+<p><img alt="Check monitoring" src="08/monitor1.png"></p>
+<p>Then set the "Ejb Container" monitoring level to "HIGH" and click Save.</p>
+<p><img alt="Enable EJB monitoring" src="08/monitor2.png"></p>
+<p>Finally, return back to the "server (Admin Server)" section of the admin console and you will be able to view statistics about created EJBs:</p>
+<p><img alt="View statistics" src="08/monitor3.png"></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Session Beans and Transfer Objects</h2></label>
+                <div class="content">
+                    <p>Previously, you created "Data Access Objects" and "Data Transfer Objects".</p>
+<p>The name "Data Transfer Object" actually refers to an object used for communicating results to remote clients.</p>
+<p>i.e., A Data Transfer Object is often used for "transferring" data over a network to a remote client.</p>
+<p>The same pattern and name is perfectly appropriate in the way that we have been using it during previous weeks.
+With a Data Access Object on the same machine, you still "transfer" data to and from the Data Access Object.</p>
+<p>For this final activity, you should create a Data Transfer Object, called "PersonName".
+You will use that Data Transfer Object to pass information to the session bean.</p>
+<p>The PersonName should have two private properties (firstName and lastName) and corresponding getters and setters.</p>
+<p><em>Modify your Stateful Session Bean:</em></p>
+<p>Instead of setName accepting a String...</p>
+<pre><code>public void setName(String name) {
+</code></pre>
+<p>...modify the setName method so that it accepts a PersonName...</p>
+<pre><code>public void setName(PersonName name) {
+</code></pre>
+<p>Modify your JavaServer Faces client and your application client to use the new DTO.</p>
+<h3>Hints</h3>
+<p>If you are using PersonName in the remote interface, it needs to implement <code>java.io.Serializable</code>.
+You may get CORBA exceptions if your PersonName class does not implement Serializable. </p>
+<h3>Reflect</h3>
+<p>Why must PersonName implement Serializable?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

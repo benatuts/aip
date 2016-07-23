@@ -1,0 +1,830 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 4: JavaServer Faces (JSF) and MVC frameworks</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 4</li>
+            </ul>
+            <ul>
+                <li><a href="04.html">Study</a></li>
+                <li class="title">Practice</li>
+                <li><a href="04-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>JavaServer Faces (JSF) and MVC frameworks</h1>
+            <p><i>Practice for Week 4: 22 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>This lab is perhaps the most challenging lab session of the semester. 
+You will be learning many new topics and covering a lot of material.</p>
+<p>Please don't be stressed. Remember that your tutor is able to help you.
+If you get stuck, simply ask for help.
+You might also consider working at the same rate as your 'neighbour' in the lab: if either of you get stuck, you can help each other.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Hello JSF</h2></label>
+                <div class="content">
+                    <p>JavaServer Faces (JSF) is an Model-View-Controller (MVC) framework.</p>
+<p>JSF has its own Front-Controller Servlet. When you use JSF, you implement the following:</p>
+<ul>
+<li><strong>Controllers</strong> and <strong>Models</strong> <br>
+  You write these with managed 'backing beans' (we will see an example below) and ordinary Java code.</li>
+<li><strong>Views</strong> <br>
+  You write these using Facelets. Facelets is a new technology designed to replace JavaServer Pages. You <em>can</em> use JavaServer Pages for your views but this is no longer recommended when using JavaServer Faces.</li>
+</ul>
+<p>The purpose of this first exercise is become familiar with a JavaServer Faces project.</p>
+<h3>Create a JSF Project</h3>
+<p>Create a new project named Week4:</p>
+<ol>
+<li>Select "Web Application" type from the "Java Web" category.</li>
+<li>Enter the project name "Week4" (without the quotes).</li>
+<li>Ensure the Server is "GlassFish Server 4.1.1" and Java EE Version is "Java EE 7 Web".</li>
+<li><strong>Important!</strong> Select "JavaServer Faces" from the list of frameworks.</li>
+</ol>
+<p>There is a small bug in the way that NetBeans 8.1 works with GlassFish 4.1.1. It does not automatically detect all the Java EE packages used by GlassFish.</p>
+<p>You will need to add a library to any JavaServer Faces project to ensure that your code will compile properly:</p>
+<ol>
+<li>Right click on the "Libraries" folder in your Week4 project and select "Add Library..."</li>
+<li>Choose the "Java EE 7 API Library" and then click "Add Library"</li>
+</ol>
+<h3>Examine the Project</h3>
+<p>In the "Web Pages" (or "web") folder, there is a file called index.xhtml. This is a view defined using Facelets. If you open the file, you will see it is an XML / XHTML file containing a greeting:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Facelet Title&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        Hello from Facelets
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>In the "Configuration Files" (or "web/WEB-INF/") folder, there is a file called web.xml.</p>
+<p>This web.xml file contains the following configuration information:</p>
+<pre><code>  &lt;servlet&gt;
+      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+      &lt;servlet-class&gt;javax.faces.webapp.FacesServlet&lt;/servlet-class&gt;
+      &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+      &lt;servlet-name&gt;Faces Servlet&lt;/servlet-name&gt;
+      &lt;url-pattern&gt;/faces/*&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+</code></pre>
+<p>This tells the web server to handle any JSF requests using a special Servlet called FacesServlet.</p>
+<h3>Run the Application</h3>
+<p>Run the JSF application by right clicking on index.xhtml and clicking on Run.</p>
+<p>NetBeans should open your browser to the following address:</p>
+<p><a href="http://localhost:8080/Week4/faces/index.xhtml">http://localhost:8080/Week4/faces/index.xhtml</a></p>
+<h3>Reflect</h3>
+<p>For what  reasons might Facelets use <code>&lt;h:head&gt;</code> and <code>&lt;h:body&gt;</code> instead of just the html tags <code>&lt;head&gt;</code> and <code>&lt;body&gt;</code>?</p>
+<p>Why is "/faces/" part of the URL in your browser?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Navigation</h2></label>
+                <div class="content">
+                    <p>In this exercise, we will create a simple workflow.</p>
+<h3>Create Views</h3>
+<p>Create a new Facelet view named question.xhtml:</p>
+<ol>
+<li>Right click on the "Web Pages" folder of your "Week4" project, and select New... Other...</li>
+<li>In the "JavaServer Faces" category, create a new file with type "JSF Page".</li>
+<li>Enter the file name "question" (without the quotes). In the options, leave Facelets selected.</li>
+</ol>
+<p>Enter the following code into the view for question.xhtml:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Bad Advice&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;Are you happy?&lt;/p&gt;
+        &lt;p&gt;
+            &lt;h:button value="Yes" outcome="yes"/&gt;
+            &lt;h:button value="No" outcome="no"/&gt;
+        &lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Now create two more JSF Pages: good and morecats.</p>
+<p><strong>good.xhtml</strong>:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Bad Advice&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;It is good that you're happy.&lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>morecats.xhtml</strong>:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Bad Advice&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;Get more cats.&lt;/p&gt;
+        &lt;p&gt;
+            &lt;h:button value="Ok" outcome="ok"/&gt;
+        &lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Run Faces Application</h3>
+<p>Save all files and run question.xhtml. Your browser should be opened to the following address:</p>
+<p><a href="http://localhost:8080/Week4/faces/question.xhtml">http://localhost:8080/Week4/faces/question.xhtml</a></p>
+<p>The page will render with several error messages.
+This is because JSF does not know how to handle the outcomes.</p>
+<h3>Configure Rule-based Navigation</h3>
+<p>Create a new faces-config.xml file:</p>
+<ol>
+<li>Create a new file of type "JSF Faces Configuration" in the "JavaServer Faces" category.</li>
+<li>Leave the filename in the default configuration: faces-config.</li>
+</ol>
+<p>"faces-config.xml" should have appeared in your "Configuration Files" (or "web/WEB-INF") folder.</p>
+<p>Open "faces-config.xml".
+At the top-left corner of the XML editor, there should be three tabs: "Source", "PageFlow" and "History".</p>
+<p>Click on the PageFlow tab.</p>
+<p>You should see a canvas that looks something like this:</p>
+<p><img alt="Before" src="04/before.png"></p>
+<p>Near the right side of each page icon, there is a small blue target.
+Use your mouse to drag a line from question.xhtml to good.xhtml.
+An arrow should appear from question.xhtml to good.xhtml.
+Double click on "case1" and rename the arrow to "yes" (without the quotes).</p>
+<p>Draw additional navigation rules:</p>
+<ul>
+<li>from question.xhtml to morecats.xhtml for "no"</li>
+<li>from morecats.xhtml to question.xhtml for "ok"</li>
+</ul>
+<p>The result should look something like this:</p>
+<p><img alt="After" src="04/after.png"></p>
+<p>(The position of the pages does not matter. It is only important that you have the arrows going correctly from page to page.)</p>
+<p>Ensure that all files are saved.</p>
+<p>Now run the project again. Do this by right clicking on question.xhtml in the "Web Pages" (or "web") folder of your project and clicking on "Run File".</p>
+<p>Your web browser should open to the following address:</p>
+<p><a href="http://localhost:8080/Week4/faces/question.xhtml">http://localhost:8080/Week4/faces/question.xhtml</a></p>
+<p>By clicking on the buttons, the JSF navigation should take you from page to page as defined in the navigation.</p>
+<h3>Reflect</h3>
+<p>Why might it be useful to separate navigation from the page content?</p>
+<h3>Use Direct Navigation</h3>
+<p>In addition to the PageFlow in faces-config.xml, there is an implicit navigation rule for each view.</p>
+<p>Consider this button:</p>
+<pre><code>&lt;h:button value="Yes" outcome="yes"/&gt;
+</code></pre>
+<p>The outcome can be replaced by the name of the target view:</p>
+<pre><code>&lt;h:button value="Yes" outcome="good"/&gt;
+</code></pre>
+<p>Now, modify all of your Faces files (good.xhtml, morecats.xhtml and question.xhtml) so that all the <code>&lt;h:button&gt;</code>s use the direct name of the target view.</p>
+<h3>Reflect</h3>
+<p>When would it be better to use navigation rules in faces-config.xml and when would it be better to use direct navigation?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Backing Bean</h2></label>
+                <div class="content">
+                    <p>In this exercise we will use an action in a backing bean to control navigation.</p>
+<p>Before we start, add another JSF file to your project, called "newgown" (i.e., newgown.xhtml).</p>
+<p>Use this as the source of the file <strong>newgown.xhtml</strong>:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Bad Advice&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;p&gt;Buy a new dressing gown.&lt;/p&gt;
+        &lt;p&gt;
+            &lt;h:button value="Ok" outcome="question"/&gt;
+        &lt;/p&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Backing Beans</h3>
+<p>A backing bean is a Java Bean that has been annotated with <code>@Named</code>.</p>
+<p>JavaServer Faces uses the <code>@Named</code> annotation to refer to the backing bean by name.
+By default the name of the bean is the same as the name of the class, where the first letter has been made lowercase:</p>
+<ul>
+<li>e.g., The class <code>MyBean</code> will use name <code>myBean</code></li>
+<li>e.g., The class <code>AnotherBean</code> will use name <code>anotherBean</code></li>
+<li>e.g., The class <code>QuestionController</code> will use name <code>questionController</code></li>
+</ul>
+<p>In addition to the <code>@Named</code> annotation, you will need to introduce the relevant scope annotation.
+The scope tells the application server how many instances to create and when to create them.</p>
+<p>Here are some of the scopes you can use:</p>
+<ul>
+<li><code>@ApplicationScoped</code>: one instance of the bean is created for the entire application</li>
+<li><code>@RequestScoped</code>: one instance of the bean is created per request</li>
+<li><code>@SessionScoped</code>: one instance of the bean is created per user session</li>
+<li><code>@Dependent</code>: a new instance of the bean created every time and in every expression that it is used</li>
+</ul>
+<p>There are other scopes, but we will not cover them here. Feel free to research on your own.</p>
+<p>We will focus on RequestScoped as it helps understand the operation of JavaServer Faces.</p>
+<h3>Create a Backing Bean</h3>
+<p>Create a new Java class named "au.edu.uts.aip.advice.QuestionController":</p>
+<ol>
+<li>Create a file of type "Java Class" in the "Java" category.</li>
+<li>Enter the class name "QuestionController" and package name "au.edu.uts.aip.advice".</li>
+</ol>
+<p>Copy the following code into the Java file:</p>
+<pre><code>package au.edu.uts.aip.advice;
+
+import javax.inject.*;
+import javax.enterprise.context.*;
+
+@Named
+@RequestScoped
+public class QuestionController {
+
+    public String doSuggestion() {
+        if (Math.random() &lt; 0.5) {
+            return "morecats";
+        } else {
+            return "newgown";
+        }
+    }
+
+}
+</code></pre>
+<p>Note that the class is annotated by <code>@Named</code> and <code>@RequestScoped</code>.</p>
+<h3>Reflect</h3>
+<p>Do you understand every line of code in this file?</p>
+<h3>Using the Backing Bean</h3>
+<p>Now, we will edit question.xhtml so that the action for the "No" button calls <code>createSuggestion</code>.</p>
+<p>To do this, we need to replace the button with a commandButton (or a commandLink).</p>
+<p>The commandButton currently looks something like the following:</p>
+<pre><code>&lt;h:button value="No" outcome="morecats"/&gt;
+</code></pre>
+<p>Change that line so that it now looks like the following:</p>
+<pre><code>&lt;h:commandButton value="No" action="#{questionController.doSuggestion}"/&gt;
+</code></pre>
+<p>There are three things to note here in JavaServer Faces:</p>
+<ol>
+<li>In JavaServer Pages, Expression Language uses a dollar sign: ${expr} <br>
+   In JavaServer Faces, Expression Language uses the hash symbol: #{expr}</li>
+<li>Our bean was in a class called <code>QuestionController</code>, so JavaServer Faces finds the backing bean using the name "<code>questionController</code>".</li>
+<li>We are referring to a method, not invoking the method. We don't need to use brackets to call the function. (However, there is no harm if you do use the brackets.) <br>
+   i.e., <code>questionController.doSuggestion</code>, rather than <code>questionController.doSuggestion()</code></li>
+</ol>
+<p>Finally, for the commandButton to work, it also needs to be inside a <code>&lt;h:form&gt;</code>.</p>
+<p>i.e., your final file for question.xhtml should look something like this:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Bad Advice&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+
+        &lt;h:form&gt;
+
+            &lt;p&gt;Are you happy?&lt;/p&gt;
+            &lt;p&gt;
+                &lt;h:button value="Yes" outcome="good"/&gt;
+                &lt;h:commandButton value="No" action="#{questionController.doSuggestion}"/&gt;
+            &lt;/p&gt;
+
+        &lt;/h:form&gt;
+
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Run the JSF Application</h3>
+<p>Once again, right click on question.xhtml and click "Run File".</p>
+<p>Whenever you answer "No", it should randomly choose between the two possible outcomes.</p>
+<p><strong>Note:</strong> Whenever you change your Java source code, you should right click on the project to choose "Clean". Then select your file and click run. This helps avoid errors that can sometimes occur when redeploying code over an already running project.</p>
+<h3>Reflect</h3>
+<p>Carefully notice what happens to the URL in your browser whenever you click on "No".
+Does the content of the page match what is suggested by the URL?
+What does this tell us about JavaServer Faces?</p>
+<h3>Using Redirects</h3>
+<p>In the backing bean, change the responses to include <code>faces-redirect=true</code>.</p>
+<p>In other words, in QuestionController.java, replace lines that look like this:</p>
+<pre><code>return "morecats";
+</code></pre>
+<p>with lines that look like this:</p>
+<pre><code>return "morecats?faces-redirect=true";
+</code></pre>
+<p>(You should do it for both morecats and newgown)</p>
+<p>Right click on the project to choose "Clean". Then right click on <code>question.xhtml</code> click run.</p>
+<p>What happens now with the URLs in your browser when you click on "No"?</p>
+<h3>Using Redirects in Navigation</h3>
+<p>Undo those changes you made to the backing bean (i.e., go back to just returning "morecats" and "newgown").</p>
+<p>Now, add new navigation rules to faces-config.xml:</p>
+<ol>
+<li>If you wish, you can delete any of the existing navigation rules because our code currently uses direct navigation. To delete a navigation rule, click on the arrow in the PageFlow editor and press delete.</li>
+<li>Use the visual editor to draw an arrow from question.xhtml to morecats.xhtml, and label the arrow "morecats" (without the quotes)</li>
+<li>Draw another arrow from question.xhtml to newgown.xhtml, and label the arrow "newgown" (without the quotes).</li>
+<li>Switch to the source of faces-config.xml (click on the tab labeled "Source" at the top left of the PageFlow editor).</li>
+<li>Find the <code>&lt;navigation-rule&gt;</code> for question.xhtml and in the navigation cases for morecats and newgown, add a <code>&lt;redirect/&gt;</code> element (this tag should go inside the <code>&lt;navigation-case&gt;</code> element).</li>
+</ol>
+<p>Your faces-config file should end up looking something like this:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+&lt;faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"&gt;
+    &lt;navigation-rule&gt;
+        &lt;from-view-id&gt;/question.xhtml&lt;/from-view-id&gt;
+        &lt;navigation-case&gt;
+            &lt;from-outcome&gt;morecats&lt;/from-outcome&gt;
+            &lt;to-view-id&gt;/morecats.xhtml&lt;/to-view-id&gt;
+            &lt;redirect/&gt;
+        &lt;/navigation-case&gt;
+        &lt;navigation-case&gt;
+            &lt;from-outcome&gt;newgown&lt;/from-outcome&gt;
+            &lt;to-view-id&gt;/newgown.xhtml&lt;/to-view-id&gt;
+            &lt;redirect/&gt;
+        &lt;/navigation-case&gt;
+    &lt;/navigation-rule&gt;
+&lt;/faces-config&gt;
+</code></pre>
+<p>Save any changes, and once again run question.xhtml.</p>
+<p>What happens now with the URLs in your browser when you click on "No"?</p>
+<p>Even though we have removed "?faces-redirect=true" from the outcome, Faces is still redirecting the responses so that the URL matches the content.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Backing Beans and Forms</h2></label>
+                <div class="content">
+                    <p>In this activity, you will build an app for restaurants.</p>
+<h3>Scenario</h3>
+<p>When a restaurant is full, groups may be asked to wait for a table.</p>
+<p>Their name and group size are collected and then they are seated in order of arrival.</p>
+<p>In the remaining exercises for this week, you create a simple application to track a waiting list.</p>
+<p>JavaServer Faces works best when combined with a database. Since we cover databases next week, we will use a simple static class that pretends to be a database.</p>
+<h3>Set Up</h3>
+<p>First, we need to create a few files:</p>
+<p>JavaServer Faces facelets:</p>
+<ul>
+<li>newgroup</li>
+<li>waitinglist</li>
+</ul>
+<p>Java classes in a package called au.edu.uts.aip.waitinglist:</p>
+<ul>
+<li>Group</li>
+<li>WaitingListDatabase</li>
+<li>GroupController</li>
+<li>WaitingListController</li>
+</ul>
+<p>You should be able to create the empty files in NetBeans yourself.</p>
+<p>After creating the files, copy the following code into each of the files:</p>
+<p><strong>Group.java:</strong></p>
+<pre><code>package au.edu.uts.aip.waitinglist;
+
+import java.io.*;
+
+public class Group implements Serializable {
+
+    private int id;
+    private String name;
+    private int size;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+}
+</code></pre>
+<p><strong>WaitingListDatabase.java:</strong></p>
+<pre><code>package au.edu.uts.aip.waitinglist;
+
+import java.io.*;
+import java.util.*;
+
+public class WaitingListDatabase implements Serializable {
+
+    // Helper to generate unique identifiers
+    private static int idGenerator;
+    private static synchronized int generateUniqueId() {
+        idGenerator++;
+        return idGenerator;
+    }
+
+    private static LinkedHashMap&lt;Integer, Group&gt; groups = new LinkedHashMap&lt;&gt;();
+
+    public static Collection&lt;Group&gt; findAll() {
+        return groups.values();
+    }
+
+    public static void create(Group group) {
+        group.setId(generateUniqueId());
+        groups.put(group.getId(), group);
+    }
+
+    public static Group read(int index) {
+        return groups.get(index);
+    }
+
+    public static void update(Group group) {
+        groups.put(group.getId(), group);
+    }
+
+    public static void delete(int index) {
+        groups.remove(index);
+    }
+
+}
+</code></pre>
+<p><strong>GroupController.java:</strong></p>
+<pre><code>package au.edu.uts.aip.waitinglist;
+
+import java.io.*;
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class GroupController implements Serializable {
+
+    private Group group = new Group();
+
+    public Group getGroup() {
+        return group;
+    }
+
+}
+</code></pre>
+<p><strong>WaitingListController.java:</strong></p>
+<pre><code>package au.edu.uts.aip.waitinglist;
+
+import java.io.*;
+import java.util.*;
+import javax.enterprise.context.*;
+import javax.faces.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class WaitingListController implements Serializable {
+
+    public Collection&lt;Group&gt; getGroups() {
+        return WaitingListDatabase.findAll();
+    }
+
+}
+</code></pre>
+<p><strong>waitinglist.xhtml</strong>:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Waiting List&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h:dataTable var="group"  value="#{waitingListController.groups}"&gt;
+            &lt;h:column&gt;
+                &lt;f:facet name="header"&gt;
+                    Group Name
+                &lt;/f:facet&gt;
+                &lt;h:outputText value="#{group.name}"/&gt;
+            &lt;/h:column&gt;
+            &lt;h:column&gt;
+                &lt;f:facet name="header"&gt;
+                    Group Size
+                &lt;/f:facet&gt;
+                &lt;h:outputText value="#{group.size}"/&gt;
+            &lt;/h:column&gt;
+        &lt;/h:dataTable&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>newgroup.xhtml:</strong></p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Waiting List&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1&gt;New Group&lt;/h1&gt;
+        &lt;h:form&gt;
+            &lt;p&gt;
+                &lt;label&gt;Group Name:
+                    &lt;h:inputText value="#{groupController.group.name}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;label&gt;Group Size:
+                    &lt;h:inputText value="#{groupController.group.size}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;h:commandButton value="Save"/&gt;
+            &lt;/p&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3>Reflect</h3>
+<p>What is the purpose of the Group class?</p>
+<p>The WaitingListDatabase is a very simple class with static methods to simulate a database.
+How would you use this class?</p>
+<p>Right click on newgroup.xhtml and select "Run File" to open newgroup in your browser.
+What happens if you enter something that isn't a number into the group size field?</p>
+<h3>Create a Save Action</h3>
+<p>We will now create an action to save a group.</p>
+<p>Modify newgroup.xhtml so that the commandButton has an action that refers to our GroupController: <br>
+i.e., <code>&lt;h:commandButton value="Save" action="#{groupController.saveAsNew}"/&gt;</code></p>
+<p>Now you should implement a method in GroupController.java that implements this action.
+The method should save the group to the database.</p>
+<h3>Hint</h3>
+<p>Our backing bean is request scoped (@RequestScoped).</p>
+<p>This means that every time we request the view, a new instance of the bean is created.</p>
+<p>In other words...</p>
+<p><em>Initial Request</em></p>
+<p>When we first open newgroup, the backing bean is created and the current values of the group object are used to display the form</p>
+<p>i.e., JSF does something like this behind the scenes:</p>
+<pre><code>GroupController groupController = new GroupController(); // When the page is requested
+Group group = groupController.getGroup();                // #{groupController.group}
+String name = group.getName();                           // read #{groupController.group.name}
+String size = Integer.toString(group.getSize());         // read #{groupController.group.size}
+</code></pre>
+<p><em>Form Submission</em></p>
+<p>When we click "Save", another instance of the backing bean is once again created and JavaServer Faces stores the form values into the group object of our backing bean.</p>
+<p>i.e., JSF does something like this behind the scenes:</p>
+<pre><code>GroupController groupController = new GroupController();      // A new instance when the form is submitted
+Group group = groupController.getGroup();                     // #{groupController.group}
+group.setName(request.getParameter("name"));                   // save #{groupController.group.name}
+group.setSize(Integer.parseInt(request.getParameter("size")); // save #{groupController.group.size}
+</code></pre>
+<p>Your method to handle the action should be very short: get the current value of the group and pass it to <code>WaitingListDatabase.create(group)</code>.</p>
+<h3>Test your Application</h3>
+<p>Now you should be able to open two browser windows:</p>
+<ol>
+<li>In one window/tab, use newgroup.xhtml to add groups to the "database".</li>
+<li>In another window/tab, use waitinglist.xhtml to view a list of groups in the "database". Refresh the page to see changes.</li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>Linking with Parameters</h2></label>
+                <div class="content">
+                    <p>Now you will modify the waitinglist.xhtml file so that there are links to add, edit and delete groups in the waiting list.</p>
+<p>First, we will add a <code>&lt;h:link&gt;</code> to the bottom of the page (outside the <code>&lt;h:dataTable&gt;</code>) to open the newgroup page.</p>
+<p>To create a link, use <code>&lt;h:link&gt;</code>.
+A <code>&lt;h:link&gt;</code> is configured in exactly the same way as <code>&lt;h:button&gt;</code>.
+It has a parameter called <em>value</em> that gives the caption to show and a parameter named outcome which is used for the navigation rules.
+In fact, you can just use <code>&lt;h:button&gt;</code> in this exercise, if you wish.</p>
+<p>Then you should modify your existing code so that when the user clicks "Save" on the newgroup view, they return back to waitinglist.</p>
+<h3>Editing and Deleting</h3>
+<p>Next, you will need to create two new JSF views:</p>
+<ul>
+<li>deletegroup, which will show the content of the group and confirm deletion</li>
+<li>editgroup, which will allow the user to edit the group</li>
+</ul>
+<p>You should create both JSF view files. You can leave them with the default "Hello from Facelets" text. We will edit them later.</p>
+<p>Return to the waitinglist view and add two new columns, each with a link that will edit or delete the row.</p>
+<p>You should be able to figure out how to add two additional columns to the dataTable.
+When you add the column, you should not use <code>&lt;h:outputText&gt;</code>.
+Instead, make the value of the column be the <code>&lt;h:link&gt;</code>s that navigate to deletegroup and editgroup.</p>
+<p>You will need to pass a parameter to these other pages to tell it what to edit.
+Parameters can be added using an <code>&lt;f:param&gt;</code> child element.</p>
+<p>For example:</p>
+<pre><code>&lt;h:link value="Edit" outcome="editgroup"&gt;
+    &lt;f:param name="index" value="#{group.id}"/&gt;
+&lt;/h:link&gt;
+</code></pre>
+<p>The above is equivalent to <code>&lt;h:link value="Edit" outcome="editgroup?index=#{group.id}"/&gt;</code></p>
+<p>Run your program to check that the links take you to the correct pages.</p>
+<h3>View Actions</h3>
+<p>One way of passing parameters to backing beans using JavaServer Faces is with <code>&lt;f:viewAction&gt;</code> and/or <code>&lt;f:viewParam&gt;</code>.</p>
+<p>Replace the contents of your editgroup.xhtml file with the following:</p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"&gt;
+    &lt;f:metadata&gt;
+        &lt;f:viewAction action="#{groupController.loadGroup(param.index)}"/&gt;
+    &lt;/f:metadata&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Waiting List&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1&gt;Edit Group&lt;/h1&gt;
+        &lt;h:form&gt;
+            &lt;p&gt;
+                &lt;label&gt;Group Name:
+                    &lt;h:inputText value="#{groupController.group.name}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;label&gt;Group Size:
+                    &lt;h:inputText value="#{groupController.group.size}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;h:inputHidden value="#{groupController.group.id}"/&gt;
+                &lt;h:button value="Cancel" outcome="waitinglist"/&gt;
+                &lt;h:commandButton value="Save" action="#{groupController.saveChanges}"/&gt;
+            &lt;/p&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>There are two things to observe on this page.</p>
+<ol>
+<li>
+<p><em>viewAction</em></p>
+<p>The first is the <f:viewAction> declared inside <f:metadata>.
+The view action is an action on the backing bean.
+The action is performed when the view is loaded.</p>
+<p>For this to work, you will need to add a new method to GroupController backing bean.
+The method should have one parameter (an integer).
+It should load the group from the database and store it as the group in the backing bean:</p>
+<pre><code>public void loadGroup(int index) {
+    group = WaitingListDatabase.read(index);
+}
+</code></pre>
+</li>
+<li>
+<p><em>inputHidden</em></p>
+<p>The <code>&lt;h:inputHidden&gt;</code> is also important.
+Its purpose relates to a subtle point.
+The viewAction is only used when the view is first requested (i.e., by a GET request).
+When you perform an action on the page (i.e., a POST request caused by submitting the form), the viewAction is NOT called.
+So, in order for the id of the waiting group to be remembered during the "Save", we need to store it as a hidden value in the form.</p>
+</li>
+</ol>
+<p>When you first request the page, JavaServer Faces will do something like this behind the scenes:</p>
+<pre><code>GroupController groupController = new GroupController(); // When the page is requested
+groupController.loadGroup(Integer.parseInt(request.getParameter("index"));  // perform the viewAction
+Group group = groupController.getGroup();                // #{groupController.group}
+String name = group.getName();                           // read #{groupController.group.name}
+String size = Integer.toString(group.getSize());         // read #{groupController.group.size}
+int id = group.getId();                                  // read #{groupController.group.id}
+</code></pre>
+<p>When you click "Save", JavaServer Faces will do something like this behind the scenes:</p>
+<pre><code>GroupController groupController = new GroupController();      // A new instance when the form is submitted
+Group group = groupController.getGroup();                     // #{groupController.group}
+group.setName(request.getParameter("name");                   // save #{groupController.group.name}
+group.setSize(Integer.parseInt(request.getParameter("size")); // save #{groupController.group.size}
+group.setId(Integer.parseInt(request.getParameter("id"));     // save hidden #{groupController.group.id}
+</code></pre>
+<p>Now, you should be able to implement the action for the "Save" button.
+The method should have very few lines of code.</p>
+<h3>Run your Application</h3>
+<p>Run your application and check that it is working.</p>
+<h3>Delete</h3>
+<p>Now, modify deletegroup.xhtml (and create appropriate actions in the backing bean) to delete your object.</p>
+<p><em>Hint</em></p>
+<p>The delete group page might look something like this:</p>
+<p>On the deletegroup.xhtml form you are not accepting user input.
+You will show the current value of the group.
+You will only delete the group when the user has confirmed the action.
+Instead of using h:inputText to create an imput field, you can use h:outputText to show the current value.</p>
+<h3>Reflect</h3>
+<p>We have covered a lot of ground. It is okay if you feel overwhelmed.</p>
+<p>At this point, you should be able to summarize the process of handling a JavaServer Faces request.
+When is a new backing bean created? How and when are new instances of Group created?</p>
+<p>We have a method called <code>getGroup()</code> on the backing bean.
+In JSF we access properties using <code>#{groupController.group.name}</code>.
+If, instead, we had a method directly on the <em>backing bean</em> called <code>getName()</code>, then in JSF we could use an expression such as <code>#{groupController.name}</code> (no need for the <code>.group</code>).
+Why have we used this level of indirection? Why not just use setters and getters on the backing bean?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Validation</h2></label>
+                <div class="content">
+                    <p>Finally, we will add validation to our application.</p>
+<p>We would like to ensure that the user enters a name for the group and that the group size is between 1 and 20.</p>
+<p>Add Validation Annotations
+Validation rules can be added, simply by annotated properties of a bean.
+For example, a minimum and maximum age on a Person bean might be enforced using the following annotations:</p>
+<pre><code>@Min(0)
+@Max(130)
+public int getAge() {
+  return age;
+}
+</code></pre>
+<p>There are many validation constraints available:
+<a href="http://docs.oracle.com/javaee/7/api/javax/validation/constraints/package-summary.html">http://docs.oracle.com/javaee/7/api/javax/validation/constraints/package-summary.html</a></p>
+<p>We will edit Group.java to add appropriate constraints:</p>
+<ol>
+<li>Import, <code>import javax.validation.constraints.*;</code></li>
+<li>Add <code>@Min(1)</code> and <code>@Max(20)</code> to the getSize method.</li>
+<li>Add <code>@Size(min=1)</code> to the getName method.</li>
+</ol>
+<p>This is all we need to do!</p>
+<p>Now return to the application and run it!</p>
+<h3>Customize the Error Messages</h3>
+<p>The error messages shown are not particularly user friendly. They can be modified by creating your own validators (advanced!) or adding attributes to the components on your Faces page.</p>
+<p>You can set a custom error message using attributes on your Faces page by modifying your input fields as follows:</p>
+<pre><code>&lt;h:inputText value="#{groupController.group.size}" validatorMessage="Please enter a group size between 1 and 20" converterMessage="You must enter a valid number"/&gt;
+</code></pre>
+<p>The red error messages that appear at the bottom of your pages is actually a debugging feature of JavaServer Faces. In practice, you should tell JSF where the error messages should go.</p>
+<p>To tell faces where to put the error messages, use the following element:</p>
+<pre><code>&lt;h:messages/&gt;
+</code></pre>
+<p>To put individual messages next to their field, you should do as follows:</p>
+<pre><code>&lt;h:inputText id="size" value="#{groupController.group.size}" validatorMessage="Please enter a group size between 1 and 20" converterMessage="You must enter a valid number"/&gt;
+&lt;h:message for="size"/&gt;
+</code></pre>
+<h3>Reflect</h3>
+<p>Validation constraints are annotations on the Group class (as opposed to being stored in the presentation logic or controller).
+What are the advantages and disadvantages of this?</p>
+<p>In a previous "Reflect" exercise, you were asked why we have the indirection: why use <code>#{groupController.group.name}</code> when we could use <code>#{groupController.name}</code>?
+How is validation relevant to that question?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec8" type="checkbox" autocomplete="off" />
+                <label for="sec8"><h2>Congratulations</h2></label>
+                <div class="content">
+                    <p>This has been a whirlwind tour of JSF!</p>
+<p>Congratulations on making it this far! You've achieved a lot and you should be proud of how far you've come in just four weeks.</p>
+<p>We'll be using JavaServer Faces throughout the semester. If you don't 100% understand everything right now, don't panic. You'll continue learning as you put JSF into practice.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec9" type="checkbox" autocomplete="off" />
+                <label for="sec9"><h2>Where next?</h2></label>
+                <div class="content">
+                    <p>Having completed all the exercises, you may like to spend some more time exploring the features of JavaServer Faces.</p>
+<p>Here are some ideas to explore:</p>
+<ul>
+<li>
+<p><strong>Facelets Composition</strong></p>
+<p>Composition can be used to create templates.</p>
+<p><a href="http://www.jsftoolbox.com/documentation/facelets/10-TagReference/facelets-ui-composition.html">http://www.jsftoolbox.com/documentation/facelets/10-TagReference/facelets-ui-composition.html</a></p>
+</li>
+<li>
+<p><strong>Converters and Customer Converters</strong></p>
+<p><a href="http://download.oracle.com/otn_hosted_doc/jdeveloper/j2ee101302/jsf_apps/eventvalidate/sf_avc_converters.html">http://download.oracle.com/otn_hosted_doc/jdeveloper/j2ee101302/jsf_apps/eventvalidate/sf_avc_converters.html</a></p>
+<p><a href="http://download.oracle.com/otn_hosted_doc/jdeveloper/j2ee101302/jsf_apps/eventvalidate/sf_pvc_stdcvregtag.html">http://download.oracle.com/otn_hosted_doc/jdeveloper/j2ee101302/jsf_apps/eventvalidate/sf_pvc_stdcvregtag.html</a></p>
+<p><a href="https://docs.oracle.com/javaee/7/tutorial/jsf-custom010.htm">https://docs.oracle.com/javaee/7/tutorial/jsf-custom010.htm</a></p>
+</li>
+<li>
+<p><strong>Different JSF scopes</strong></p>
+<p>Instead of @RequestScoped, try @SessionScoped. What can you do with a session scoped bean that is difficult with a request scoped bean?</p>
+</li>
+<li>
+<p><strong>PrimeFaces</strong></p>
+<p>PrimeFaces provides many useful components that you can use in a Facelet.
+You can see a showcase here: <a href="http://www.primefaces.org/showcase/">http://www.primefaces.org/showcase/</a></p>
+<p>To add PrimeFaces 5.0 to your project:</p>
+<ol>
+<li>Right click on the project and select "Properties"</li>
+<li>Select the "Frameworks" category</li>
+<li>Click on the "Components" tab</li>
+<li>Click on the "PrimeFaces" checkbox</li>
+<li>Wait while NetBeans searches for the library (wait until the red warning text disappears)</li>
+<li>Click "OK"</li>
+</ol>
+</li>
+</ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

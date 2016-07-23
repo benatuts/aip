@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP: Assignment 1</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Assignment 1</li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Assignment 1</h1>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>Working on your own, design and develop a web application. Using JavaServer Faces and JDBC, develop a website with a range of functionality that includes secure login and the management data. Demonstrate your application in the lab sessions.</p>
+<p><strong>Final deadline:</strong> Your lab session on Monday 12 September 2015 (Week 7). This occurs during StuVac due to a public holiday later in the semester.</p>
+<p><strong>Weight:</strong> 40% of your final grade</p>
+<p><strong>Assessment Type:</strong> Individual project</p>
+<p><strong>Learning Objectives:</strong> This activity assesses objectives 1, 2, 3, 6 and 7 from the subject outline.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Background</h2></label>
+                <div class="content">
+                    <p>Some of the most successful websites on the internet are simple ideas that have been well executed. At the core of these websites is the ability to create, read, update and delete (CRUD) data.</p>
+<p>In this assignment, you will create your own web application that uses Java EE technologies to implement CRUD functionality.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Task</h2></label>
+                <div class="content">
+                    <p>For this assignment, you will create a simple web application that incorporates the following minimum functionality:</p>
+<ul>
+<li>Login</li>
+<li>Create a record</li>
+<li>View or search for records</li>
+<li>Edit a record</li>
+<li>Delete a record</li>
+<li>Logout</li>
+</ul>
+<p>The records can be anything you wish. You will need to decide for yourself what purpose your website will serve:</p>
+<ul>
+<li>You might consider building an application to help a loved family member (<em>e.g.</em>, a Wedding Invitation Tracker).</li>
+<li>You might consider building an application for your work (<em>e.g.</em>, a Safety Incident Register). </li>
+<li>You could build an extremely low-fidelity imitation of a popular website (<em>e.g.</em>, create your own Tinder or Reddit). </li>
+</ul>
+<p>You will not be assessed on the quality of your idea.
+The idea does not have to be &lsquo;good&rsquo; so long as you implement it well (<em>i.e.</em>, using patterns and principles covered in this subject).</p>
+<p>Please note:</p>
+<ul>
+<li>You must <strong>NOT</strong> create an application that is sexist, pornographic, vulgar, hateful or otherwise inappropriate in a professional setting.</li>
+<li>You must <strong>NOT</strong> create an &lsquo;Address Book&rsquo; or &lsquo;To do list&rsquo; application.</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Functional Requirements</h2></label>
+                <div class="content">
+                    <h3>Core Functionality</h3>
+<p>Your web application will need to have login functionality as well as the ability to create, read, update and delete (&ldquo;CRUD&rdquo;) records in a simple database schema.</p>
+<p>In other words, your web application must have the following core functionality:</p>
+<ol>
+<li>Log in (for the core functionality, you can have built-in user accounts)</li>
+<li>Create a record (e.g., <code>INSERT INTO ...</code>) </li>
+<li>List records (e.g., <code>SELECT ... WHERE ...</code>)</li>
+<li>View a record (e.g., <code>SELECT ... WHERE id = ?</code>)</li>
+<li>Update a record (e.g., <code>UPDATE...</code>)</li>
+<li>Delete (or hide) a record (e.g., <code>DELETE ...</code> or <code>UPDATE ... SET visible = 'N' WHERE id = ?</code>)</li>
+<li>Log out</li>
+<li>Your application <strong>must</strong> provide useful error messages if the user enters invalid input</li>
+</ol>
+<h3>Innovation Functionality</h3>
+<p>In addition to the core functionality, 10 marks are devoted to innovative use of Java EE technologies. To get 10 marks, you would be expected to choose three of the following features.</p>
+<ol>
+<li>Ability to create new accounts</li>
+<li>Photo upload/download</li>
+<li>Ability for users to export their data in XML or CSV format</li>
+<li>Polished, beautiful user interface</li>
+<li>Use of a multiple-step &lsquo;wizard&rsquo;-style user interface (<em>e.g.</em>, a multi-step account creation or a multi-step credit-card data entry)</li>
+<li>The ability to log in and create, read, update and delete <strong>more than</strong> one type of record</li>
+<li>Responsive functionality using AJAX or Websockets</li>
+</ol>
+<p>You are not limited to this list: please feel free to negotiate alternative functionality of comparable difficulty with your tutor.</p>
+<h3>Functionality Proposals</h3>
+<p>You must propose your application to your tutor during the first two weeks of semester.</p>
+<p>Your tutor will provide the following template for you to complete:</p>
+<blockquote>
+<p><strong><em>(Application Name)</em></strong>: <br/>
+My application will help <em>(user)</em> to <em>(need)</em> by keeping track of <em>(record)</em>.<br/>
+My application will allow users to login and then create, read, update and delete <em>(records)</em>.<br/>
+In addition, my application will <em>(provide innovation functionality)</em>.</p>
+</blockquote>
+<p>Consider the following three examples of how to use the above template:</p>
+<p>1.</p>
+<blockquote>
+<p><strong><em>UTS Accident Register:</em></strong> <br/>
+My application will help <em>UTS staff</em> to <em>improve safety on campus</em> by keeping track of <em>accidents that have occurred</em>. <br/>
+My application will allow users to login and then create, read update and delete <em>accident reports</em>. <br/>
+In addition, my application will <em>offer a step-by-step accident report creation wizard (5), allow users to upload photos (2) and have a beautiful user interface (4)</em>.</p>
+</blockquote>
+<p>2.</p>
+<blockquote>
+<p><strong><em>My Tinder:</em></strong> <br/>
+My application will help <em>single people</em> to <em>find love</em> by keeping track of <em>matches</em>. <br/>
+My application will allow users login and then create, read, update and delete <em>profile matches</em>. <br/>
+In addition, my application will <em>allow users to create new accounts (1), post messages to each other (6) and have responsive live notifications of matches (7)</em>.</p>
+</blockquote>
+<p>3.</p>
+<blockquote>
+<p><strong><em>Ben&rsquo;s Cookbook:</em></strong> <br/>
+My application will help <em>Ben</em> to <em>cook</em> by keeping track of <em>recipes</em>. <br/>
+My application will allow users login and then create, read, update and delete <em>recipes</em>. <br/>
+In addition, my application will <em>allow Ben to upload photos (1), have friends comment on recipes (6) and allow export into Excel using CSV (3)</em>.</p>
+</blockquote>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Non-Functional Requirements</h2></label>
+                <div class="content">
+                    <ol>
+<li>You must use JavaServer Faces for user interface development. You are permitted to use other technologies such as Servlets and JSP as appropriate. However, the core functional requirements must be implemented using JavaServer Faces.</li>
+<li>You must store data in a JavaDB database and use JDBC to access the database.</li>
+<li>You must use the Java EE authentication facilities built into Glassfish or an established security framework (do not write your own security code).</li>
+<li>You must use git to track your changes and you must regularly push your commits to a private repository shared with your tutor on BitBucket.</li>
+<li>Your application must run on GlassFish 4.1.1.</li>
+</ol>
+<p>Bitbucket provides free private Git hosting. Please sign up to bitbucket with your student email address. This will give you a free academic account. Ensure that any repositories that you create are private and invite user <code>benatuts</code> and user <code>ryanuts</code> to your repository with write access (i.e., the tutors). <a href="http://www.bitbucket.org/">http://www.bitbucket.org/</a></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>Deliverables</h2></label>
+                <div class="content">
+                    <p>You may demonstrate your assignment in any lab session between weeks 1 and 7 (inclusive).</p>
+<p>You will receive a one mark bonus for submitting in Week 6.
+You will receive a two mark bonus for submitting on or before Week 5.</p>
+<p>You can demonstrate this assignment on lab computers or on your own laptop.
+You may develop using any operating system (including Windows or Mac OS) and any Java EE application server that is compatible with Glassfish 4.1.1.</p>
+<p>During the demonstration, you will need to submit your project files as a single ZIP to UTS Online.
+Your submission will be subject to checks for plagiarism and may also be reviewed by other students in the subject as part of a weekly laboratory exercise.</p>
+<p>The ZIP file should contain:</p>
+<ol>
+<li>Your complete source code (e.g., your NetBeans project folder)</li>
+<li>SQL statements to create the application&rsquo;s database</li>
+<li>Any other files required to run your application</li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Suggested Timeline</h2></label>
+                <div class="content">
+                    <ul>
+<li>Week 1: Choose an idea and propose to your tutor (3 hours)</li>
+<li>Week 2: Sketch draft screen designs and code in HTML (3 hours)</li>
+<li>Week 3: Create a project and set up a source code repository (3 hours)</li>
+<li>Week 4: Implement user interface logic using JavaServer Faces (6 hours)</li>
+<li>Week 5: Create database schema and data access objects (6 hours)</li>
+<li>Week 6: Implement innovation functionality (9 hours)</li>
+<li>Week 7: Present assignment</li>
+</ul>
+<p>You should present your screen and database designs during (or prior) to Week 4 to receive feedback on your progress.</p>
+<p>Assuming that you have completed the relevant tutorial exercises, the full functionality of this assignment is expected to take approximately 30 hours to complete.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec8" type="checkbox" autocomplete="off" />
+                <label for="sec8"><h2>Feedback</h2></label>
+                <div class="content">
+                    <p>Your assignment will be marked during the lab session. You will run the project for your tutor and he will test your system and examine the source code. You will have an opportunity to discuss your assignment and mark with your tutor.</p>
+<p>Groups for Assignment 2 will be allocated based on the order that students complete Assignment 1. The intent of this strategy is to ensure that you are put in a group with similarly motivated students. However, your tutor may use discretion to ensure that this results in an equitable outcome.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec9" type="checkbox" autocomplete="off" />
+                <label for="sec9"><h2>Group Work and Misconduct</h2></label>
+                <div class="content">
+                    <p>This is an individual assignment. 
+You are encouraged to discuss your idea with your peers.
+However, all other work that you submit as part of this assignment must be entirely your own and any assistance properly identified and acknowledged. 
+You are permitted to make use of libraries and other resources found online but you must <em>clearly</em> identify the source.</p>
+<p>If you are in doubt, please ask your tutor.
+Please refer to the faculty&rsquo;s handbook for more information about Student Misconduct:
+<a href="https://my.feit.uts.edu.au/modules/myfeit/downloads/StudentGuide_Online.pdf">https://my.feit.uts.edu.au/modules/myfeit/downloads/StudentGuide_Online.pdf</a></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec10" type="checkbox" autocomplete="off" />
+                <label for="sec10"><h2>Grading</h2></label>
+                <div class="content">
+                    <p>Please consider the marking criteria carefully and allocate your effort accordingly. </p>
+<p>This assignment is marked out of 40 and counts 40% towards your final grade.
+You will be marked against the criteria listed below. Your mark is calculated by adding together the grade for each criterion.</p>
+<p>Your mark may be varied by penalties and bonus marks as detailed in the criteria. The lowest possible grade is zero. The maximum possible grade is 40.</p>
+<p>Before you demonstrate your system, you should thoroughly test your system:</p>
+<ul>
+<li>Attempt to log in with an incorrect password</li>
+<li>Enter invalid data and check that validation works on all fields</li>
+<li>Check that you can log out</li>
+<li>Attempt to access secure pages without logging in</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec11" type="checkbox" autocomplete="off" />
+                <label for="sec11"><h2>Marking Criteria</h2></label>
+                <div class="content">
+                    <p><strong>Core Functionality</strong></p>
+<ul>
+<li>0: The system is unusable or regularly crashes.</li>
+<li>5: The system does not implement all of the core functionality, validation does not work or the system crashed during the demonstration.</li>
+<li>10: The system implements all of the core features. User friendly error messages are displayed when the user enters invalid input. </li>
+</ul>
+<p><strong>Innovation Functionality</strong></p>
+<ul>
+<li>0: The innovation functionality is not implemented.</li>
+<li>5: Half the proposed innovation functionality is implemented or all the innovation functionality is implemented but poorly designed.</li>
+<li>10: The system implements all of the proposed innovation functionality and the functionality is appropriately implemented and well designed.</li>
+</ul>
+<p><strong>Non-functional requirements</strong></p>
+<ul>
+<li>0: The system does not make use of JDBC, security or JavaServer Faces</li>
+<li>2: The system is using Java EE technologies but incompletely or inappropriately.</li>
+<li>5: The system uses Java EE technologies elegantly appropriately, including connection pooling and parameterized queries. Connections are closed.</li>
+</ul>
+<p><strong>Design and architecture</strong></p>
+<ul>
+<li>0: The system lacks structure or coherent design.</li>
+<li>1: The system does not separate code into layers. Data access code, domain logic and presentation logic are integrated. Presentation logic is mixed with HTML.</li>
+<li>2: The system has been partially separated into layers but there is some mixing of presentation, domain and data access logic.</li>
+<li>5: The system is separated into clear layers with separate responsibilities.</li>
+</ul>
+<p><strong>Documentation and coding style</strong></p>
+<ul>
+<li>0: There is little to no documentation. Code is messy. There are large amounts of unused or commented-out code.</li>
+<li>2: Some code has comments. Classes, methods and variables have clear names.</li>
+<li>5: All non-trivial methods and classes have comments. All code is consistently clear and well presented. Technologies are used appropriately and idiomatically (i.e., using standard coding conventions for the technology). There is no unnecessary duplication of code.</li>
+</ul>
+<p><strong>Revision control</strong></p>
+<ul>
+<li>0: Revision control has not been used.</li>
+<li>2: Revision control has been used.</li>
+<li>5: There are at least 8 meaningful commits and every commit has a clearly written commit message explaining the changes made.</li>
+</ul>
+<p><strong>Bonus and Penalties</strong></p>
+<ul>
+<li>-5: The system crashes during demonstration</li>
+<li>-5: No proposal given to your tutor during the first two weeks of semester</li>
+<li>-5: Each day late (five mark penalty per day late)</li>
+<li>+1: The system is demonstrated in Week 6</li>
+<li>+2: The system is demonstrated in or before Week 5</li>
+</ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

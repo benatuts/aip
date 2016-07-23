@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 2: HTTP and Servlets</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 2</li>
+            </ul>
+            <ul>
+                <li><a href="02.html">Study</a></li>
+                <li><a href="02-practice.html">Practice</a></li>
+                <li class="title">Challenge</li>
+                <li><a href="02-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>HTTP and Servlets</h1>
+            <p><i>Practice for Week 2: 8 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Introduction</h2></label>
+                <div class="content">
+                    <p>This exercise is very advanced. It is intended to challenge students who feel confident with Java.</p>
+<p>This exercise is optional. Please don't feel pressure to do it if you are still trying to catch up with Java.</p>
+<p>The objective is to create a web application to look up translations of words in two languages.</p>
+<h3>Dictionary Files</h3>
+<p>You can download two dictionary files: a small <a href="02/klingon.txt">Klingon-English dictionary</a> and a large <a href="02/chinese.txt">Chinese-English dictionary</a>.</p>
+<p>The files have been converted from original dictionaries by the <a href="http://klingonska.org/dict/">Klingon Pocket Dictionary</a> and <a href="http://www.mdbg.net/chindict/chindict.php?page=cc-cedict">CC-CEDICT project</a>. The original dictionaries have a <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-By-SA license</a> and so these transformations are subject to the same license.</p>
+<p>The files have a simple format: one line of the foreign language followed by one line containing the matching English definitions.</p>
+<h3>Why?</h3>
+<p>Klingon is a fake language invented for the Star Trek television series. I've chosen it because it has a small dictionary and does not require any special fonts or characters.</p>
+<p>Chinese is a real language spoken by 1100 million people. I've chosen it because it has a large dictionary file and because it does not use the English alphabet.</p>
+<h3>The Challenge</h3>
+<p>Your challenge is to create a web-based dictionary. Users should be able to look up a word in one language and see the result in the other language.</p>
+<p>I suggest starting with the Klingon-English dictionary. It is smaller and easier.</p>
+<p>Here's one idea about how you might make it look:</p>
+<p><img alt="Query" src="02/query.png"></p>
+<p>Then, when the user clicks the button, they will see this:</p>
+<p><img alt="Query" src="02/translated.png"></p>
+<p>Note: There is no Klingon word for "hello". You'll find lots of other words that don't exist in Klingon.</p>
+<p>Once you've got that working, see if your application also works with the Chinese-English dictionary.</p>
+<p><img alt="Query" src="02/translatedcn.png"> </p>
+<p>If the Chinese characters appear garbled, you may have character encoding issues. UTF-8 is an excellent encoding for international text. The Chinese-English dictionary is in UTF-8, but be sure that you are reading it with the UTF-8 character encoding and that the browser knows that you are sending characters encoded using UTF-8.</p>
+<h3>Hints</h3>
+<p>Are the dictionaries small enough to fit into memory? Can it be loaded into memory during Servlet initialization?</p>
+<p>Some classes that may help with reading the file:</p>
+<pre><code>java.io.FileInputStream (reads bytes from a file)
+java.io.InputStreamReader (reads characters from an InputStream)
+java.io.BufferedReader (reads lines from a Reader)
+</code></pre>
+<p>Don't worry about the inefficiency of scanning the entire dictionary entry-by-entry for every request. Your computer is very fast.</p>
+<p>Some other helpful functions:</p>
+<pre><code>text.toLowerCase()  (converts text to lower case - e.g., if you'd like to make the search case insensitive)
+text.contains(substring) (checks to see if the substring appears inside the text)
+</code></pre>
+<h3>Going Even Further</h3>
+<p>Can you make it show the user a history of recent requests?</p>
+<p>Can you create a web.xml file to store the dictionary filename, rather than hard-coding it in Java? To create the web.xml file, create a new file and in file type screen, look in the the "Web" category for the "Standard Deployment Descriptor (web.xml)". The tag is <session-config> and you can access it using getInitParameter("...") on the ServletContext.</p>
+<p>How fast is each request handled? What could you do to make it faster? (You don't need to implement this -- but speculate about the possibilities)</p>
+<p>Is your application thread-safe? Could it deal with many simultaneous users? (Your application probably is already thread-safe but think about it to convince yourself)</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

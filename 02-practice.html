@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 2: HTTP and Servlets</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 2</li>
+            </ul>
+            <ul>
+                <li><a href="02.html">Study</a></li>
+                <li class="title">Practice</li>
+                
+                <li><a href="02-challenge.html">Challenge</a></li>
+                <li><a href="02-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>HTTP and Servlets</h1>
+            <p><i>Practice for Week 2: 8 August</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>Hello, Servlets!</h2></label>
+                <div class="content">
+                    <p>This laboratory exercise involves developing a Hello World servlet, step by step. It gets easier once you've worked out the process - your first servlet will be your hardest!</p>
+<p>In theory, creating a Servlet is a complex process:</p>
+<ol>
+<li>Write the code</li>
+<li>Compile</li>
+<li>Lay out class files and other resources in a special directory structure</li>
+<li>Compress the directory structure using jar (this uses the zip file format), and rename the file to a ".war" extension.</li>
+<li>Deploy the ".war" file to the web application server (e.g., copy to a special folder).</li>
+</ol>
+<p>However, NetBeans will do steps 2-5 for you, at the "click of a button".</p>
+<h3>Create a Servlet</h3>
+<ol>
+<li>Create a new Project<ol>
+<li>In the category "Java Web", select the "Web Application" project type</li>
+<li>Choose a name: Week2</li>
+<li>Ensure the Server is "GlassFish Server 4.1.1" and the Java EE Version is "Java EE 7 Web" (the context path is the address on the web-server that your application will be deployed to)</li>
+<li>Don't add any frameworks</li>
+</ol>
+</li>
+<li>Create a new File<ol>
+<li>Choose File... New File...</li>
+<li>In the "Web" category, select the "Servlet" file type</li>
+<li>Enter the class name "HelloWorld" and the package name "au.edu.uts.aip.week2</li>
+<li>Leave the URL Pattern as-is (i.e., "/HelloWorld")</li>
+</ol>
+</li>
+</ol>
+<p>The generated Servlet is quite complex, let's replace it with something simple. Delete the code and copy-and-paste this code in its place:</p>
+<pre><code>package au.edu.uts.aip.week2;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.*;
+import javax.servlet.http.*;
+
+@WebServlet("/HelloWorld")
+public class HelloWorld extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("&lt;html&gt;");
+        out.println("&lt;head&gt;&lt;title&gt;First Servlet&lt;/title&gt;");
+        out.println("&lt;body&gt;&lt;p&gt;Hello, World!&lt;/p&gt;&lt;/body&gt;");
+        out.println("&lt;/html&gt;");
+
+    }
+
+}
+</code></pre>
+<h3>Run the Servlet</h3>
+<p>Now, run the project (click the green play button). Your application will be compiled, GlassFish Server 4.1.1 and Java DB Database will be automatically started (this could take a while), your application will be deployed to the GlassFish server and a web browser will open.</p>
+<p>Now, modify the address on your browser to the following address:</p>
+<p><a href="http://localhost:8080/Week2/HelloWorld">http://localhost:8080/Week2/HelloWorld</a></p>
+<ul>
+<li>http is the protocol</li>
+<li>localhost is the name of the server</li>
+<li>8080 is the port the server is running on (normally web servers run on port 80 but development systems often run on port 8080)</li>
+<li>/Week2 is the context path from when we created the project</li>
+<li>/HelloWorld is the url pattern of the Servlet (i.e., the pattern inside the <code>@WebServlet("/HelloWorld")</code>)</li>
+</ul>
+<p>The message, "Hello, World!" should appear!</p>
+<p>See if you can edit the Java code to display some other message. Note that when you save the file, NetBeans will automatically compile and deploy your application -- you do not need to click the run button again.</p>
+<h3>Reflection</h3>
+<p>Can you explain each line of code in this Servlet?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Counter</h2></label>
+                <div class="content">
+                    <p>The goal of this exercise is to create a Servlet that maintains a counter of the number of times it has been invoked since it was last reloaded by the web server. It will use a class variable (i.e. static) to keep count of the number of invocations. Each time the Servlet is invoked, it will print out the value of the counter.</p>
+<p>You can do this exercise in the same project, Week2.</p>
+<p>Create a new Servlet named Counter.java:</p>
+<ul>
+<li>Inside the "Week2" project, look in "Source Packages" and right click on the au.uts.edu.aip.week2 package</li>
+<li>Select New... Other...</li>
+<li>In the "Web" category choose the "Servlet" file type</li>
+<li>Name the class "Counter" (without the quotes), the package should already be au.uts.edu.aip.week2</li>
+<li>Leave the Servlet Name and URL Pattern as-is</li>
+</ul>
+<h3>Create the Servlet</h3>
+<p>Your objective is to create a Servlet that will generate a response such as:</p>
+<pre><code>&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Counter&lt;/title&gt;
+&lt;body&gt;&lt;p&gt;Number of requests since reload: 1&lt;/p&gt;&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>The number 1 should increase each time the page is requested.</p>
+<h3>Hints</h3>
+<p>To declare a variable to hold the value of your counter:</p>
+<pre><code>private int counter = 0;
+</code></pre>
+<p>To increase the counter, you can use a method:</p>
+<pre><code>private synchronized int increaseCounter() {
+  counter = counter + 1;
+  return counter;
+}
+</code></pre>
+<p>A different way to increase the counter is with a synchronized block:</p>
+<pre><code>int currentCount;
+synchronized (this) {
+  counter = counter + 1;
+  currentCount = counter;
+}
+</code></pre>
+<p>In Java, you can turn an integer (int) into a String using the concatenation operator (+):</p>
+<pre><code>String result = "Number of requests since reload: " + currentCount;
+out.println(result);
+</code></pre>
+<h3>Reflect</h3>
+<p>Why does the counter go back to 1 every time you save a change to your Java code?</p>
+<p>What does synchronized mean? Why is it necessary?</p>
+<p>Why does increaseCounter() return a value or, equivalently, why was the variable currentCount used in the synchronized block?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Settable Counter</h2></label>
+                <div class="content">
+                    <p>The goal of this exercise is to create a Servlet that can print out the value of a counter but can also be set to a custom value.</p>
+<p>You can continue this exercise in the same project: Week2.</p>
+<h3>Create a Form</h3>
+<p>Begin by creating a HTML form that you will use to view and set the value of the counter.</p>
+<ul>
+<li>In your NetBeans project, right click on the "Web Pages" (or "web") folder. </li>
+<li>Click "New..." and then "Other...". </li>
+<li>Then, in the "HTML5" category, select the "HTML File" file type.</li>
+</ul>
+<p>On the next screen, give the file a simple name such as "set-counter" (without the quotes).</p>
+<p>Create a form such as the following:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Settable Counter&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;form action="SettableCounter" method="GET"&gt;
+            &lt;p&gt;Set counter to: &lt;input type="text" name="newValue"&gt;&lt;/p&gt;
+            &lt;p&gt;&lt;input type="submit" value="Set Counter"&gt;&lt;/p&gt;
+        &lt;/form&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>If your application server is running, you should be able to see the page by visiting:</p>
+<p><a href="http://localhost:8080/Week2/set-counter.html">http://localhost:8080/Week2/set-counter.html</a></p>
+<h3>Create the SettableCounter Servlet</h3>
+<p>Notice the action attribute of the form element of our HTML page: <code>action="SettableCounter"</code>.</p>
+<p>We must now create a Servlet that will respond to requests on this path.</p>
+<p>We can do this by creating a Servlet (i.e., a Java class that extends <code>HttpServlet</code> like we have done previously) and ensuring that the class is annotated with <code>@WebServlet("/SettableCounter")</code>.</p>
+<p>Now notice the method attribute of the form element of our HTML page: <code>method="GET"</code>. This means that we will need to implement the doGet method of our Servlet.</p>
+<p>Your objective is to create a Servlet that will:</p>
+<ul>
+<li>Increase the current count by one if accessed directly: <a href="http://localhost:8080/Week2/SettableCounter">http://localhost:8080/Week2/SettableCounter</a></li>
+<li>Set the current count to the form value if it is the result of a form submission: <a href="http://localhost:8080/Week2/set-counter.html">http://localhost:8080/Week2/set-counter.html</a> --&gt; <a href="http://localhost:8080/Week2/SettableCounter?newValue=20">http://localhost:8080/Week2/SettableCounter?newValue=20</a></li>
+</ul>
+<h3>Hints</h3>
+<p>You can read a form parameter using the following code:</p>
+<pre><code>String newValueString = request.getParameter("newValue");
+</code></pre>
+<p>If there is no form value, then the result is null. You can test for this with an if-statement:</p>
+<pre><code>if (null == newValueString) {
+  // show counter
+} else {
+  // set counter
+}
+</code></pre>
+<p>In Java, you can convert a String containing a number into an integer with the following code:</p>
+<pre><code>int newValue = Integer.parseInt(newValueString);
+</code></pre>
+<p>Remember: To see the counter increase, you will need to access the Servlet directly without any parameters:</p>
+<p><a href="http://localhost:8080/Week2/SettableCounter">http://localhost:8080/Week2/SettableCounter</a></p>
+<p>(NOT: <a href="http://localhost:8080/Week2/SettableCounter?newValue=50">http://localhost:8080/Week2/SettableCounter?newValue=50</a>)</p>
+<h3>Reflection / Challenge</h3>
+<p>How can you change this Servlet to handle post requests (i.e., modify the original HTML code so that the so that the form has method="POST" and then change the Servlet accordingly)?</p>
+<p>What happens if you enter something that isn't a number (e.g., "abcd")? How can you fix this?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Counting Cookies</h2></label>
+                <div class="content">
+                    <p>The goal of this exercise is to create a Servlet that will print out two different counter values:</p>
+<ul>
+<li>The total number times the Servlet has been requested, since it was reloaded</li>
+<li>The total number of times the current user has requested the Servlet</li>
+</ul>
+<p>This requires the use of sessions and session variables in your servlet.</p>
+<h3>Sessions</h3>
+<p>Java servlets have built-in support for session management. This simplifies the task of creating a web application that keeps track of interactions with a user.</p>
+<p>The abstraction used in Java is the notion of session attributes that can be stored in a session object. The session object acts like a container. You can store attributes (name/value pairs) into the session object, and you can retrieve attributes out of the session object. Attributes that are stored in the session object will still keep their value in between successive HTTP requests. Each "attribute value" is, of course, a Java object.</p>
+<p>Each attribute stored in the session has a name, and a value. The name is just a String. The value is a Java object. The HttpSession class uses the methods setAttribute() and getAttribute for storing and retrieving attributes in sessions respectively.</p>
+<p>Where do you get the session object from in the first place? From the request object. You get the session from the request. If there was already a session established, then you will have access to all the variables stored in the session. However if there was not already a session established, one will be created automatically (by default), and you will then have access to a blank session object in which you can store variables.</p>
+<h3>Create a Servlet</h3>
+<p>Create a new Servlet (call it SessionCounter) that will generate HTML similar to the following:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Counter&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;p&gt;Number of requests since reload: 10&lt;/p&gt;
+        &lt;p&gt;Number of requests in this session: 5&lt;/p&gt;
+        &lt;p&gt;&lt;a href="SessionCounter"&gt;Reload this page&lt;/a&gt;&lt;/p&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Note a browser will share session information among its tabs and windows. To test your code properly, you will need to either use two separate browsers, two separate computers, use an "Incognito"-mode browser window or wipe your browser's cookies.</p>
+<h3>Hints</h3>
+<p>This code will access the session object and store a value in it:</p>
+<pre><code>HttpSession session = request.getSession();
+session.setAttribute("sessionCounter", userCounter);
+</code></pre>
+<p>This code will retrieve the session object and then get a value from that object:</p>
+<pre><code>HttpSession session = request.getSession();
+Integer sessionCounter = (Integer)session.getAttribute("sessionCounter");
+if (session.isNew() || null == sessionCounter) {
+  // no session counter saved yet
+} else {
+  int userCount = sessionCounter;
+  // handle the user's count
+}
+</code></pre>
+<p>To use quotes (") inside a Java string, you need to escape it with a backslash (\"). </p>
+<p>e.g., <code>out.println("&lt;p&gt;&lt;a href=\"SessionCounter\"&gt;Reload this page&lt;/a&gt;&lt;/p&gt;");</code></p>
+<h3>Reflect</h3>
+<p>What happens if the Servlet is reloaded (e.g., you make a change to the source code and save the file so it gets compiled and deployed)? Does the servlet counter get reset? Does the session counter get reset? Why?</p>
+<p>What happens if cookies are disabled in the browser? Why?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Cookie-less Session Tracking</h2></label>
+                <div class="content">
+                    <p>GlassFish will user Cookies where possible. If Cookies are unavailable it can use URL rewriting to keep track of users by the URLs of their requests. To make this work, you need to ensure that every URL is encoded by web server. Instead of using this code:</p>
+<pre><code>out.println("&lt;p&gt;&lt;a href=\"SessionCounter\"&gt;Reload this page&lt;/a&gt;&lt;/p&gt;");
+</code></pre>
+<p>You should encode your URLs like this:</p>
+<pre><code>String url = response.encodeURL("SessionCounter");
+out.println("&lt;p&gt;&lt;a href=\"" + url + "\"&gt;Reload this page&lt;/a&gt;&lt;/p&gt;");
+</code></pre>
+<p>Now, change your code and see how your application works if Cookies are disabled in the browser.</p>
+<p>What happens to the URL when you click on "Reload this page"?</p>
+<h3>Before Leaving</h3>
+<p>Don't forget to re-enable cookies in your browser!</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

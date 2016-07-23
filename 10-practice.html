@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>AIP Week 10: Web services</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link href="resources/normalize.css" rel="stylesheet" />
+        <link href="resources/stylize.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="menu">
+            <ul>
+                <li><a href="https://online.uts.edu.au/">UTS Online</a></li>
+                <li class="title">/</li>
+                <li><a href="index.html">Learning</a></li>
+                <li class="title">/</li>
+                <li class="title">Week 10</li>
+            </ul>
+            <ul>
+                <li><a href="10.html">Study</a></li>
+                <li class="title">Practice</li>
+                <li><a href="10-solutions.html">Solutions</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <h1>Web services</h1>
+            <p><i>Practice for Week 10: 10 October</i></p>
+            <div class="section">
+                <input id="sec1" type="checkbox" autocomplete="off" />
+                <label for="sec1"><h2>RESTful Web Service</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will create a web service and a client that consumes a web service.</p>
+<p>You will create a simple social "game". The idea of the game is that you can compose a short text message. You upload it to the server and in return you will receive a random response (i.e., the previous message that was uploaded by some other user).</p>
+<p>For simplicity, you will use a Web Application project, rather than an Enterprise Application.</p>
+<p>Create a new web application named "Week10-server":</p>
+<ol>
+<li>Select the project type "Web Application" in the "Java Web" category</li>
+<li>Enter the project name "Week10-server" (be sure that the project is being created in your NetBeansProjects folder, and not a folder such as NetBeansProjects\Week9)</li>
+<li>Use the GlassFish Server but do NOT add the project to an enterprise application</li>
+<li>Do not enable any frameworks</li>
+</ol>
+<h3>Domain Logic</h3>
+<p>First, implement the business methods.</p>
+<p>Create two new Java classes in the au.edu.uts.aip.swap.domain package. Name them SwapBean and Message.</p>
+<p>Use the following source code.</p>
+<p><strong>SwapBean.java:</strong></p>
+<pre><code>package au.edu.uts.aip.swap.domain;
+
+import java.util.*;
+import javax.annotation.*;
+import javax.ejb.*;
+
+@Singleton
+public class SwapBean {
+
+    private Message currentMessage;
+
+    @PostConstruct
+    protected void init() {
+        currentMessage = new Message();
+        currentMessage.setMessage("Coding at Bondi Beach...");
+        currentMessage.setTime(new Date());
+        currentMessage.setLatitude(-33.890843);
+        currentMessage.setLongitude(151.280056);
+    }
+
+    public Message swap(Message message) {
+        Message result = currentMessage;
+        currentMessage = message;
+        return result;
+    }
+
+    public Message peek() {
+        return currentMessage;
+    }
+
+}
+</code></pre>
+<p><strong>Message.java:</strong></p>
+<pre><code>package au.edu.uts.aip.swap.domain;
+
+import java.io.*;
+import java.util.*;
+
+public class Message implements Serializable {
+
+    private String message;
+    private Date time;
+    private double latitude;
+    private double longitude;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+}
+</code></pre>
+<h3>Reflect</h3>
+<p>Why is SwapBean annotated with <code>@Singleton</code>? What does <code>@PostConstruct</code> mean?</p>
+<h3>Application Configuration</h3>
+<p>Configuration of a JAX-RS web service is by an application-supplied subclass of <code>javax.ws.rs.core.Application</code>.</p>
+<p>Create a class called ApplicationConfig in a package named au.edu.uts.aip.swap.service:</p>
+<pre><code>package au.edu.uts.aip.swap.service;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+
+@ApplicationPath("api")
+public class ApplicationConfig extends Application {
+
+}
+</code></pre>
+<p>The "api" in the @ApplicationPath means that the RESTful web service application will be available under the sub-path named "api". <br>
+i.e., <a href="http://localhost:8080/Week10-server/api/">http://localhost:8080/Week10-server/api/</a></p>
+<h3>Web Service</h3>
+<p>Finally, you can create a resource in your web service.
+Create a new class named SwapResource in the au.edu.uts.aip.swap.service package:</p>
+<pre><code>package au.edu.uts.aip.swap.service;
+
+import au.edu.uts.aip.swap.domain.*;
+import javax.ejb.*;
+import javax.ws.rs.*;
+
+@Path("swap")
+public class SwapResource {
+
+    @EJB
+    private SwapBean swapBean;
+
+    @GET
+    public Message peek() {
+        return swapBean.peek();
+    }
+
+    @POST
+    public Message swap(Message message) {
+        return swapBean.swap(message);
+    }
+
+}
+</code></pre>
+<p>When you save all files, NetBeans will detect that you've created a web service.</p>
+<p>Deploy the project by right clicking on Week10-server and selecting deploy.
+Once GlassFish has started and the application is deployed, you can test the web service by right-clicking on <code>peek()</code> in the RESTful Web Services 'folder' and choosing "Test Resource URI" (as shown in the image below).</p>
+<p><img alt="Test REST" src="10/testrest.png"></p>
+<p>Your web-browser should open to an address such as the following: <br>
+<a href="http://localhost:8080/Week10-server/api/swap">http://localhost:8080/Week10-server/api/swap</a></p>
+<p>A JSON (i.e., JavaScript) representation of the default message should be shown.</p>
+<h3>Reflect</h3>
+<p>Which HTTP method was used to invoke the web resource? (i.e., GET or POST?)</p>
+<p>What method(s) of your Java code were invoked to service the request?</p>
+<p>Why is swap in the address? <br>
+<a href="http://localhost:8080/Week10-server/api/swap">http://localhost:8080/Week10-server/api/swap</a></p>
+<p>How often does JAX-RS create an instance of your SwapService class?
+Does JAX-RS follow the single-instance approach used by Servlets or does it use something else?
+Can you add some code to your project to check/confirm this?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec2" type="checkbox" autocomplete="off" />
+                <label for="sec2"><h2>Test your Service</h2></label>
+                <div class="content">
+                    <p>In the previous exercise, you tested the web service using your web browser.
+While this is fine for testing the GET method, it can be difficult to test POST (and other HTTP methods) using a web browser.</p>
+<p>cURL is a tool that can assist with testing web services.</p>
+<h3>Installing cURL</h3>
+<p>You may already have cURL installed on your computer. If you are using the lab computers, it is already installed.</p>
+<p>Open a window to your console / command line. Type "curl" (without the quotes) and press enter.</p>
+<p>You should see a message such as the following:</p>
+<pre><code>curl: try 'curl --help' or 'curl --manual' for more information
+</code></pre>
+<p>If you receive a message saying command not found or curl is not recognized, you will need to install cURL.</p>
+<p>If you are using a unix-based system, you can install cURL using your package manager. You can also download cURL from the project homepage: <br>
+<a href="http://curl.haxx.se/">http://curl.haxx.se/</a></p>
+<p>On Windows, you may wish to use these pre-compiled windows installers: <br>
+<a href="http://www.confusedbycode.com/curl/">http://www.confusedbycode.com/curl/</a></p>
+<h3>Testing a GET method</h3>
+<p>The HTTP GET method is the easiest to test using cURL. Type the following command into your console / command line:</p>
+<pre><code>curl http://localhost:8080/Week10-server/api/swap
+</code></pre>
+<p>Your console should look something like the following:</p>
+<pre><code>&gt; curl http://localhost:8080/Week10-server/api/swap
+{"latitude":-33.890843,"longitude":151.280056,"message":"Coding at Bondi Beach...","time":"2016-10-14T10:58:05.522"}
+&gt;
+</code></pre>
+<p>You can see the full HTTP headers using -i:</p>
+<pre><code>&gt; curl -i http://localhost:8080/Week10-server/api/swap
+HTTP/1.1 200 OK
+X-Powered-By: Servlet/3.1 JSP/2.3 (GlassFish Server Open Source Edition  4.0  Ja
+va/Oracle Corporation/1.8)
+Server: GlassFish Server Open Source Edition  4.0
+Content-Type: application/json
+Date: Tue, 14 Oct 2016 00:16:34 GMT
+Content-Length: 109
+
+{"latitude":-33.890843,"longitude":151.280056,"message":"Coding at Bondi Beach...","time":"2016-10-14T10:58:05.522"}
+&gt;
+</code></pre>
+<p>You can see everything using the -v (verbose) option:</p>
+<pre><code>&gt; curl -v http://localhost:8080/Week10-server/api/swap
+* Hostname was NOT found in DNS cache
+*   Trying ::1...
+* Connected to localhost (::1) port 8080 (#0)
+&gt; GET /Week10-server/api/swap HTTP/1.1
+&gt; User-Agent: curl/7.38.0
+&gt; Host: localhost:8080
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; X-Powered-By: Servlet/3.1 JSP/2.3 (GlassFish Server Open Source Edition  4.0
+Java/Oracle Corporation/1.8)
+* Server GlassFish Server Open Source Edition  4.0 is not blacklisted
+&lt; Server: GlassFish Server Open Source Edition  4.0
+&lt; Content-Type: application/json
+&lt; Date: Tue, 14 Oct 2016 00:37:04 GMT
+&lt; Content-Length: 79
+&lt;
+{"latitude":-33.890843,"longitude":151.280056,"message":"Coding at Bondi Beach...","time":"2016-10-14T10:58:05.522"}*
+ Connection #0 to host localhost left intact
+&gt;
+</code></pre>
+<h3>Testing a POST method</h3>
+<p>Your <code>swap(...)</code> method accepts a Message object. JAX-RS will automatically convert the body of a POST message into an appropriate object.</p>
+<p>Suppose you want to send the following message:</p>
+<pre><code>{"latitude":1,"longitude":2,"message":"Hello","time":"2016-12-25T00:00:01"}
+</code></pre>
+<p>This message is encoded in JSON (Content-Type: application/json), and we would use cURL like this:</p>
+<pre><code>curl -v -X POST -H &lt;headers&gt; -d &lt;data&gt; &lt;url&gt;
+</code></pre>
+<p>The data is: <code>{"latitude":1,"longitude":2,"message":"Hello","time":"2016-12-25T00:00:01"}</code>
+The header is: <code>Content-Type: application/json</code></p>
+<p>Thus, our command is as follows:</p>
+<pre><code>curl -v -X POST -H 'Content-Type: application/json' -d '{"latitude":1,"longitude":2,"message":"Hello","time":"2016-12-25T00:00:01"}' http://localhost:8080/Week10-server/api/swap
+</code></pre>
+<p>Note: on Windows, the single quote cannot be used for parameters. Instead, you use double-quotes and escape the inner double quotes):</p>
+<pre><code>curl -v -X POST -H "Content-Type: application/json" -d "{\"latitude\":1,\"longitude\":2,\"message\":\"Hello\",\"time\":\"2016-12-25T00:00:01\"}" http://localhost:8080/Week10-server/api/swap
+</code></pre>
+<p>Run the command. You should see the initial message as output. Run it again. The response should now be the previous message that you posted.</p>
+<h3>Generating XML</h3>
+<p>JAX-RS can also produce XML. In fact, it tries to generate XML before JSON.</p>
+<p>To enable XML generation, just add the annotation <code>@XmlRootElement</code> to your Message class:</p>
+<pre><code>@XmlRootElement
+public class Message implements Serializable {
+</code></pre>
+<p>Save your application and run the cURL commands again to see the response. This time, the data should be encoded in XML.</p>
+<h3>Accept Headers</h3>
+<p>The HTTP Accept header is used by a client (i.e., a web browser) to tell the server the preferred and supported content types that the client will accept.</p>
+<p>JAX-RS can use the Accept header to choose between JSON and XML.</p>
+<p>Compare the output of the following two commands:</p>
+<pre><code>curl -H "Accept: application/json" http://localhost:8080/Week10-server/api/swap
+curl -H "Accept: application/xml" http://localhost:8080/Week10-server/api/swap
+</code></pre>
+<h3>Reflect</h3>
+<p>What happens if you remove the <code>@XmlRootElement</code> but request an XML document using the "<code>Accept: application/xml</code>" header?</p>
+<p>Why might the Accept header be useful? i.e., Why might it be helpful for the same URL to return two different outputs depending on the header?</p>
+<p>Why do the GET and POST methods use the same URL? How could it be changed so that the different operations use different URLs? (Hint: you could use something like <code>@Path("peek")</code> and <code>@Path("swap")</code> on the methods in the SwapResource file).</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>XML/JSON Binding</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will customize the configuration of the XML/JSON bindings.</p>
+<p>If you changed the paths during the Reflection questions of the previous exercises, please revert those changes.</p>
+<p>i.e., the GET and POST methods should still be at <a href="http://localhost:8080/Week10-server/api/swap">http://localhost:8080/Week10-server/api/swap</a></p>
+<h3>Custom Element Names</h3>
+<p>In your Message class, annotate the <code>getLatitude</code> method with <code>@XmlElement(name="lat")</code> and the getLongitude method with <code>@XmlElement(name="long")</code>.</p>
+<p>Use cURL to generate XML and JSON output.</p>
+<p>How has the XML and JSON output changed from before?</p>
+<p>JAXB provides many annotations, enabling you to configure whether class attributes should be converted into XML elements, attributes or values. You can also customize the naming and other XML features.</p>
+<p>For now, we will just use lat and long.</p>
+<h3>Reflect</h3>
+<p>Why might you want the XML element names to be different from the property names of the Java class?</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>A Single-Page Web-App Client</h2></label>
+                <div class="content">
+                    <p>For this exercise, you'll need to download a single-page web-app that uses the RESTful API we've just created.</p>
+<div class="download"><a href="10/index.html"><img src="resources/html.png" /> Single-page Web-app</a></div>
+
+<p>Right click on the link above and save the file to your computer.</p>
+<p>This app uses Geolocation services but if Geolocation isn't working (e.g., in the lab computers) then it will just default to the Sydney Opera House.</p>
+<p>This web-app turns your web-browser into a fully independent client of the web-service. RESTful web services may be used from within JavaScript applications using "AJAX" (asynchronous JavaScript + XML).</p>
+<p>Just save it to the "Web Pages" (or "Web") folder of your Week10-server project. Run it by right clicking on the file in NetBeans and selecting Run.</p>
+<p>Note that to work properly you need to have completed the step earlier where <code>@XmlElement(name="lat")</code> and <code>@XmlElement(name="long")</code> annotations are added to the Message class.</p>
+<p>In theory, you could also build an Android, iPhone or Windows Phone app as a client for the web service. Perhaps the attached web-app could be converted to a native application using <a href="https://cordova.apache.org/">Cordova</a>.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>A Java Client</h2></label>
+                <div class="content">
+                    <p>In this exercise, you will create a JAX-RS client, similar to the web-app, that accesses the RESTful web service that you created.</p>
+<p>Create a new project named Week10-client:</p>
+<ol>
+<li>Select the project type "Web Application" in the "Java Web" category</li>
+<li>Enter the project name "Week10-client" (be sure that the project is being created in your NetBeansProjects folder, and not a folder such as NetBeansProjects\Week9)</li>
+<li>Use the GlassFish Server but do NOT add it to an enterprise application</li>
+<li>Add the JavaServer Faces framework to the application.</li>
+</ol>
+<p>Remember to also add the Java EE 7 API Library to the project.</p>
+<h3>Create Project Files</h3>
+<p>The JAX-RS client is able to use the same classes that we used to define the service. In this example, you could use the same class, au.edu.uts.aip.swap.domain.Message, in both the client and the server.</p>
+<p>If you wanted to do this in a well-principled manner, you might create a "Java Class Library" project in NetBeans. The class library could contain common classes that are reused by both projects. However, for the purposes of this exercise and to prove that the client and server are decoupled, you can just create a new class instead of using a class library.</p>
+<p>Create a Java class named SwapMessage in the au.edu.uts.aip.swap.web package.</p>
+<p>The source code for SwapMessage will be very similar to the Message class you created in the Week10-server project. The difference is in the package name, the class name and the name in the XmlRootElement annotation.</p>
+<pre><code>package au.edu.uts.aip.swap.web;
+
+import java.io.*;
+import java.util.*;
+import javax.xml.bind.annotation.*;
+
+@XmlRootElement(name = "message")
+public class SwapMessage implements Serializable {
+
+    private String message;
+    private Date time;
+    private double latitude;
+    private double longitude;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    @XmlElement(name = "lat")
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    @XmlElement(name = "long")
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+}
+</code></pre>
+<p>Add two JSF pages to your application: compose (compose.xhtml) and receive (receive.xhtml):</p>
+<p><strong>compose.xhtml:</strong></p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Text Exchange&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1&gt;Text Exchange&lt;/h1&gt;
+        &lt;h:form&gt;
+            &lt;p&gt;
+                &lt;label&gt;Enter a poetic message:
+                    &lt;h:inputTextarea value="#{swapController.request.message}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;label&gt;Your Latitude:
+                    &lt;h:inputText value="#{swapController.request.latitude}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;p&gt;
+                &lt;label&gt;Your Longitude:
+                    &lt;h:inputText value="#{swapController.request.longitude}"/&gt;
+                &lt;/label&gt;
+            &lt;/p&gt;
+            &lt;h:commandButton value="Share with a Stranger" action="#{swapController.swap}"/&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>receive.xhtml:</strong></p>
+<pre><code>&lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"&gt;
+    &lt;h:head&gt;
+        &lt;title&gt;Text Exchange&lt;/title&gt;
+    &lt;/h:head&gt;
+    &lt;h:body&gt;
+        &lt;h1&gt;Text Exchange&lt;/h1&gt;
+        &lt;h:form&gt;
+            &lt;p&gt;
+                Message from a Stranger:
+            &lt;/p&gt;
+            &lt;p&gt;
+                #{swapController.response.message}
+            &lt;/p&gt;
+            &lt;p&gt;
+                (Sent:
+                &lt;h:outputText value="#{swapController.response.time}"&gt;
+                    &lt;f:convertDateTime pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ"/&gt;
+                &lt;/h:outputText&gt;)
+            &lt;/p&gt;
+            &lt;p&gt;
+                Their Latitude: #{swapController.response.latitude}
+            &lt;/p&gt;
+            &lt;p&gt;
+                Their Longitude: #{swapController.response.longitude}
+            &lt;/p&gt;
+            &lt;h:button value="Compose Another" outcome="compose"/&gt;
+        &lt;/h:form&gt;
+    &lt;/h:body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Create a JSF backing bean named SwapController in a package named au.edu.uts.aip.swap.web:</p>
+<pre><code>package au.edu.uts.aip.swap.web;
+
+import java.util.*;
+import javax.enterprise.context.*;
+import javax.inject.*;
+
+@Named
+@RequestScoped
+public class SwapController {
+
+    private SwapMessage request = new SwapMessage();
+    private SwapMessage response;
+
+    public SwapMessage getRequest() {
+        return request;
+    }
+
+    public SwapMessage getResponse() {
+        return response;
+    }
+
+    public String swap() {
+        // Set the time of the message to "Now"
+        request.setTime(new Date());
+
+        // For now, just show the request
+        response = request;
+
+        return "receive";
+    }
+
+}
+</code></pre>
+<p>Before proceeding, test the client application.
+It will not communicate with the server.
+However, the information you enter on the compose.xhtml view should appear on receive.xhtml when you click on the command button.</p>
+<h3>Reflect</h3>
+<p>Why did you use just <code>@XmlRootElement</code> to annotate Message in Week10-server but in Week10-client you use <code>@XmlRootElement(name = "message")</code> to annotate SwapMessage?</p>
+<h3>Using JAX-RS client</h3>
+<p>Now, you can modify the swap function to use the JAX-RS client API as demonstrated in the lecture notes (<code>javax.ws.rs.client.Client</code>).</p>
+<p>See if you can use the lecture notes, and/or the weekly readings and/or the <a href="http://docs.oracle.com/javaee/7/tutorial/jaxrs-client001.htm">Java EE 7 tutorial on the JAX-RS client API</a> to connect to Week10-server.</p>
+<h3>Hints</h3>
+<p>You will delete "<code>response = request;</code>" in SwapController and replace it with some other code.</p>
+<p>The target of the client will be the web service: <a href="http://localhost:8080/Week10-server/api/swap">http://localhost:8080/Week10-server/api/swap</a></p>
+<p>The parameter of the post method requires an Entity. You can create an entity using <code>Entity.json(request)</code> or <code>Entity.xml(request)</code>.</p>
+<p>Don't forget to close the JAX-RS client.</p>
+<h3>Reflect</h3>
+<p>What happens if you undeploy the Week10-server application and run the client?
+You can undeploy Week10-server by locating the application in the Services tab &gt; Servers &gt; GlassFish Server &gt; Applications &gt; Week10-server. Right click and then select Undeploy.
+You should get an exception in your client (Week10-client JavaServer Faces application).
+How could you handle the exception?</p>
+<p>The SwapController class is a Controller in the "Model View Controller" design pattern.
+This means that it is part of the presentation logic.
+However, in a well designed application, calling the web service should probably not be in the presentation logic.
+This is because the details of the web service have nothing to do with presentation logic (i.e., is the web service RESTful? SOAP? local vs remote? what is the URL?).
+It, more rightfully, belongs in the domain logic or in a separate "integration layer".
+How might you modify the design of Week10-client to separate the presentation logic and the web service client?</p>
+<p>The address of the web service might change.
+Rather than configuring the address in the Java code, it could be moved to a configuration file.
+How could you move the address of the web service into a configuration file (e.g., web.xml)?</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
