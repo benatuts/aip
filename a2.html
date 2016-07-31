@@ -23,7 +23,7 @@
                 <input id="sec1" type="checkbox" autocomplete="off" />
                 <label for="sec1"><h2>Introduction</h2></label>
                 <div class="content">
-                    <p>Working in groups of three, design and develop a web application. Using JavaServer Faces, Enterprise Java Beans and the Java Persistence API, develop a website with a range of sophisticated functionality that includes secure login and the management data. Demonstrate your application in the lab sessions.</p>
+                    <p>Working in groups of three, design and develop a web application. Using Enterprise Java Beans and the Java Persistence API, develop a website with a range of sophisticated functionality that includes secure login and the ability to manage data and an administrative roles. Demonstrate your application in a lab session.</p>
 <p><strong>Final deadline:</strong> Your lab session on Monday 17 September 2015 (Week 11). You may also present during the assessment period by appointment (a timetable will be released later in the semester).</p>
 <p><strong>Weight:</strong> 40% of your final grade</p>
 <p><strong>Assessment Type:</strong> Group project (groups of three) group and individually assessed</p>
@@ -31,9 +31,253 @@
                 </div>
             </div>            <div class="section">
                 <input id="sec2" type="checkbox" autocomplete="off" />
-                <label for="sec2"><h2>To Appear</h2></label>
+                <label for="sec2"><h2>Background</h2></label>
                 <div class="content">
-                    <p>A detailed description of the requirements will appear here soon.</p>
+                    <p>Great work on Assignment 1!</p>
+<p>Now that you've built a functioning web application, it is time to improve the design, improve the reliability and add some more sophisticated functionality.</p>
+<p>There are many strategies for building reliable and scalable distributed systems.
+While approaches such as web services, object-relational mapping and transactions are not the answer to every possible situation, they are powerful tools to have in your &lsquo;toolbox&rsquo; as a developer.
+For Assignment 2, you will use these technologies to build a web application that can perform CRUD operations and that incorporates a range of innovative features.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec3" type="checkbox" autocomplete="off" />
+                <label for="sec3"><h2>Task</h2></label>
+                <div class="content">
+                    <p>As with Assignment 1, you will create a web application that has the ability to create, read, update and delete (CRUD) data of a particular record type.
+For Assignment 2, your application will have features that go beyond Assignment 1: an ability for users to create new accounts; an administration zone; and more complex innovation functionality (described later in this document).</p>
+<p>Your application can be based on any idea that has the following core functions:</p>
+<ul>
+<li>Sign up</li>
+<li>Login</li>
+<li>Create a record</li>
+<li>View or search for records</li>
+<li>Edit a record</li>
+<li>Delete a record</li>
+<li>Logout</li>
+<li>Administration zone</li>
+<li>Integration with a web service</li>
+</ul>
+<p>The records can represent anything that your group agrees on.
+You will need to decide for yourself what purpose your website will serve. You can build on an idea from Assignment 1, or you can work on an entirely new idea.</p>
+<p>You will not be assessed on the quality of your idea.
+The idea does not have to be &lsquo;good&rsquo; so long as you implement it well (<em>i.e.</em>, using patterns and principles covered in this subject).</p>
+<p>Please note:</p>
+<ul>
+<li>You must <strong>NOT</strong> create an application that is sexist, pornographic, vulgar, hateful or otherwise inappropriate in a professional setting.</li>
+<li>You must <strong>NOT</strong> create an &lsquo;Address Book&rsquo; or &lsquo;To do list&rsquo; application.</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec4" type="checkbox" autocomplete="off" />
+                <label for="sec4"><h2>Functional Requirements</h2></label>
+                <div class="content">
+                    <p>Your web application will need to offer core functionality similar to Assignment 1: the ability to login, create, read, update and delete records in a simple database schema:</p>
+<ol>
+<li>Log in</li>
+<li>Create a record (e.g., <code>INSERT INTO ...</code>) </li>
+<li>List records (e.g., <code>SELECT ... WHERE ...</code>)</li>
+<li>View a record (e.g., <code>SELECT ... WHERE id = ?</code>)</li>
+<li>Update a record (e.g., <code>UPDATE...</code>)</li>
+<li>Delete (or hide) a record (e.g., <code>DELETE ...</code> or <code>UPDATE ... SET visible = 'N' WHERE id = ?</code>)</li>
+<li>Log out</li>
+<li>Your application <strong>must</strong> provide useful error messages if the user enters invalid input</li>
+</ol>
+<p>In addition, it must also have the following functionality:</p>
+<ol>
+<li>Sign up as a new user (<em>e.g.</em>, <code>INSERT INTO SystemUsers ...</code>)</li>
+<li>An administrator account that can view and edit the details of all users in the system as well as make changes that an administrator would normally perform, as appropriate to your application (<em>e.g.</em>, in an online store, the administrator might be able to view all orders placed)</li>
+<li>Your application must use the JAX-RS client to integrate with at least at least one RESTful web service API (<em>e.g.</em>, <a href="https://www.pin.net.au/">Pin Payments</a>, <a href="http://www.twilio.com/">Twilio</a>, <a href="http://www.nexmo.com/">Nexmo</a>, <a href="https://cloud.google.com/docs/">Google Cloud Platform APIs</a>, <a href="http://developer.echonest.com/">The Echo Nest</a>)</li>
+</ol>
+<h3>Innovation Functionality</h3>
+<p>For this assignment, 15 marks are devoted to innovative use of Java EE technologies. To get 15 marks, you would be expected to implement three of the following innovation features:</p>
+<ol>
+<li>Add shopping cart functionality with checkout (the shopping cart should be retained even if the user logs out)</li>
+<li>Provide AJAX interactions (<em>e.g.</em>, an AJAX-enabled search)</li>
+<li>Live real-time updates in the user interface (<em>i.e.</em>, users are notified of updates without needing to refresh the page)</li>
+<li>All record updates are protected against concurrent modifications (Hint: See the Week 11 Challenge problem)</li>
+<li>Implement the user interface as a single-page web application using React.js, Angular.js or a comparable modern client-side JavaScript framework</li>
+<li>Send email messages to verify the address of new users when they sign up and provide email-based password reset functionality</li>
+<li>Deploy your application on the internet using a Java EE server hosted on Amazon Web Services (EC2) or Microsoft Azure</li>
+<li>Implement a comprehensive suite of unit tests for your application</li>
+</ol>
+<p>You are not limited to this list: please feel free to negotiate alternative functionality of comparable difficulty with your tutor.</p>
+<p><em>Note that the innovation functionality should go beyond the subject matter taught in class. You are expected to do independent study and learning in order to complete this functionality.</em></p>
+<h3>Costs</h3>
+<p>Please use trial periods and free non-commercial licenses when integrating with commercial services. Reimbursement or financial support will NOT be provided if you choose to use paid plans or services that cost money.</p>
+<h3>Functionality Proposals</h3>
+<p>You must propose your application to your tutor within two tutorials following your group&rsquo;s formation.</p>
+<p>Your tutor will provide the following template for you to complete:</p>
+<blockquote>
+<p><strong><em>(Application Name)</em></strong>: <br/>
+My application will help <em>(user)</em> to <em>(need)</em> by keeping track of <em>(record)</em>.<br/>
+My application will allow users to sign up, login and then create, read, update and delete <em>(records)</em>.<br/>
+My application will allow administrators to login and then view and edit users as well as <em>(perform administrative tasks)</em>.<br/>
+My application will integrate with <em>(web service)</em> to provide <em>(functionality)</em>.<br/>
+My application will also <em>(provide innovation functionality)</em>.</p>
+</blockquote>
+<p>Consider the following two examples of how to use the above template:</p>
+<p>1.</p>
+<blockquote>
+<p><strong><em>Restaurant Booking System</em></strong>: <br/>
+My application will help <em>restaurant owners</em> to <em>manage their tables</em> by keeping track of <em>reservations</em>.<br/>
+My application will allow users to sign up, login and then create, read, update and delete <em>table reservations</em>.<br/>
+My application will allow administrators to login and then view and edit users as well as <em>view reservations and send reservation reminders by SMS</em>.<br/>
+My application will integrate with <em>Twilio</em> to provide <em>SMS reservation reminders</em>.<br/>
+My application will also <em>provide administrators with real-time updates of new bookings (3), be implemented as a single-page web app using React.js (5) and have a comprehensive suite of unit tests (8)</em>.</p>
+</blockquote>
+<p>2.</p>
+<blockquote>
+<p><strong><em>Ben&rsquo;s Java Book Store:</em></strong> <br/>
+My application will help <em>Java Programmers</em> to <em>learn about Java</em> by keeping track of <em>books in their shopping cart that they can then purchase</em>. <br/>
+My application will allow users to sign up, login and then create, read, update and delete <em>books in their shopping cart</em>. <br/>
+My application will allow administrators to login and then view and edit users as well as <em>see the details of ordered placed by customers</em>.<br/>
+My application will integrate with <em>Pin Payments</em> to provide <em>credit card payment processing</em>.<br/>
+My application will also <em>provide shopping cart functionality with checkout (1), confirm email addresses and provide email password resets (6) and be deployed on Amazon Web Services using the Free Hosting Tier (7)</em>.</p>
+</blockquote>
+                </div>
+            </div>            <div class="section">
+                <input id="sec5" type="checkbox" autocomplete="off" />
+                <label for="sec5"><h2>Non-Functional Requirements</h2></label>
+                <div class="content">
+                    <ol>
+<li>Your user interface must follow a modern design pattern such as Model-View-Controller. JavaServer Faces is one option. However, you are permitted to use other modern frameworks in this assignment (please discuss with your tutor first if you are not using JavaServer Faces).</li>
+<li>You must make use of the Java Persistence API (JPA), Enterprise Java Beans and database transactions to implement the core create, read, update and delete functionality.</li>
+<li>You must use the Java EE authentication facilities built into Glassfish or an established security framework (do not write your own security code).</li>
+<li>You must use git to track your changes and you must regularly push your commits to a private repository shared with your tutor on BitBucket.</li>
+<li>Your application must run on GlassFish 4.1.1.</li>
+<li>You must use the JAX-RS client to integrate with remote web services. Even if the web service provides a custom Java client library, you must still use the JAX-RS client for this assignment.</li>
+</ol>
+<p>Bitbucket provides free private Git hosting. Please sign up to bitbucket with your student email address. This will give you a free academic account. Ensure that any repositories that you create are private and invite user <code>benatuts</code> and user <code>ryanuts</code> to your repository with write access (i.e., the tutors). <a href="http://www.bitbucket.org/">http://www.bitbucket.org/</a></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec6" type="checkbox" autocomplete="off" />
+                <label for="sec6"><h2>Deliverables</h2></label>
+                <div class="content">
+                    <p>You may demonstrate your assignment in any lab session between weeks 2 and 11 (inclusive). You may also present your application, by appointment, during the assessment period.</p>
+<p>You will receive a one mark bonus for submitting in Week 11.
+You will receive a two mark bonus for submitting on or before Week 10.</p>
+<p>You can demonstrate this assignment on lab computers or on your own laptop.
+You may develop using any operating system (including Windows or Mac OS) and any Java EE application server that is compatible with Glassfish 4.1.1.</p>
+<p>During the demonstration, you will need to submit your project files as a single ZIP to UTS Online.
+Your submission will be subject to checks for plagiarism and may also be reviewed by other students in the subject as part of a weekly laboratory exercise.</p>
+<p>The ZIP file should contain:</p>
+<ol>
+<li>Your complete source code (e.g., your NetBeans project folder)</li>
+<li>SQL statements to create the application&rsquo;s database</li>
+<li>Any other files required to run your application</li>
+</ol>
+                </div>
+            </div>            <div class="section">
+                <input id="sec7" type="checkbox" autocomplete="off" />
+                <label for="sec7"><h2>Suggested Timeline</h2></label>
+                <div class="content">
+                    <p><em>Hint: If you are concerned about being able to complete the assignment, focus on the core CRUD functionality: the innovation functionality is only worth 15 marks so you can still pass the assignment without implementing any innovation functionality.</em></p>
+<ul>
+<li>Week 8: Choose an idea, set up a source code repository and create database schema (5 hours per group member)</li>
+<li>Labour Day Holiday Week: Research innovation functionality (6 hours per group member)</li>
+<li>Week 9: Implement CRUD functionality and administration zone (6 hours per group member)</li>
+<li>Week 10: Implement sign up and web service integration (6 hours per group member)</li>
+<li>Week 11: Implement innovation functionality (6 hours per group member)</li>
+<li>Review/Assessment Period: Test application (2 hours per group member)</li>
+<li>Assessment Period: Demonstrate application</li>
+</ul>
+<p>You should present your work during (or prior) to Week 10 to receive feedback on your progress.</p>
+<p>Assuming that you have completed the relevant tutorial exercises, the full functionality of this assignment is expected to take approximately 30 hours per group member to complete.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec8" type="checkbox" autocomplete="off" />
+                <label for="sec8"><h2>Feedback</h2></label>
+                <div class="content">
+                    <p>Your assignment will be demonstrated to your tutor during a lab session (or by scheduled appointment during the assessment period). You will run the project for your tutor and he will test your system and examine the source code. You will have an opportunity to discuss your assignment and mark with your tutor.</p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec9" type="checkbox" autocomplete="off" />
+                <label for="sec9"><h2>Group Work and Misconduct</h2></label>
+                <div class="content">
+                    <p>This is a group assignment. 
+You are encouraged to discuss your idea with other groups.
+However, all other work that you submit as part of this assignment must be entirely your own and any assistance properly identified and acknowledged. 
+You are permitted to make use of libraries and other resources found online but you must <em>clearly</em> identify the source.</p>
+<p>It is expected that group members will contribute equally to the assignment. The assignment will be marked as a group, and then individual marks are allocated on the basis of a peer assessment process.</p>
+<p>Please discuss with your tutor if a group member is not contributing to the assignment (or if you are not given opportunities to contribute). Your tutor may, on the basis of contributed workload, heavily penalize students who do not contribute to the assignment. A student who contributes nothing may receive zero marks for the assignment. The use of revision control will assist your tutor in understanding the contribution of each group member.</p>
+<p>Based on consultation with group members and/or an analysis of the revision control logs, your tutor or subject coordinator may override peer assessment to more fairly reflect contributions.</p>
+<p>If you are experiencing group problems, do not wait until the &ldquo;last minute&rdquo;. Discuss with your tutor as soon as possible so that there is sufficient time to correct any issues or negotiate a solution. </p>
+<p>If you are in doubt, please ask your tutor.
+Please refer to the faculty&rsquo;s handbook for more information about Student Misconduct:
+<a href="https://my.feit.uts.edu.au/modules/myfeit/downloads/StudentGuide_Online.pdf">https://my.feit.uts.edu.au/modules/myfeit/downloads/StudentGuide_Online.pdf</a></p>
+                </div>
+            </div>            <div class="section">
+                <input id="sec10" type="checkbox" autocomplete="off" />
+                <label for="sec10"><h2>Grading</h2></label>
+                <div class="content">
+                    <p>Please consider the marking criteria carefully and allocate your effort accordingly. </p>
+<p>This assignment is marked out of 40 and counts 40% towards your final grade.
+You will be marked against the criteria listed below. Your mark is calculated by adding together the grade for each criterion.</p>
+<p>At the time of your final submission, your group members will negotiate the percentage contribution of each member (<em>e.g.</em>, Student A contributed 30%, Student B contributed 50% and Student C contributed 20%). Your final mark will be calculated in proportion to this peer assessment.</p>
+<p>As Java code, your mark will be calculated from the group mark as follows:</p>
+<pre><code>your_mark = group_mark * individual_contribution_percentage * number_of_group_members / 100.0;
+</code></pre>
+<p>If each group member provides an equal contribution, then each individual group member&rsquo;s mark will be the same as the group mark.</p>
+<p>Your mark may be varied by penalties and bonus marks as detailed in the criteria. After penalties, bonuses and peer assessment, marks will be capped at a minimum of zero and a maximum of 40.</p>
+<p>Before you demonstrate your system, you should thoroughly test your system:</p>
+<ul>
+<li>Attempt to log in with an incorrect password</li>
+<li>Enter invalid data and check that validation works on all fields</li>
+<li>Check that you can log out</li>
+<li>Attempt to access secure pages without logging in</li>
+</ul>
+                </div>
+            </div>            <div class="section">
+                <input id="sec11" type="checkbox" autocomplete="off" />
+                <label for="sec11"><h2>Marking Criteria</h2></label>
+                <div class="content">
+                    <p><strong>Core Functionality</strong></p>
+<ul>
+<li>0: The system is unusable or regularly crashes.</li>
+<li>2: The system does not implement all of the core functionality or validation does not work.</li>
+<li>5: The system implements all of the core features. User friendly error messages are displayed when the user enters invalid input. </li>
+</ul>
+<p><strong>Innovation Functionality</strong></p>
+<ul>
+<li>0: The innovation functionality is not implemented.</li>
+<li>5: The innovation functionality is implemented but poorly designed.</li>
+<li>7: Only half the proposed innovation functionality is implemented but it is well designed.</li>
+<li>15: The system implements all of the proposed innovation functionality and the functionality is appropriately implemented and well designed.</li>
+</ul>
+<p><strong>Non-functional requirements</strong></p>
+<ul>
+<li>0: The system does not make use of EJB, transactions or JPA</li>
+<li>2: The system is using Java EE technologies but incompletely or inappropriately.</li>
+<li>5: The system uses Java EE technologies elegantly and appropriately, including appropriate use of transactions in EJBs.</li>
+</ul>
+<p><strong>Design and architecture</strong></p>
+<ul>
+<li>0: The system lacks structure or coherent design.</li>
+<li>1: The system does not separate code into layers. Data access code, domain logic and presentation logic are integrated. Presentation logic is mixed with HTML.</li>
+<li>2: The system has been partially separated into layers but there is some mixing of presentation, domain and data access logic.</li>
+<li>5: The system is separated into clear layers with separate responsibilities.</li>
+</ul>
+<p><strong>Documentation and coding style</strong></p>
+<ul>
+<li>0: There is little to no documentation. Code is messy. There are large amounts of unused or commented-out code.</li>
+<li>2: Some code has comments. Classes, methods and variables have clear names.</li>
+<li>5: <strong>All</strong> non-trivial methods and classes have comments. All code is consistently clear and well presented. Technologies are used appropriately and idiomatically (i.e., using standard coding conventions for the technology). There is no unnecessary duplication of code.</li>
+</ul>
+<p><strong>Revision control</strong></p>
+<ul>
+<li>0: Revision control has not been used.</li>
+<li>2: Revision control has been used.</li>
+<li>5: There are at least 5 meaningful commits from each group member and every commit has a clearly written commit message explaining the changes made.</li>
+</ul>
+<p><strong>Bonus and Penalties</strong></p>
+<ul>
+<li>-5: The system crashes during demonstration</li>
+<li>-5: No proposal given to your tutor within two weeks of group allocation</li>
+<li>-5: Each day late (five mark penalty per day late)</li>
+<li>-3: Use of a web service client library other than JAX-RS</li>
+<li>+1: The system is demonstrated in Week 11</li>
+<li>+2: The system is demonstrated in or before Week 10</li>
+</ul>
                 </div>
             </div>
         </div>
