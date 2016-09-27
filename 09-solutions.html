@@ -27,9 +27,26 @@
             <p><i>Practice for Week 9: 26 September</i></p>
             <div class="section">
                 <input id="sec1" type="checkbox" autocomplete="off" />
-                <label for="sec1"><h2>Sample Solutions</h2></label>
+                <label for="sec1"><h2>Practice Problems</h2></label>
                 <div class="content">
-                    <p>Sample solutions will be released after the tutorial.</p>
+                    <div class="download"><a href="09/Week9.zip"><img src="resources/zip.png" />Week9.zip</a></div>
+
+<p>I've attached a zipped NetBeans project that contains the worked exercises combined into a single project.</p>
+<p>To use this project, you will need to first open the Week9 project.
+Then once the main project is open, you can open each of the sub-projects by right clicking on the modules inside the "Java EE Modules" section of the project.</p>
+<p>You should open all of the sub-projects and then right click on Week9 and select "Clean and Build".</p>
+<p>I encourage you to attempt the problems yourself before "peeking" at the solutions.</p>
+<p>The solutions I've provided are just one of many possible ways to achieve the same effect. If your code is different, but still works, it doesn't necessarily mean that you are "wrong". In fact, your solution may be better than the ones that I have provided. I suggest looking at the differences and understanding why you and I have made different design choices.</p>
+<p>I've added an index.xhtml page to the Week9-war project that will take you to each of the solutions.</p>
+<p>Note that you should NOT run the Week9-war project directly.
+You should deploy or run the Week9 project only.
+Running the Week9 Enterprise Application should bring up index.xhtml from Week9-war for you.</p>
+<p>Some notes about the solution:</p>
+<ol>
+<li>Once <code>AddressBookController</code> became too big, I split it up into <code>AddressBookController</code> and <code>PersonController</code> to improve the design.</li>
+<li>The application could be created using <code>@RequestScoped</code> backing beans. This should be easy if you design your application to work like our previous JSF applications (i.e., a separate view to create people, to create contacts, to edit people, to edit contacts, to delete people, to confirm deleting of people, and to view the contacts of a person). However, I have attempted to combine multiple kinds of actions into a single view. To simplify the code for this, I used <code>@ViewScoped</code>.</li>
+<li>Note that <code>@ViewScoped</code> is in the <code>javax.faces.view</code> package (and NOT in <code>javax.faces.bean</code>). The difference is that <code>javax.faces.view</code> is used with <code>@Named</code> while <code>javax.faces.bean</code> is used with <code>@ManagedBean</code>.</li>
+</ol>
                 </div>
             </div>
         </div>
