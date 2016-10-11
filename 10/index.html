@@ -68,8 +68,9 @@
                  * Encodes latitude and longitude into a Google Maps static image URL
                  */
                 var makeGoogleUrl = function (lat, long) {
-                    return "https://maps.googleapis.com/maps/api/staticmap?center=" +
-                        lat + "," + long +
+                    return "https://maps.googleapis.com/maps/api/staticmap?" +
+                        "key=xxxxxxxxxxxxxxxxx" +  // Please go to https://developers.google.com/maps/documentation/static-maps/ and get a key
+                        "&center=" + lat + "," + long +
                         "&markers=red|" + 
                         lat + "," + long +
                         "&zoom=14&size=400x400";
